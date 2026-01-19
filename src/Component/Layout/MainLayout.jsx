@@ -13,7 +13,7 @@ const MainLayout = ({ children }) => {
     const checkMobile = () => {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
-      
+
       // Auto-close sidebar on mobile by default
       if (mobile && isSidebarOpen) {
         setIsSidebarOpen(false);
@@ -26,7 +26,7 @@ const MainLayout = ({ children }) => {
 
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    
+
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
@@ -39,7 +39,7 @@ const MainLayout = ({ children }) => {
       className="flex h-screen"
       style={{ backgroundColor: theme.colors.background }}
     >
-      {/* Sidebar */} 
+      {/* Sidebar */}
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
       {/* Main Content Area */}
@@ -47,12 +47,12 @@ const MainLayout = ({ children }) => {
         className={`flex-1 flex flex-col transition-all duration-300 ${
           // On desktop: apply margin based on sidebar state
           // On mobile: no margin (sidebar overlays)
-          isMobile 
-            ? "" 
-            : isSidebarOpen 
-              ? "ml-48" 
+          isMobile
+            ? ""
+            : isSidebarOpen
+              ? "ml-48"
               : "ml-16"
-        }`}
+          }`}
       >
         {/* Header */}
         <Header toggleSidebar={toggleSidebar} />

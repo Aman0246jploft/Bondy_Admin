@@ -7,6 +7,6 @@ import { redTheme } from './red';
 export const themes = {
   light: lightTheme,
   dark: darkTheme,
-  red:redTheme,
-  green:greenTheme
+  red: redTheme,
+  green: greenTheme
 };

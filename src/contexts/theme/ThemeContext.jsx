@@ -5,7 +5,11 @@ import { themes } from "./themes";
 export const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  const [currentTheme, setCurrentTheme] = useState("light");
+  const [currentTheme, setCurrentTheme] = useState(() => {
+    const savedTheme = localStorage.getItem("app-theme");
+    return savedTheme && themes[savedTheme] ? savedTheme : "light";
+  });
+
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("app-theme");

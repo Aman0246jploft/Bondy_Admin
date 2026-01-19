@@ -6,7 +6,6 @@ import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
 import LayoutWrapper from "./Component/Layout/LayoutWrapper";
 import Loader from "./Component/Common/Loader";
-import SellProduct from "./Component/SellProduct/SellProduct";
 
 
 // Lazy-loaded pages
@@ -34,7 +33,7 @@ function App() {
               <Route path="/customers" element={<Customers />} />
               <Route path="/organizers" element={<Organizers />} />
               <Route path="/categories" element={<Categories />} />
-              <Route path="/sellProduct" element={<SellProduct />} />
+              {/* <Route path="/sellProduct" element={<SellProduct />} /> */}
 
             </Route>
           </Route>
