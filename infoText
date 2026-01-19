@@ -1,0 +1,9 @@
+  
+{"kadSunInfo" : {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QzQGdtYWlsLmNvbSIsInVzZXJJZCI6IjY4NGJjMzE4ZTExZTc2NGE4NTY1MmEwMCIsInJvbGVJZCI6MiwicHJvZmlsZUltYWdlIjoiaHR0cHM6Ly9yZXMuY2xvdWRpbmFyeS5jb20vZHdreWp4NmliL2ltYWdlL3VwbG9hZC92MTc0OTc5NTYwNy9wcm9maWxlLWltYWdlcy9TY3JlZW5zaG90JTIwZnJvbSUyMDIwMjUtMDYtMTMlMjAxMC0zNi0yMS5wbmciLCJ1c2VyTmFtZSI6ImFtYW4iLCJpYXQiOjE3NTA3NDI3NTMsImV4cCI6MTg0NTM1MDc1M30.58d28Iqn-fbgqNjlxVxigImWCCwbHVNcdwy5AXkBIqo",
+    "userId": "684bc318e11e764a85652a00",
+    "roleId": 2,
+    "profileImage": "https://res.cloudinary.com/dwkyjx6ib/image/upload/v1749795607/profile-images/Screenshot%20from%202025-06-13%2010-36-21.png",
+    "userName": "aman",
+    "email": "test3@gmail.com"
+}}
