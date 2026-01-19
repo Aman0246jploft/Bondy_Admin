@@ -13,7 +13,9 @@ import SellProduct from "./Component/SellProduct/SellProduct";
 const Login = lazy(() => import("./Pages/Auth/Login"));
 const Dashboard = lazy(() => import("./Pages/Dashboard/Dashboard"));
 const Home = lazy(() => import("./Pages/Home/Home"));
-const User = lazy(() => import("./Pages/User/User"));
+const Customers = lazy(() => import("./Pages/User/Customers"));
+const Organizers = lazy(() => import("./Pages/User/Organizers"));
+const Categories = lazy(() => import("./Pages/Category/Categories"));
 
 function App() {
   return (
@@ -24,15 +26,16 @@ function App() {
           <Route element={<PublicRoute />}>
             <Route path="/login" element={<Login />} />
           </Route>
-
           {/* Private Routes */}
           <Route element={<PrivateRoute />}>
             <Route element={<LayoutWrapper />}>
               <Route path="/" element={<Home />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/user" element={<User />} />
+              <Route path="/customers" element={<Customers />} />
+              <Route path="/organizers" element={<Organizers />} />
+              <Route path="/categories" element={<Categories />} />
               <Route path="/sellProduct" element={<SellProduct />} />
-     
+
             </Route>
           </Route>
         </Routes>

@@ -20,18 +20,11 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   const menuItems = [
     { name: "Home", href: "/", icon: AiOutlineHome },
     { name: "Dashboard", href: "/dashboard", icon: AiOutlineDashboard },
-    { name: "Users", href: "/user", icon: AiOutlineTeam },
+    { name: "Customers", href: "/customers", icon: AiOutlineTeam },
+    { name: "Organizers", href: "/organizers", icon: AiOutlineTeam },
+    { name: "Categories", href: "/categories", icon: AiOutlineFileText },
     { name: "Reports", href: "/#", icon: AiOutlineFileText },
     { name: "Notifications", href: "/#", icon: AiOutlineBell },
-    { name: "Settings", href: "/#", icon: AiOutlineSetting },
-    { name: "Sell Product", href: "/sellProduct", icon: AiOutlineSetting },
-
-
-    {
-      name: "Auction Product",
-      href: "/auctionProduct",
-      icon: AiOutlineSetting,
-    },
   ];
 
   return (
