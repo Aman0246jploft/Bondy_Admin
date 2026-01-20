@@ -9,6 +9,8 @@ import {
   AiOutlineSetting,
   AiOutlineLeft,
   AiOutlineRight,
+  AiOutlineCalendar,
+  AiOutlineBook,
 } from "react-icons/ai";
 import { useTheme } from "../../contexts/theme/hook/useTheme";
 import clsx from "clsx";
@@ -23,6 +25,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     { name: "Customers", href: "/customers", icon: AiOutlineTeam },
     { name: "Organizers", href: "/organizers", icon: AiOutlineTeam },
     { name: "Categories", href: "/categories", icon: AiOutlineFileText },
+    { name: "Events", href: "/events", icon: AiOutlineCalendar },
+    { name: "Courses", href: "/courses", icon: AiOutlineBook },
     { name: "Taxes", href: "/taxes", icon: AiOutlineSetting },
     { name: "Promo Codes", href: "/promo-codes", icon: AiOutlineFileText },
     { name: "Global Settings", href: "/settings", icon: AiOutlineSetting },

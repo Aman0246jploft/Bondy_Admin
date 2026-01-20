@@ -15,6 +15,8 @@ const Home = lazy(() => import("./Pages/Home/Home"));
 const Customers = lazy(() => import("./Pages/User/Customers"));
 const Organizers = lazy(() => import("./Pages/User/Organizers"));
 const Categories = lazy(() => import("./Pages/Category/Categories"));
+const Events = lazy(() => import("./Pages/Events/Events"));
+const Courses = lazy(() => import("./Pages/Courses/Courses"));
 const Taxes = lazy(() => import("./Pages/Settings/Taxes"));
 const PromoCodes = lazy(() => import("./Pages/Settings/PromoCodes"));
 const GlobalSettings = lazy(() => import("./Pages/Settings/GlobalSettings"));
@@ -36,6 +38,8 @@ function App() {
               <Route path="/customers" element={<Customers />} />
               <Route path="/organizers" element={<Organizers />} />
               <Route path="/categories" element={<Categories />} />
+              <Route path="/events" element={<Events />} />
+              <Route path="/courses" element={<Courses />} />
               <Route path="/taxes" element={<Taxes />} />
               <Route path="/promo-codes" element={<PromoCodes />} />
               <Route path="/settings" element={<GlobalSettings />} />
