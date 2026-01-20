@@ -13,6 +13,10 @@ axiosClient.interceptors.response.use(
 
     // Handle application-level errors where HTTP status is 200 but status is false
     if (data?.status === false) {
+      if (data.message === 'Invalid or expired token') {
+        localStorage.removeItem('kadSunInfo');
+        window.location.href = '/login';
+      }
       const customError = new Error(data.message || 'Something went wrong');
       customError.responseCode = data.responseCode || 400;
       customError.isHandled = true;

@@ -15,6 +15,9 @@ const Home = lazy(() => import("./Pages/Home/Home"));
 const Customers = lazy(() => import("./Pages/User/Customers"));
 const Organizers = lazy(() => import("./Pages/User/Organizers"));
 const Categories = lazy(() => import("./Pages/Category/Categories"));
+const Taxes = lazy(() => import("./Pages/Settings/Taxes"));
+const PromoCodes = lazy(() => import("./Pages/Settings/PromoCodes"));
+const GlobalSettings = lazy(() => import("./Pages/Settings/GlobalSettings"));
 
 function App() {
   return (
@@ -33,6 +36,9 @@ function App() {
               <Route path="/customers" element={<Customers />} />
               <Route path="/organizers" element={<Organizers />} />
               <Route path="/categories" element={<Categories />} />
+              <Route path="/taxes" element={<Taxes />} />
+              <Route path="/promo-codes" element={<PromoCodes />} />
+              <Route path="/settings" element={<GlobalSettings />} />
               {/* <Route path="/sellProduct" element={<SellProduct />} /> */}
 
             </Route>
