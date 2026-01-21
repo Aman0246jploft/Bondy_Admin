@@ -20,7 +20,10 @@ const GlobalSettingList = ({ title }) => {
         try {
             const response = await authAxiosClient.get("/globalsetting/all");
             if (response.data?.status) {
-                setData(response.data.data.settings);
+                // Filter to show only COMMISSION_CONFIG as requested
+                const allSettings = response.data.data.settings;
+                const filteredSettings = allSettings.filter(item => item.key === 'COMMISSION_CONFIG');
+                setData(filteredSettings);
             }
         } catch (error) {
             console.error("Error fetching settings:", error);
