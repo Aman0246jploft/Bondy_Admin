@@ -28,7 +28,7 @@ const Header = ({ toggleSidebar }) => {
 
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    
+
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
@@ -179,32 +179,9 @@ const Header = ({ toggleSidebar }) => {
         {/* Right section */}
         <div className="flex items-center space-x-2 md:space-x-4">
           {/* Notifications */}
-          <button
-            onClick={() => setShowNotifications(!showNotifications)}
-            className="p-2 rounded-lg transition-colors duration-200 relative"
-            style={{
-              backgroundColor: theme.colors.buttonSecondary,
-              color: theme.colors.buttonTextOnSecondary,
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor =
-                theme.colors.buttonSecondaryHover;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor =
-                theme.colors.buttonSecondary;
-            }}
-          >
-            <AiOutlineBell className="w-5 h-5" />
-            {/* Notification badge */}
-            <span
-              className="absolute -top-1 -right-1 w-3 h-3 rounded-full text-xs flex items-center justify-center"
-              style={{ backgroundColor: theme.colors.error }}
-            />
-          </button>
 
           {/* Theme Dropdown */}
-          <div className="relative" ref={themeDropdownRef}>
+          {/* <div className="relative" ref={themeDropdownRef}>
             <button
               onClick={() => setShowThemeDropdown(!showThemeDropdown)}
               className="flex items-center space-x-2 p-2 rounded-lg transition-colors duration-200"
@@ -237,8 +214,6 @@ const Header = ({ toggleSidebar }) => {
                 }`}
               />
             </button>
-
-            {/* Theme Dropdown Menu */}
             {showThemeDropdown && (
               <div
                 className="absolute right-0 mt-2 w-48 rounded-lg shadow-lg border z-50"
@@ -303,7 +278,7 @@ const Header = ({ toggleSidebar }) => {
                 </div>
               </div>
             )}
-          </div>
+          </div> */}
 
           {/* Profile Dropdown */}
           <div className="relative" ref={profileDropdownRef}>
@@ -339,9 +314,8 @@ const Header = ({ toggleSidebar }) => {
               />
               <span className="hidden md:block font-medium">John Doe</span>
               <AiOutlineDown
-                className={`w-4 h-4 transition-transform duration-200 ${
-                  showProfileDropdown ? "rotate-180" : ""
-                }`}
+                className={`w-4 h-4 transition-transform duration-200 ${showProfileDropdown ? "rotate-180" : ""
+                  }`}
               />
             </button>
 

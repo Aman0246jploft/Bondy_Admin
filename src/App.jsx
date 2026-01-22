@@ -23,6 +23,7 @@ const GlobalSettings = lazy(() => import("./Pages/Settings/GlobalSettings"));
 const PrivacyPolicy = lazy(() => import("./Component/Content/PrivacyPolicy"));
 const TermsConditions = lazy(() => import("./Component/Content/TermsConditions"));
 const FAQs = lazy(() => import("./Component/Content/FAQList"));
+const SupportTickets = lazy(() => import("./Pages/SupportTickets/SupportTickets"));
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms-conditions" element={<TermsConditions />} />
               <Route path="/faqs" element={<FAQs />} />
+              <Route path="/support-tickets" element={<SupportTickets />} />
               {/* <Route path="/sellProduct" element={<SellProduct />} /> */}
 
             </Route>
