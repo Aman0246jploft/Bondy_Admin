@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Button from "../../Component/Atoms/Button/Button";
 import Input from "../../Component/Atoms/InputFields/Inputfield";
-import Image from "../../Component/Atoms/Image/Image";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useTheme } from "../../contexts/theme/hook/useTheme";
@@ -51,7 +50,6 @@ export default function Login() {
   };
 
   let { loading, error } = selector ? selector : {};
-  console.log("error", error);
 
   return (
     <div
