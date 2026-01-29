@@ -13,6 +13,7 @@ import {
   AiOutlineBook,
   AiOutlineQuestionCircle,
   AiOutlineCustomerService,
+  AiOutlineMail,
 } from "react-icons/ai";
 import { useTheme } from "../../contexts/theme/hook/useTheme";
 import clsx from "clsx";
@@ -36,6 +37,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     { name: "Terms & Conditions", href: "/terms-conditions", icon: AiOutlineFileText },
     { name: "FAQs", href: "/faqs", icon: AiOutlineQuestionCircle },
     { name: "Support Tickets", href: "/support-tickets", icon: AiOutlineCustomerService },
+    { name: "Contact Messages", href: "/contacts", icon: AiOutlineMail },
     { name: "Reports", href: "/#", icon: AiOutlineFileText },
     { name: "Notifications", href: "/#", icon: AiOutlineBell },
   ];
