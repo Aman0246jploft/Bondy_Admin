@@ -1,2 +1,4 @@
-export const baseURL = "http://localhost:8080/api/v1";
-export const socketURL = "http://localhost:8080";
+
+const API_URL = import.meta.env.VITE_API_URL 
+export const baseURL = API_URL + "/api/v1";
+export const socketURL = API_URL;
