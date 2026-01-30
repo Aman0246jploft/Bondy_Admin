@@ -6,4 +6,5 @@ const contactApi = {
     updateContact: (data) => apiClient.post("/contact/updateContact", data),
 };
 
+
 export default contactApi;
