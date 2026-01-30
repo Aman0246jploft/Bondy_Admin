@@ -40,6 +40,8 @@ export const login = createAsyncThunk("user/login", async (data, thunkAPI) => {
   try {
     const res = await axiosClient.post("/user/admin/login", data);
     localStorage.setItem("kadSunInfo", JSON.stringify(res.data?.data));
+    localStorage.setItem("token", res.data?.data?.token);
+
     return res.data;
   } catch (err) {
     console.error(`Login error [${err.responseCode || 500}]: ${err.message}`);

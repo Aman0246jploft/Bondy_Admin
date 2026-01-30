@@ -7,7 +7,7 @@ export const lightTheme = {
     tertiary: "#f1f5f9",         // off-white for tertiary elements
 
     // Backgrounds
-    background: "#f9fafb",       // light background color (off-white)
+    background: "#ffffff",       // light background color (off-white)
 
     // Sidebar
     sidebarText: "#6b7280",      // muted gray for text in the sidebar

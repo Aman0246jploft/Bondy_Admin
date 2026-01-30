@@ -22,7 +22,8 @@ const GlobalSettingList = ({ title }) => {
             if (response.data?.status) {
                 // Filter to show only COMMISSION_CONFIG as requested
                 const allSettings = response.data.data.settings;
-                const filteredSettings = allSettings.filter(item => item.key === 'COMMISSION_CONFIG');
+                const filteredSettings = allSettings.filter(item => item.key === 'COMMISSION_CONFIG' || item.key === 'FEATURE_EVENT_FEE');
+                console.log("filteredSettings1111", filteredSettings);
                 setData(filteredSettings);
             }
         } catch (error) {

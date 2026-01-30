@@ -106,13 +106,13 @@ const FAQList = () => {
         try {
             if (currentFAQ) {
                 // Update
-                await axios.put(`${API_URL}/faq/update/${currentFAQ._id}`, formData, {
+                await axios.put(`${API_URL}/api/v1/faq/update/${currentFAQ._id}`, formData, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 toast.success("FAQ updated successfully");
             } else {
                 // Create
-                await axios.post(`${API_URL}/faq/create`, formData, {
+                await axios.post(`${API_URL}/api/v1/faq/create`, formData, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 toast.success("FAQ created successfully");
@@ -132,7 +132,7 @@ const FAQList = () => {
 
         try {
             const token = localStorage.getItem("token");
-            await axios.delete(`${API_URL}/faq/delete/${id}`, {
+            await axios.delete(`${API_URL}/api/v1/faq/delete/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             toast.success("FAQ deleted successfully");

@@ -37,7 +37,7 @@ const TermsConditions = () => {
         try {
             const token = localStorage.getItem("token");
             await axios.post(
-                `${API_URL}/globalsetting/upsert`,
+                `${API_URL}/api/v1/globalsetting/upsert`,
                 {
                     key: "terms_conditions",
                     value: content,
