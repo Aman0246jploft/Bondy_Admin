@@ -27,6 +27,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     // { name: "Dashboard", href: "/dashboard", icon: AiOutlineDashboard },
     { name: "Customers", href: "/customers", icon: AiOutlineTeam },
     { name: "Organizers", href: "/organizers", icon: AiOutlineTeam },
+    { name: "Verification Requests", href: "/verification-requests", icon: AiOutlineFileText },
     { name: "Categories", href: "/categories", icon: AiOutlineFileText },
     { name: "Events", href: "/events", icon: AiOutlineCalendar },
     { name: "Courses", href: "/courses", icon: AiOutlineBook },
