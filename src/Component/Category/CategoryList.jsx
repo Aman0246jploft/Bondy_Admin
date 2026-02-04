@@ -141,7 +141,7 @@ const CategoryList = ({ title }) => {
         {
             key: "type",
             label: "Type",
-            render: (val) => <span className={`capitalize px-2 py-1 rounded text-xs ${val === 'event' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>{val}</span>
+            render: (val) => <span className={`capitalize px-2 py-1 rounded text-xs ${val === 'event' ? 'bg-blue-100 text-blue-800' : val === 'support_ticket' ? 'bg-orange-100 text-orange-800' : 'bg-green-100 text-green-800'}`}>{val === 'support_ticket' ? 'Support Ticket' : val}</span>
         },
         {
             key: "actions",
@@ -172,6 +172,7 @@ const CategoryList = ({ title }) => {
                         <option value="">All Types</option>
                         <option value="event">Event</option>
                         <option value="course">Course</option>
+                        <option value="support_ticket">Support Ticket</option>
                     </select>
                     <input
                         type="text"
@@ -243,6 +244,7 @@ const CategoryList = ({ title }) => {
                                 >
                                     <option value="event">Event</option>
                                     <option value="course">Course</option>
+                                    <option value="support_ticket">Support Ticket</option>
                                 </select>
                             </div>
                             <div>

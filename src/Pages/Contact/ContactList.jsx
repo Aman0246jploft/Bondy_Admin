@@ -45,6 +45,25 @@ const ContactList = () => {
         }
     };
 
+    const handleStatusUpdate = async (id, newStatus) => {
+        try {
+            const response = await contactApi.updateContact({ id, status: newStatus });
+            if (response.status) {
+                toast.success("Status updated successfully");
+                fetchContacts();
+            }
+        } catch (error) {
+            console.error("Error updating status:", error);
+            toast.error("Failed to update status");
+        }
+    };
+
+    const statusColors = {
+        New: "bg-blue-100 text-blue-800",
+        Read: "bg-yellow-100 text-yellow-800",
+        Replied: "bg-green-100 text-green-800",
+    };
+
     const totalPages = Math.ceil(total / limit);
 
     return (
@@ -63,7 +82,7 @@ const ContactList = () => {
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead style={{ backgroundColor: theme.colors.background }}>
                                 <tr>
-                                    {["#", "Name", "Email", "Phone", "Topic", "Message", "Date", "Actions"].map((header) => (
+                                    {["#", "Name", "Email", "Phone", "Topic", "Message", "Status", "Date", "Actions"].map((header) => (
                                         <th
                                             key={header}
                                             className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
@@ -110,6 +129,17 @@ const ContactList = () => {
                                                     contact.message
                                                 )}
                                             </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                                <select
+                                                    value={contact.status}
+                                                    onChange={(e) => handleStatusUpdate(contact._id, e.target.value)}
+                                                    className={`px-2 py-1 rounded-full text-xs font-semibold border-0 cursor-pointer focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${statusColors[contact.status] || "bg-gray-100 text-gray-800"}`}
+                                                >
+                                                    <option value="New">New</option>
+                                                    <option value="Read">Read</option>
+                                                    <option value="Replied">Replied</option>
+                                                </select>
+                                            </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: theme.colors.textSecondary }}>
                                                 {new Date(contact.createdAt).toLocaleDateString()}
                                             </td>
@@ -125,7 +155,7 @@ const ContactList = () => {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="8" className="px-6 py-4 text-center text-sm" style={{ color: theme.colors.textSecondary }}>
+                                        <td colSpan="9" className="px-6 py-4 text-center text-sm" style={{ color: theme.colors.textSecondary }}>
                                             No messages found
                                         </td>
                                     </tr>
@@ -196,7 +226,8 @@ const ContactList = () => {
                         </h3>
                         <p className="text-sm mb-4" style={{ color: theme.colors.textSecondary }}>
                             <strong>Topic:</strong> {selectedContact.topic} <br />
-                            <strong>Email:</strong> {selectedContact.email}
+                            <strong>Email:</strong> {selectedContact.email} <br />
+                            <strong>Status:</strong> <span className={`px-2 py-0.5 rounded text-xs ${statusColors[selectedContact.status]}`}>{selectedContact.status}</span>
                         </p>
                         <div
                             className="mt-4 p-4 rounded max-h-[60vh] overflow-y-auto"
