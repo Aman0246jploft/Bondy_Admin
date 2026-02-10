@@ -2,7 +2,9 @@ import React, { useState, useEffect, useCallback } from "react";
 import DataTable from "../Table/DataTable";
 import { FiEdit2 } from "react-icons/fi";
 import { BsTrash2 } from "react-icons/bs";
+import { AiOutlineBarChart } from "react-icons/ai";
 import axiosClient from "../../api/authAxiosClient";
+import OrganizerStatsModal from "./OrganizerStatsModal";
 
 const UserList = ({ roleId, title }) => {
     const [data, setData] = useState([]);
@@ -11,6 +13,8 @@ const UserList = ({ roleId, title }) => {
     const [page, setPage] = useState(1);
     const [limit] = useState(10);
     const [search, setSearch] = useState("");
+    const [selectedOrganizer, setSelectedOrganizer] = useState(null);
+    const [showStatsModal, setShowStatsModal] = useState(false);
 
     const fetchUsers = useCallback(async () => {
         setLoading(true);
@@ -72,6 +76,16 @@ const UserList = ({ roleId, title }) => {
         }
     };
 
+    const handleViewStats = (user) => {
+        setSelectedOrganizer(user);
+        setShowStatsModal(true);
+    };
+
+    const handleCloseStatsModal = () => {
+        setShowStatsModal(false);
+        setSelectedOrganizer(null);
+    };
+
     const columns = [
         {
             key: "name",
@@ -102,6 +116,14 @@ const UserList = ({ roleId, title }) => {
             label: "Actions",
             render: (value, row) => (
                 <div className="flex gap-3">
+                    {roleId === 2 && (
+                        <button
+                            onClick={() => handleViewStats(row)}
+                            title="View Stats"
+                        >
+                            <AiOutlineBarChart className="w-4 h-4 text-purple-500 hover:text-purple-700" />
+                        </button>
+                    )}
                     <button onClick={() => console.log("Edit", row)}>
                         <FiEdit2 className="w-4 h-4 text-blue-500 hover:text-blue-700" />
                     </button>
@@ -148,8 +170,16 @@ const UserList = ({ roleId, title }) => {
                     </button>
                 </div>
             </div>
-        </div>
+
+            {showStatsModal && selectedOrganizer && (
+                <OrganizerStatsModal
+                    organizer={selectedOrganizer}
+                    onClose={handleCloseStatsModal}
+                />
+            )}
+        </div >
     );
 };
 
 export default UserList;
+
