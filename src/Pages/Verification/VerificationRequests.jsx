@@ -40,10 +40,10 @@ const VerificationRequests = () => {
         fetchRequests();
     }, [fetchRequests]);
 
-    const handleAudit = async (userId, action, reason = null) => {
-        if (!window.confirm(`Are you sure you want to ${action} this organizer?`)) return;
+    const handleAudit = async (userId, documentId, documentName, action, reason = null) => {
+        if (!window.confirm(`Are you sure you want to ${action} "${documentName}"?`)) return;
 
-        // If reject, maybe ask for reason? For now simple prompt
+        // If reject, ask for reason
         let finalReason = reason;
         if (action === "reject" && !finalReason) {
             finalReason = prompt("Please enter a reason for rejection:");
@@ -53,12 +53,13 @@ const VerificationRequests = () => {
         try {
             const response = await axiosClient.post("/verification/audit", {
                 userId,
+                documentId,
                 action,
                 reason: finalReason
             });
 
             if (response.data?.status) {
-                toast.success(`Organizer ${action}d successfully`);
+                toast.success(`Document ${action}d successfully`);
                 fetchRequests();
             }
         } catch (error) {
@@ -80,17 +81,40 @@ const VerificationRequests = () => {
             key: "documents",
             label: "Documents",
             render: (val, row) => (
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-2">
                     {row.documents && row.documents.map((doc, i) => (
-                        <a
-                            key={i}
-                            href={socketURL + '/' + doc.file} // Adjust base URL logic if needed
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-500 hover:underline text-sm"
-                        >
-                            {doc.name || "View Doc"}
-                        </a>
+                        <div key={i} className="flex items-center gap-2 border-b pb-2">
+                            <a
+                                href={socketURL + '/' + doc.file}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-500 hover:underline text-sm flex-1"
+                            >
+                                {doc.name || "View Doc"}
+                            </a>
+                            <span className={`px-2 py-1 rounded text-xs ${doc.status === 'approved' ? 'bg-green-100 text-green-800' :
+                                doc.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                                    'bg-yellow-100 text-yellow-800'
+                                }`}>
+                                {doc.status}
+                            </span>
+                            {doc.status === 'pending' && (
+                                <div className="flex gap-1">
+                                    <button
+                                        onClick={() => handleAudit(row._id, doc._id, doc.name, 'approve')}
+                                        className="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-xs"
+                                    >
+                                        ✓
+                                    </button>
+                                    <button
+                                        onClick={() => handleAudit(row._id, doc._id, doc.name, 'reject')}
+                                        className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-xs"
+                                    >
+                                        ✗
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     ))}
                     {(!row.documents || row.documents.length === 0) && <span className="text-gray-400">No docs</span>}
                 </div>
@@ -111,27 +135,7 @@ const VerificationRequests = () => {
         {
             key: "actions",
             label: "Actions",
-            render: (val, row) => (
-                <div className="flex gap-2">
-                    {row.organizerVerificationStatus === 'pending' && (
-                        <>
-                            <button
-                                onClick={() => handleAudit(row._id, 'approve')}
-                                className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm"
-                            >
-                                Approve
-                            </button>
-                            <button
-                                onClick={() => handleAudit(row._id, 'reject')}
-                                className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
-                            >
-                                Reject
-                            </button>
-                        </>
-                    )}
-                    {row.organizerVerificationStatus !== 'pending' && <span className="text-gray-400">-</span>}
-                </div>
-            )
+            render: () => <span className="text-gray-400">See documents</span>
         }
     ];
 
