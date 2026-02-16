@@ -124,9 +124,9 @@ const UserList = ({ roleId, title }) => {
                             <AiOutlineBarChart className="w-4 h-4 text-purple-500 hover:text-purple-700" />
                         </button>
                     )}
-                    <button onClick={() => console.log("Edit", row)}>
+                    {/* <button onClick={() => console.log("Edit", row)}>
                         <FiEdit2 className="w-4 h-4 text-blue-500 hover:text-blue-700" />
-                    </button>
+                    </button> */}
                     <button onClick={() => handleDelete(row)}>
                         <BsTrash2 className="w-4 h-4 text-red-500 hover:text-red-700" />
                     </button>
