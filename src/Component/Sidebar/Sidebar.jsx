@@ -23,7 +23,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   const location = useLocation();
 
   const menuItems = [
-    { name: "Home", href: "/", icon: AiOutlineHome },
+    { name: "Home", href: "/dashboard", icon: AiOutlineHome },
     // { name: "Dashboard", href: "/dashboard", icon: AiOutlineDashboard },
     { name: "Customers", href: "/customers", icon: AiOutlineTeam },
     { name: "Organizers", href: "/organizers", icon: AiOutlineTeam },

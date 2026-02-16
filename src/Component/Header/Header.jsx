@@ -8,8 +8,10 @@ import {
   AiOutlineQuestionCircle,
   AiOutlineMenu,
 } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../contexts/theme/hook/useTheme";
 import Image from "../Atoms/Image/Image";
+import userApi from "../../api/userApi";
 
 const Header = ({ toggleSidebar }) => {
   const { currentTheme, changeTheme, theme } = useTheme();
@@ -17,8 +19,27 @@ const Header = ({ toggleSidebar }) => {
   const [showThemeDropdown, setShowThemeDropdown] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [userData, setUserData] = useState(null);
   const profileDropdownRef = useRef(null);
   const themeDropdownRef = useRef(null);
+
+  // Fetch user profile
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await userApi.getSelfProfile();
+
+        if (response.data && response.data.data) {
+          setUserData(response.data.data.user);
+        }
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
 
   // Check if screen is mobile
   useEffect(() => {
@@ -95,38 +116,49 @@ const Header = ({ toggleSidebar }) => {
     );
   };
 
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Clear authentication data from localStorage
+    localStorage.removeItem("kadSunInfo");
+    localStorage.removeItem("token");
+
+    // Close dropdown
+    setShowProfileDropdown(false);
+
+    // Redirect to login page
+    navigate("/login");
+  };
+
   const profileMenuItems = [
-    {
-      icon: AiOutlineProfile,
-      label: "View Profile",
-      onClick: () => {
-        console.log("View Profile clicked");
-        setShowProfileDropdown(false);
-      },
-    },
-    {
-      icon: AiOutlineSetting,
-      label: "Settings",
-      onClick: () => {
-        console.log("Settings clicked");
-        setShowProfileDropdown(false);
-      },
-    },
-    {
-      icon: AiOutlineQuestionCircle,
-      label: "Help & Support",
-      onClick: () => {
-        console.log("Help & Support clicked");
-        setShowProfileDropdown(false);
-      },
-    },
+    // {
+    //   icon: AiOutlineProfile,
+    //   label: "View Profile",
+    //   onClick: () => {
+    //     console.log("View Profile clicked");
+    //     setShowProfileDropdown(false);
+    //   },
+    // },
+    // {
+    //   icon: AiOutlineSetting,
+    //   label: "Settings",
+    //   onClick: () => {
+    //     console.log("Settings clicked");
+    //     setShowProfileDropdown(false);
+    //   },
+    // },
+    // {
+    //   icon: AiOutlineQuestionCircle,
+    //   label: "Help & Support",
+    //   onClick: () => {
+    //     console.log("Help & Support clicked");
+    //     setShowProfileDropdown(false);
+    //   },
+    // },
     {
       icon: AiOutlineLogout,
       label: "Sign Out",
-      onClick: () => {
-        console.log("Sign Out clicked");
-        setShowProfileDropdown(false);
-      },
+      onClick: handleLogout,
       isDestructive: true,
     },
   ];
@@ -305,14 +337,21 @@ const Header = ({ toggleSidebar }) => {
               }}
             >
               <Image
-                src="/api/placeholder/32/32"
+                src={userData?.profileImage || "/api/placeholder/32/32"}
                 alt="Profile"
                 width={32}
                 height={32}
                 rounded={true}
                 className="w-8 h-8"
               />
-              <span className="hidden md:block font-medium">John Doe</span>
+              <div className="hidden md:flex flex-col items-start">
+                <span className="text-sm font-medium">
+                  {userData?.firstName || "Admin"}
+                </span>
+                <span className="text-xs" style={{ color: theme.colors.textMuted }}>
+                  {userData?.email || "Loading..."}
+                </span>
+              </div>
               <AiOutlineDown
                 className={`w-4 h-4 transition-transform duration-200 ${showProfileDropdown ? "rotate-180" : ""
                   }`}
@@ -330,7 +369,7 @@ const Header = ({ toggleSidebar }) => {
                 }}
               >
                 {/* User Info Section */}
-                <div
+                {/* <div
                   className="px-4 py-3 border-b"
                   style={{ borderColor: theme.colors.border }}
                 >
@@ -358,7 +397,7 @@ const Header = ({ toggleSidebar }) => {
                       </p>
                     </div>
                   </div>
-                </div>
+                </div> */}
 
                 {/* Menu Items */}
                 <div className="py-2">

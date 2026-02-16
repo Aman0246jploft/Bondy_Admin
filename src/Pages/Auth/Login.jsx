@@ -103,7 +103,7 @@ export default function Login() {
           </Button>
         </form>
 
-        <p
+        {/* <p
           className="mt-4 text-sm text-center"
           style={{ color: theme.colors.textSecondary }}
         >
@@ -115,7 +115,7 @@ export default function Login() {
           >
             Register
           </a>
-        </p>
+        </p> */}
       </div>
     </div>
   );
