@@ -39,7 +39,7 @@ function App() {
           {/* Private Routes */}
           <Route element={<PrivateRoute />}>
             <Route element={<LayoutWrapper />}>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<Dashboard />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/customers" element={<Customers />} />
               <Route path="/organizers" element={<Organizers />} />
