@@ -33,6 +33,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     { name: "Courses", href: "/courses", icon: AiOutlineBook },
     { name: "Taxes", href: "/taxes", icon: AiOutlineSetting },
     { name: "Promo Codes", href: "/promo-codes", icon: AiOutlineFileText },
+    { name: "Promotion Packages", href: "/promotion-packages", icon: AiOutlineFileText },
     { name: "Global Settings", href: "/settings", icon: AiOutlineSetting },
     { name: "Privacy Policy", href: "/privacy-policy", icon: AiOutlineFileText },
     { name: "Terms & Conditions", href: "/terms-conditions", icon: AiOutlineFileText },

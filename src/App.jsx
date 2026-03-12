@@ -20,6 +20,7 @@ const Events = lazy(() => import("./Pages/Events/Events"));
 const Courses = lazy(() => import("./Pages/Courses/Courses"));
 const Taxes = lazy(() => import("./Pages/Settings/Taxes"));
 const PromoCodes = lazy(() => import("./Pages/Settings/PromoCodes"));
+const PromotionPackages = lazy(() => import("./Pages/Settings/PromotionPackages"));
 const GlobalSettings = lazy(() => import("./Pages/Settings/GlobalSettings"));
 const PrivacyPolicy = lazy(() => import("./Component/Content/PrivacyPolicy"));
 const TermsConditions = lazy(() => import("./Component/Content/TermsConditions"));
@@ -49,6 +50,7 @@ function App() {
               <Route path="/courses" element={<Courses />} />
               <Route path="/taxes" element={<Taxes />} />
               <Route path="/promo-codes" element={<PromoCodes />} />
+              <Route path="/promotion-packages" element={<PromotionPackages />} />
               <Route path="/settings" element={<GlobalSettings />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms-conditions" element={<TermsConditions />} />
