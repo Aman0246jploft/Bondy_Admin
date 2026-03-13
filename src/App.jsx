@@ -27,6 +27,7 @@ const TermsConditions = lazy(() => import("./Component/Content/TermsConditions")
 const FAQs = lazy(() => import("./Component/Content/FAQList"));
 const SupportTickets = lazy(() => import("./Pages/SupportTickets/SupportTickets"));
 const ContactList = lazy(() => import("./Pages/Contact/ContactList"));
+const FinanceDashboard = lazy(() => import("./Pages/Finance/FinanceDashboard"));
 
 function App() {
   return (
@@ -58,6 +59,7 @@ function App() {
               <Route path="/faqs" element={<FAQs />} />
               <Route path="/support-tickets" element={<SupportTickets />} />
               <Route path="/contacts" element={<ContactList />} />
+              <Route path="/finance" element={<FinanceDashboard />} />
               {/* <Route path="/sellProduct" element={<SellProduct />} /> */}
 
             </Route>

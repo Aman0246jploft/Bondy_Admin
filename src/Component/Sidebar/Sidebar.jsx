@@ -14,6 +14,7 @@ import {
   AiOutlineQuestionCircle,
   AiOutlineCustomerService,
   AiOutlineMail,
+  AiOutlineDollar,
 } from "react-icons/ai";
 import { useTheme } from "../../contexts/theme/hook/useTheme";
 import clsx from "clsx";
@@ -28,6 +29,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     { name: "Customers", href: "/customers", icon: AiOutlineTeam },
     { name: "Organizers", href: "/organizers", icon: AiOutlineTeam },
     { name: "Verification Requests", href: "/verification-requests", icon: AiOutlineFileText },
+    { name: "Finance", href: "/finance", icon: AiOutlineDollar },
     { name: "Categories", href: "/categories", icon: AiOutlineFileText },
     { name: "Events", href: "/events", icon: AiOutlineCalendar },
     { name: "Courses", href: "/courses", icon: AiOutlineBook },
