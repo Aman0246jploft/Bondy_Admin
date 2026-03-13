@@ -1,7 +1,7 @@
 // src/App.jsx
 
-import React, { Suspense, lazy } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { lazy, Suspense } from "react";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
 import LayoutWrapper from "./Component/Layout/LayoutWrapper";
@@ -14,6 +14,7 @@ const Dashboard = lazy(() => import("./Pages/Dashboard/Dashboard"));
 const Home = lazy(() => import("./Pages/Home/Home"));
 const Customers = lazy(() => import("./Pages/User/Customers"));
 const Organizers = lazy(() => import("./Pages/User/Organizers"));
+const UserDetailPage = lazy(() => import("./Pages/User/UserDetailPage"));
 const VerificationRequests = lazy(() => import("./Pages/Verification/VerificationRequests"));
 const Categories = lazy(() => import("./Pages/Category/Categories"));
 const Events = lazy(() => import("./Pages/Events/Events"));
@@ -47,6 +48,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/customers" element={<Customers />} />
               <Route path="/organizers" element={<Organizers />} />
+              <Route path="/users/:userId" element={<UserDetailPage />} />
               <Route path="/verification-requests" element={<VerificationRequests />} />
               <Route path="/categories" element={<Categories />} />
               <Route path="/events" element={<Events />} />

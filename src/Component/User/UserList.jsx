@@ -3,10 +3,12 @@ import DataTable from "../Table/DataTable";
 import { FiEdit2 } from "react-icons/fi";
 import { BsTrash2 } from "react-icons/bs";
 import { AiOutlineBarChart } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 import axiosClient from "../../api/authAxiosClient";
 import OrganizerStatsModal from "./OrganizerStatsModal";
 
 const UserList = ({ roleId, title }) => {
+    const navigate = useNavigate();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [total, setTotal] = useState(0);
@@ -127,6 +129,12 @@ const UserList = ({ roleId, title }) => {
                     {/* <button onClick={() => console.log("Edit", row)}>
                         <FiEdit2 className="w-4 h-4 text-blue-500 hover:text-blue-700" />
                     </button> */}
+                    <button
+                        onClick={() => navigate(`/users/${row._id}`)}
+                        className="px-3 py-1 bg-indigo-600 text-white text-xs rounded hover:bg-indigo-700 transition whitespace-nowrap"
+                    >
+                        View Details
+                    </button>
                     <button onClick={() => handleDelete(row)}>
                         <BsTrash2 className="w-4 h-4 text-red-500 hover:text-red-700" />
                     </button>
