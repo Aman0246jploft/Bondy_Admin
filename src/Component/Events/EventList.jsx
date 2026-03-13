@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import DataTable from "../Table/DataTable";
 import authAxiosClient from "../../api/authAxiosClient";
 import { format } from "date-fns";
 
 const EventList = () => {
+    const navigate = useNavigate();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [total, setTotal] = useState(0);
@@ -121,7 +123,19 @@ const EventList = () => {
                     </span>
                 )
             }
-        }
+        },
+        {
+            key: "actions",
+            label: "Actions",
+            render: (_val, row) => (
+                <button
+                    onClick={() => navigate(`/events/${row._id}`)}
+                    className="px-3 py-1 bg-indigo-600 text-white text-xs rounded hover:bg-indigo-700 transition whitespace-nowrap"
+                >
+                    View Details
+                </button>
+            ),
+        },
     ];
 
     return (

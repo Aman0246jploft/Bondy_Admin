@@ -17,7 +17,9 @@ const Organizers = lazy(() => import("./Pages/User/Organizers"));
 const VerificationRequests = lazy(() => import("./Pages/Verification/VerificationRequests"));
 const Categories = lazy(() => import("./Pages/Category/Categories"));
 const Events = lazy(() => import("./Pages/Events/Events"));
+const EventDetailPage = lazy(() => import("./Pages/Events/EventDetailPage"));
 const Courses = lazy(() => import("./Pages/Courses/Courses"));
+const CourseDetailPage = lazy(() => import("./Pages/Courses/CourseDetailPage"));
 const Taxes = lazy(() => import("./Pages/Settings/Taxes"));
 const PromoCodes = lazy(() => import("./Pages/Settings/PromoCodes"));
 const PromotionPackages = lazy(() => import("./Pages/Settings/PromotionPackages"));
@@ -48,7 +50,9 @@ function App() {
               <Route path="/verification-requests" element={<VerificationRequests />} />
               <Route path="/categories" element={<Categories />} />
               <Route path="/events" element={<Events />} />
+              <Route path="/events/:eventId" element={<EventDetailPage />} />
               <Route path="/courses" element={<Courses />} />
+              <Route path="/courses/:courseId" element={<CourseDetailPage />} />
               <Route path="/taxes" element={<Taxes />} />
               <Route path="/promo-codes" element={<PromoCodes />} />
               <Route path="/promotion-packages" element={<PromotionPackages />} />
