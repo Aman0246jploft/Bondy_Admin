@@ -11,6 +11,11 @@ const financeApi = {
     return res.data;
   },
 
+  getAllTransactions: async (params = {}) => {
+    const res = await authAxiosClient.get("/payout/all-transactions", { params });
+    return res.data;
+  },
+
   approvePayout: async (payoutId, transactionId, adminNote) => {
     const res = await authAxiosClient.post("/payout/approve-request", {
       payoutId,

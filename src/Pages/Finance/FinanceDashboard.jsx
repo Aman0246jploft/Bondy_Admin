@@ -4,7 +4,7 @@ import financeApi from "../../api/financeApi";
 import { toast } from "react-toastify";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-const fmt = (n) => `₮${Number(n || 0).toLocaleString()}`;
+const fmt = (n) => `$${Number(n || 0).toLocaleString()}`;
 const fmtDate = (d) =>
   d
     ? new Date(d).toLocaleDateString("en-GB", {
@@ -207,6 +207,13 @@ const FinanceDashboard = () => {
   const [total, setTotal] = useState(0);
   const LIMIT = 10;
 
+  const [transactions, setTransactions] = useState([]);
+  const [transactionsLoading, setTransactionsLoading] = useState(true);
+  const [txnSearch, setTxnSearch] = useState("");
+  const [txnPage, setTxnPage] = useState(1);
+  const [txnTotalPages, setTxnTotalPages] = useState(1);
+  const [txnTotal, setTxnTotal] = useState(0);
+
   const [approveTarget, setApproveTarget] = useState(null);
   const [rejectTarget, setRejectTarget] = useState(null);
 
@@ -265,8 +272,30 @@ const FinanceDashboard = () => {
     } catch (_) { }
   }, []);
 
+  // ── Fetch Transactions ──
+  const fetchTransactions = useCallback(async () => {
+    setTransactionsLoading(true);
+    try {
+      const res = await financeApi.getAllTransactions({
+        page: txnPage,
+        limit: LIMIT,
+        search: txnSearch || undefined,
+      });
+      if (res?.status) {
+        setTransactions(res.data.transactions || []);
+        setTxnTotalPages(res.data.totalPages || 1);
+        setTxnTotal(res.data.total || 0);
+      }
+    } catch (err) {
+      toast.error("Failed to load transactions.");
+    } finally {
+      setTransactionsLoading(false);
+    }
+  }, [txnPage, txnSearch]);
+
   useEffect(() => { fetchStats(); fetchCommission(); }, [fetchStats, fetchCommission]);
   useEffect(() => { fetchPayouts(); }, [fetchPayouts]);
+  useEffect(() => { fetchTransactions(); }, [fetchTransactions]);
 
   const handleCommissionSave = async () => {
     const val = Number(commissionVal);
@@ -368,27 +397,48 @@ const FinanceDashboard = () => {
         </div>
       ) : null}
 
-      {/* ── Recent Transactions ── */}
-      {stats?.recentTransactions?.length > 0 && (
-        <div className="bg-white rounded-xl shadow overflow-hidden">
-          <div className="px-5 py-4 border-b">
-            <h2 className="font-semibold text-gray-700">Recent Transactions (Last 10 Paid)</h2>
+      {/* ── Transactions ── */}
+      <div className="bg-white rounded-xl shadow overflow-hidden">
+        <div className="px-5 py-4 border-b flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <h2 className="font-semibold text-gray-700">Paid Transactions</h2>
+          <div className="flex gap-3 flex-wrap">
+            <input
+              type="text"
+              placeholder="Search ID, name, or course..."
+              className="border rounded-lg px-3 py-2 text-sm w-56 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              value={txnSearch}
+              onChange={(e) => { setTxnSearch(e.target.value); setTxnPage(1); }}
+            />
           </div>
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-sm">
-              <thead className="bg-gray-50">
+        </div>
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-sm">
+            <thead className="bg-gray-50">
+              <tr>
+                {["Booking ID", "Customer", "Item", "Type", "Total", "Commission", "Org. Earning", "Date"].map((h) => (
+                  <th key={h} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {transactionsLoading ? (
                 <tr>
-                  {["Booking ID", "Customer", "Item", "Type", "Total", "Commission", "Org. Earning", "Date"].map((h) => (
-                    <th key={h} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {h}
-                    </th>
-                  ))}
+                  <td colSpan={8} className="text-center py-10 text-gray-400">
+                    Loading transactions...
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {stats.recentTransactions.map((t) => (
+              ) : transactions.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="text-center py-10 text-gray-400">
+                    No transactions found.
+                  </td>
+                </tr>
+              ) : (
+                transactions.map((t) => (
                   <tr key={t._id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 font-mono text-xs text-gray-500">#{t.bookingId?.slice(-8).toUpperCase()}</td>
+                    <td className="px-4 py-3 font-mono text-xs text-gray-500">#{t.bookingId?.slice(-8).toUpperCase() || t._id?.slice(-8).toUpperCase()}</td>
                     <td className="px-4 py-3">
                       <span className="font-medium text-gray-800">{t.userId?.firstName} {t.userId?.lastName}</span>
                       <div className="text-xs text-gray-400">{t.userId?.email}</div>
@@ -406,12 +456,37 @@ const FinanceDashboard = () => {
                     <td className="px-4 py-3 text-green-600">{fmt(t.organizerEarning)}</td>
                     <td className="px-4 py-3 text-gray-500">{fmtDate(t.createdAt)}</td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+        {/* Pagination */}
+        <div className="px-5 py-4 border-t flex items-center justify-between">
+          <span className="text-sm text-gray-500">
+            Total: {txnTotal} transaction{txnTotal !== 1 ? "s" : ""}
+          </span>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setTxnPage((p) => Math.max(1, p - 1))}
+              disabled={txnPage === 1}
+              className="px-3 py-1 border rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50"
+            >
+              ← Prev
+            </button>
+            <span className="px-3 py-1 text-sm text-gray-600">
+              {txnPage} / {txnTotalPages}
+            </span>
+            <button
+              onClick={() => setTxnPage((p) => Math.min(txnTotalPages, p + 1))}
+              disabled={txnPage >= txnTotalPages}
+              className="px-3 py-1 border rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50"
+            >
+              Next →
+            </button>
           </div>
         </div>
-      )}
+      </div>
 
       {/* ── Payout Requests ── */}
       <div className="bg-white rounded-xl shadow overflow-hidden">
