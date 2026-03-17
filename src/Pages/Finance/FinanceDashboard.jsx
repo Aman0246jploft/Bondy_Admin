@@ -223,6 +223,12 @@ const FinanceDashboard = () => {
   const [commissionVal, setCommissionVal] = useState("");
   const [commissionSaving, setCommissionSaving] = useState(false);
 
+  // Min Payout setting
+  const [minPayout, setMinPayout] = useState(null);
+  const [minPayoutEdit, setMinPayoutEdit] = useState(false);
+  const [minPayoutVal, setMinPayoutVal] = useState("");
+  const [minPayoutSaving, setMinPayoutSaving] = useState(false);
+
   // ── Fetch Stats ──
   const fetchStats = useCallback(async () => {
     setStatsLoading(true);
@@ -258,15 +264,26 @@ const FinanceDashboard = () => {
     }
   }, [statusFilter, page, search]);
 
-  // ── Fetch Commission Setting ──
-  const fetchCommission = useCallback(async () => {
+  const fetchGlobalSettings = useCallback(async () => {
     try {
       const res = await financeApi.getGlobalSettings();
       if (res?.status) {
-        const cfg = res.data?.settings?.find?.((s) => s.key === "COMMISSION_CONFIG");
-        if (cfg) {
-          setCommission(cfg.value);
-          setCommissionVal(cfg.value);
+        const settings = res.data?.settings || [];
+        
+        const commCfg = settings.find((s) => s.key === "COMMISSION_CONFIG");
+        if (commCfg) {
+          setCommission(commCfg.value);
+          setCommissionVal(commCfg.value);
+        }
+
+        const minPayCfg = settings.find((s) => s.key === "MIN_PAYOUT_CONFIG");
+        if (minPayCfg) {
+          setMinPayout(minPayCfg.value);
+          setMinPayoutVal(minPayCfg.value);
+        } else {
+          // Default if not set in DB
+          setMinPayout("1000");
+          setMinPayoutVal("1000");
         }
       }
     } catch (_) { }
@@ -293,7 +310,7 @@ const FinanceDashboard = () => {
     }
   }, [txnPage, txnSearch]);
 
-  useEffect(() => { fetchStats(); fetchCommission(); }, [fetchStats, fetchCommission]);
+  useEffect(() => { fetchStats(); fetchGlobalSettings(); }, [fetchStats, fetchGlobalSettings]);
   useEffect(() => { fetchPayouts(); }, [fetchPayouts]);
   useEffect(() => { fetchTransactions(); }, [fetchTransactions]);
 
@@ -316,6 +333,25 @@ const FinanceDashboard = () => {
     }
   };
 
+  const handleMinPayoutSave = async () => {
+    const val = Number(minPayoutVal);
+    if (isNaN(val) || val < 0) {
+      toast.error("Minimum payout must be a positive number.");
+      return;
+    }
+    setMinPayoutSaving(true);
+    try {
+      await financeApi.updateGlobalSetting("MIN_PAYOUT_CONFIG", String(val));
+      setMinPayout(String(val));
+      setMinPayoutEdit(false);
+      toast.success("Minimum payout updated.");
+    } catch (err) {
+      toast.error(err?.message || "Failed to update minimum payout.");
+    } finally {
+      setMinPayoutSaving(false);
+    }
+  };
+
   const onActionDone = () => {
     setApproveTarget(null);
     setRejectTarget(null);
@@ -335,47 +371,92 @@ const FinanceDashboard = () => {
         </div>
 
         {/* Commission inline editor */}
-        <div className="flex items-center gap-3 bg-white rounded-xl shadow px-4 py-3">
-          <span className="text-sm text-gray-500">Platform Commission:</span>
-          {commissionEdit ? (
-            <>
-              <input
-                type="number"
-                min={0}
-                max={100}
-                step={0.5}
-                className="w-20 border rounded px-2 py-1 text-sm"
-                value={commissionVal}
-                onChange={(e) => setCommissionVal(e.target.value)}
-              />
-              <span className="text-sm text-gray-500">%</span>
-              <button
-                onClick={handleCommissionSave}
-                disabled={commissionSaving}
-                className="bg-blue-500 text-white text-xs px-3 py-1 rounded hover:bg-blue-600 disabled:opacity-50"
-              >
-                {commissionSaving ? "Saving..." : "Save"}
-              </button>
-              <button
-                onClick={() => { setCommissionEdit(false); setCommissionVal(commission); }}
-                className="text-gray-400 text-xs hover:text-gray-600"
-              >
-                Cancel
-              </button>
-            </>
-          ) : (
-            <>
-              <span className="text-lg font-bold text-blue-600">
-                {commission != null ? `${commission}%` : "—"}
-              </span>
-              <button
-                onClick={() => setCommissionEdit(true)}
-                className="text-xs text-blue-500 hover:underline"
-              >
-                Edit
-              </button>
-            </>
-          )}
+        <div className="flex flex-wrap items-center gap-4">
+          {/* Commission inline editor */}
+          <div className="flex items-center gap-3 bg-white rounded-xl shadow px-4 py-3">
+            <span className="text-sm text-gray-500">Commission:</span>
+            {commissionEdit ? (
+              <>
+                <input
+                  type="number"
+                  min={0}
+                  max={100}
+                  step={0.5}
+                  className="w-16 border rounded px-2 py-1 text-sm font-semibold"
+                  value={commissionVal}
+                  onChange={(e) => setCommissionVal(e.target.value)}
+                />
+                <span className="text-sm text-gray-500">%</span>
+                <button
+                  onClick={handleCommissionSave}
+                  disabled={commissionSaving}
+                  className="bg-blue-500 text-white text-xs px-2 py-1 rounded hover:bg-blue-600 disabled:opacity-50"
+                >
+                  {commissionSaving ? "..." : "Save"}
+                </button>
+                <button
+                  onClick={() => { setCommissionEdit(false); setCommissionVal(commission); }}
+                  className="text-gray-400 text-xs hover:text-gray-600 underline"
+                >
+                  Cancel
+                </button>
+              </>
+            ) : (
+              <>
+                <span className="text-lg font-bold text-blue-600">
+                  {commission != null ? `${commission}%` : "—"}
+                </span>
+                <button
+                  onClick={() => setCommissionEdit(true)}
+                  className="text-xs text-blue-500 hover:underline"
+                >
+                  Edit
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* Min Payout inline editor */}
+          <div className="flex items-center gap-3 bg-white rounded-xl shadow px-4 py-3">
+            <span className="text-sm text-gray-500">Min Payout:</span>
+            {minPayoutEdit ? (
+              <>
+                <span className="text-sm text-gray-500">₮</span>
+                <input
+                  type="number"
+                  min={0}
+                  className="w-24 border rounded px-2 py-1 text-sm font-semibold"
+                  value={minPayoutVal}
+                  onChange={(e) => setMinPayoutVal(e.target.value)}
+                />
+                <button
+                  onClick={handleMinPayoutSave}
+                  disabled={minPayoutSaving}
+                  className="bg-indigo-500 text-white text-xs px-2 py-1 rounded hover:bg-indigo-600 disabled:opacity-50"
+                >
+                  {minPayoutSaving ? "..." : "Save"}
+                </button>
+                <button
+                  onClick={() => { setMinPayoutEdit(false); setMinPayoutVal(minPayout); }}
+                  className="text-gray-400 text-xs hover:text-gray-600 underline"
+                >
+                  Cancel
+                </button>
+              </>
+            ) : (
+              <>
+                <span className="text-lg font-bold text-indigo-600">
+                  ₮{Number(minPayout || 0).toLocaleString()}
+                </span>
+                <button
+                  onClick={() => setMinPayoutEdit(true)}
+                  className="text-xs text-indigo-500 hover:underline"
+                >
+                  Edit
+                </button>
+              </>
+            )}
+          </div>
         </div>
       </div>
 

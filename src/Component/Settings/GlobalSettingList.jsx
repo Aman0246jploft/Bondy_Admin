@@ -25,7 +25,8 @@ const GlobalSettingList = ({ title }) => {
                 const filteredSettings = allSettings.filter(item =>
                     item.key === 'COMMISSION_CONFIG' ||
                     item.key === 'FEATURE_EVENT_FEE' ||
-                    item.key === 'REFERRAL_REWARD_AMOUNT'
+                    item.key === 'REFERRAL_REWARD_AMOUNT' ||
+                    item.key === 'MIN_PAYOUT_CONFIG'
                 );
 
                 console.log("filteredSettings1111", filteredSettings);
