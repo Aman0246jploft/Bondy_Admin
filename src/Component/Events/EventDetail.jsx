@@ -125,8 +125,8 @@ const EventDetail = () => {
 
     const tabs = [
         { id: "overview", label: "📋 Overview" },
-        { id: "reviews", label: `⭐ Reviews (${reviews.length})` },
-        { id: "comments", label: `💬 Comments (${comments.length})` },
+        // { id: "reviews", label: `⭐ Reviews (${reviews.length})` },
+        // { id: "comments", label: `💬 Comments (${comments.length})` },
     ];
 
     return (
