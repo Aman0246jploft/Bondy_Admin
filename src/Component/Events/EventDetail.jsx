@@ -140,15 +140,7 @@ const EventDetail = () => {
                     ← Back to Events
                 </button>
                 <div className="w-px h-5 bg-gray-300" />
-                <h1 className="text-lg font-bold text-gray-800 truncate flex-1">{event.eventTitle}</h1>
-                <div className="flex items-center gap-2">
-                    {event.isFeatured && (
-                        <span className="px-2 py-0.5 bg-amber-100 text-amber-700 border border-amber-300 text-xs font-semibold rounded-full">
-                            ⭐ Featured
-                        </span>
-                    )}
-                    <StatusBadge status={event.status} />
-                </div>
+
             </div>
 
             <div className="max-w-7xl mx-auto px-6 py-6 space-y-6">
@@ -203,6 +195,23 @@ const EventDetail = () => {
                                 </p>
                             </div>
                         </div>
+
+
+                        <h1 className="text-lg font-bold text-gray-800 flex-1">{event.eventTitle}</h1>
+                        <div className="flex items-center gap-2">
+                            {event.isFeatured && (
+                                <span className="px-2 py-0.5 bg-amber-100 text-amber-700 border border-amber-300 text-xs font-semibold rounded-full">
+                                    ⭐ Featured
+                                </span>
+                            )}
+                            <StatusBadge status={event.status} />
+                        </div>
+
+
+
+
+
+
 
                         {/* Short description */}
                         {event.shortdesc && (
