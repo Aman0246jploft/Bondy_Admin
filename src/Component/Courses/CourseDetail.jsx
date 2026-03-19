@@ -141,21 +141,13 @@ const CourseDetail = () => {
                 >
                     ← Back to Courses
                 </button>
-                <div className="w-px h-5 bg-gray-300" />
-                <h1 className="text-lg font-bold text-gray-800 truncate flex-1">{course.courseTitle}</h1>
-                <div className="flex items-center gap-2">
-                    {course.isFeatured && (
-                        <span className="px-2 py-0.5 bg-amber-100 text-amber-700 border border-amber-300 text-xs font-semibold rounded-full">
-                            ⭐ Featured
-                        </span>
-                    )}
-                    <StatusBadge status={course.sessionStatus} />
-                </div>
+
             </div>
 
             <div className="max-w-7xl mx-auto px-6 py-6 space-y-6">
                 {/* ── Hero Section ── */}
                 <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
                     {/* Poster */}
                     <div className="lg:col-span-2 space-y-2">
                         {allImages.length > 0 ? (
@@ -206,6 +198,18 @@ const CourseDetail = () => {
                             </div>
                         </div>
 
+
+                        <div className="w-px h-5 bg-gray-300" />
+                        <h1 className="text-lg font-bold text-gray-800 truncate flex-1">{course.courseTitle}</h1>
+                        <div className="flex items-center gap-2">
+                            {course.isFeatured && (
+                                <span className="px-2 py-0.5 bg-amber-100 text-amber-700 border border-amber-300 text-xs font-semibold rounded-full">
+                                    ⭐ Featured
+                                </span>
+                            )}
+                            <StatusBadge status={course.sessionStatus} />
+                        </div>
+
                         {/* Short description */}
                         {course.shortdesc && (
                             <p className="text-gray-600 text-sm leading-relaxed">{course.shortdesc}</p>
@@ -253,11 +257,10 @@ const CourseDetail = () => {
                             <button
                                 key={t.id}
                                 onClick={() => setActiveTab(t.id)}
-                                className={`px-6 py-3 text-sm font-semibold transition ${
-                                    activeTab === t.id
-                                        ? "bg-white border-b-2 border-blue-500 text-blue-600"
-                                        : "text-gray-500 hover:text-gray-700"
-                                }`}
+                                className={`px-6 py-3 text-sm font-semibold transition ${activeTab === t.id
+                                    ? "bg-white border-b-2 border-blue-500 text-blue-600"
+                                    : "text-gray-500 hover:text-gray-700"
+                                    }`}
                             >
                                 {t.label}
                             </button>
@@ -267,7 +270,7 @@ const CourseDetail = () => {
                     {/* ── Overview Tab ── */}
                     {activeTab === "overview" && (
                         <div className="p-6 space-y-6">
-                            
+
                             {/* Venue Details */}
                             {venue.address && (
                                 <div>
@@ -286,8 +289,8 @@ const CourseDetail = () => {
                                 </div>
                             )}
 
-                             {/* Promo Info */}
-                             {course.activePromotionPackage && (
+                            {/* Promo Info */}
+                            {course.activePromotionPackage && (
                                 <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
                                     <h3 className="font-semibold text-purple-700 mb-1">Active Promotion Package</h3>
                                     <p className="text-sm text-purple-800">Package ID: <span className="font-mono">{course.activePromotionPackage}</span></p>
