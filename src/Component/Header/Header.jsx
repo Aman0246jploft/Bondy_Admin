@@ -200,7 +200,7 @@ const Header = ({ toggleSidebar }) => {
           {/* Title */}
           <div>
             <h1
-              className="text-lg md:text-xl font-bold"
+              className="text-lg md:text-xl ml-4 font-bold"
               style={{ color: theme.colors.textPrimary }}
             >
               Welcome back!

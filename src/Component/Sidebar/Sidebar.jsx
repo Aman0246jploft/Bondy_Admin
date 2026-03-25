@@ -42,7 +42,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     { name: "FAQs", href: "/faqs", icon: AiOutlineQuestionCircle },
     { name: "Support Tickets", href: "/support-tickets", icon: AiOutlineCustomerService },
     { name: "Contact Messages", href: "/contacts", icon: AiOutlineMail },
-    { name: "Reports", href: "/#", icon: AiOutlineFileText },
+    // { name: "Reports", href: "/#", icon: AiOutlineFileText },
     { name: "Notifications", href: "/#", icon: AiOutlineBell },
   ];
 
@@ -62,7 +62,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           color: theme.colors.textPrimary,
         }}
         className={clsx(
-          "fixed left-0 top-0 h-full border-r z-40 transition-all duration-300 ease-in-out",
+          "fixed left-0 top-0 h-full border-r z-40 transition-all duration-300 ease-in-out flex flex-col overflow-hidden",
           // Desktop behavior (unchanged)
           "md:translate-x-0",
           isOpen ? "md:w-60 " : "md:w-16",
@@ -130,7 +130,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         </div>
 
         {/* Navigation Menu */}
-        <nav className="flex-1 py-6">
+        <nav className="flex-1 py-6 overflow-y-auto overflow-x-hidden">
           <ul className="space-y-2 px-3">
             {menuItems.map((item) => {
               const Icon = item.icon;
