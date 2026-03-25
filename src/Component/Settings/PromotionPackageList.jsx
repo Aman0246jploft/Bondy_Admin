@@ -51,7 +51,7 @@ const PromotionPackageList = ({ title }) => {
         try {
             // Convert placements string to array
             const placementsArray = formData.placements.split(',').map(p => p.trim()).filter(p => p);
-            
+
             const payload = {
                 ...formData,
                 placements: placementsArray
@@ -124,10 +124,10 @@ const PromotionPackageList = ({ title }) => {
 
     const columns = [
         { key: "name", label: "Name" },
-        { 
-            key: "packageType", 
+        {
+            key: "packageType",
             label: "Type",
-            render: (val) => val === "COURSE" ? "Course" : "Event" 
+            render: (val) => val === "COURSE" ? "Course" : "Event"
         },
         {
             key: "durationInDays",
@@ -227,8 +227,8 @@ const PromotionPackageList = ({ title }) => {
                                     value={formData.packageType}
                                     onChange={(e) => {
                                         const type = e.target.value;
-                                        setFormData(prev => ({ 
-                                            ...prev, 
+                                        setFormData(prev => ({
+                                            ...prev,
                                             packageType: type,
                                             placements: type === "COURSE" ? "" : prev.placements
                                         }));
@@ -238,7 +238,7 @@ const PromotionPackageList = ({ title }) => {
                                     <option value="COURSE">Course</option>
                                 </select>
                             </div>
-                            
+
                             <div>
                                 <label className="block text-sm font-medium">Duration (Days)</label>
                                 <input
@@ -274,10 +274,10 @@ const PromotionPackageList = ({ title }) => {
                                         setFormData(prev => ({ ...prev, placements: selected.join(', ') }));
                                     }}
                                 >
-                                    <option value="Discover Feed">Discover Feed</option>
-                                    <option value="Homepage">Homepage</option>
-                                    <option value="Map Highlight">Map Highlight</option>
-                                    <option value="Category Page">Category Page</option>
+                                    {/* <option value="Discover Feed">Discover Feed</option> */}
+                                    <option value="homePage">Homepage</option>
+                                    <option value="explorePage">Explore Page</option>
+                                    {/* <option value="Category Page">Category Page</option> */}
                                 </select>
                                 {formData.packageType === "COURSE" ? (
                                     <span className="text-xs text-gray-500">Placements are not applicable for Course packages.</span>
@@ -296,7 +296,7 @@ const PromotionPackageList = ({ title }) => {
                                     <span className="ml-2 text-sm">Is Active</span>
                                 </div>
                             </div>
-                            
+
                             <div className="col-span-2 flex justify-end gap-2 pt-4">
                                 <button
                                     type="button"
