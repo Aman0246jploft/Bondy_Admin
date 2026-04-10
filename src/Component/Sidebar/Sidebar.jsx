@@ -43,7 +43,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     { name: "Support Tickets", href: "/support-tickets", icon: AiOutlineCustomerService },
     { name: "Contact Messages", href: "/contacts", icon: AiOutlineMail },
     { name: "Update Signups", href: "/stay-updated", icon: AiOutlineMail },
-    // { name: "Reports", href: "/#", icon: AiOutlineFileText },
+    { name: "Reports", href: "/reports", icon: AiOutlineFileText },
     { name: "Notifications", href: "/#", icon: AiOutlineBell },
   ];
 

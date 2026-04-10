@@ -32,6 +32,7 @@ const SupportTickets = lazy(() => import("./Pages/SupportTickets/SupportTickets"
 const ContactList = lazy(() => import("./Pages/Contact/ContactList"));
 const StayUpdatedList = lazy(() => import("./Pages/StayUpdated/StayUpdatedList"));
 const FinanceDashboard = lazy(() => import("./Pages/Finance/FinanceDashboard"));
+const Reports = lazy(() => import("./Pages/Report/Reports"));
 
 function App() {
   return (
@@ -68,6 +69,7 @@ function App() {
               <Route path="/contacts" element={<ContactList />} />
               <Route path="/stay-updated" element={<StayUpdatedList />} />
               <Route path="/finance" element={<FinanceDashboard />} />
+              <Route path="/reports" element={<Reports />} />
               {/* <Route path="/sellProduct" element={<SellProduct />} /> */}
 
             </Route>
