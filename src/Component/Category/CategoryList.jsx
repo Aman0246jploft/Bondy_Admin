@@ -17,6 +17,7 @@ const CategoryList = ({ title }) => {
     const [editingCategory, setEditingCategory] = useState(null);
     const [formData, setFormData] = useState({
         name: "",
+        name_thi: "",
         type: "event",
         image: ""
     });
@@ -92,7 +93,7 @@ const CategoryList = ({ title }) => {
             if (response.data?.status) {
                 setIsModalOpen(false);
                 setEditingCategory(null);
-                setFormData({ name: "", type: "event", image: "" });
+                setFormData({ name: "", name_thi: "", type: "event", image: "" });
                 fetchCategories();
             }
         } catch (error) {
@@ -121,12 +122,13 @@ const CategoryList = ({ title }) => {
             const relativePath = category.image ? category.image.split('/uploads/').pop() : "";
             setFormData({
                 name: category.name,
+                name_thi: category.name_thi || "",
                 type: category.type,
                 image: relativePath ? `uploads/${relativePath}` : ""
             });
         } else {
             setEditingCategory(null);
-            setFormData({ name: "", type: "event", image: "" });
+            setFormData({ name: "", name_thi: "", type: "event", image: "" });
         }
         setIsModalOpen(true);
     };
@@ -137,7 +139,8 @@ const CategoryList = ({ title }) => {
             label: "Icon",
             render: (val) => val ? <img src={val} alt="icon" className="w-10 h-10 object-cover rounded" /> : <div className="w-10 h-10 bg-gray-200 rounded flex items-center justify-center text-xs">No Icon</div>
         },
-        { key: "name", label: "Name" },
+        { key: "name", label: "Name (EN)" },
+        { key: "name_thi", label: "Name (THI)" },
         {
             key: "type",
             label: "Type",
@@ -229,6 +232,18 @@ const CategoryList = ({ title }) => {
                                     onChange={(e) => {
                                         const val = e.target.value;
                                         setFormData(prev => ({ ...prev, name: val }));
+                                    }}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium">Name (Thai)</label>
+                                <input
+                                    type="text"
+                                    className="w-full border p-2 rounded"
+                                    value={formData.name_thi}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        setFormData(prev => ({ ...prev, name_thi: val }));
                                     }}
                                 />
                             </div>
