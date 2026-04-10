@@ -230,7 +230,7 @@ const PromotionPackageList = ({ title }) => {
                                         setFormData(prev => ({
                                             ...prev,
                                             packageType: type,
-                                            placements: type === "COURSE" ? "" : prev.placements
+                                            placements: type === "COURSE" ? "homePage" : ""
                                         }));
                                     }}
                                 >
@@ -265,25 +265,24 @@ const PromotionPackageList = ({ title }) => {
                                 <label className="block text-sm font-medium">Placements (Select multiple)</label>
                                 <select
                                     multiple
-                                    required={formData.packageType === "EVENT"}
-                                    disabled={formData.packageType === "COURSE"}
-                                    className={`w-full border p-2 rounded h-32 ${formData.packageType === "COURSE" ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+                                    required
+                                    className="w-full border p-2 rounded h-32"
                                     value={formData.placements ? formData.placements.split(',').map(p => p.trim()).filter(Boolean) : []}
                                     onChange={(e) => {
                                         const selected = Array.from(e.target.selectedOptions, option => option.value);
                                         setFormData(prev => ({ ...prev, placements: selected.join(', ') }));
                                     }}
                                 >
-                                    {/* <option value="Discover Feed">Discover Feed</option> */}
-                                    <option value="homePage">Homepage</option>
-                                    <option value="explorePage">Explore Page</option>
-                                    {/* <option value="Category Page">Category Page</option> */}
+                                    {formData.packageType === "COURSE" ? (
+                                        <option value="homePage">Home page</option>
+                                    ) : (
+                                        <>
+                                            <option value="homePage">Homepage</option>
+                                            <option value="explorePage">Explore Page</option>
+                                        </>
+                                    )}
                                 </select>
-                                {formData.packageType === "COURSE" ? (
-                                    <span className="text-xs text-gray-500">Placements are not applicable for Course packages.</span>
-                                ) : (
-                                    <span className="text-xs text-gray-500">Hold Ctrl (Windows) or Cmd (Mac) to select multiple.</span>
-                                )}
+                                <span className="text-xs text-gray-500">Hold Ctrl (Windows) or Cmd (Mac) to select multiple.</span>
                             </div>
                             <div>
                                 <label className="block text-sm font-medium">Active</label>
