@@ -85,19 +85,19 @@ const VerificationRequests = () => {
                     {row.documents && row.documents.map((doc, i) => (
                         <div key={i} className="flex items-center gap-2 border-b pb-2">
                             <a
-                                href={socketURL + '/' + doc.file}
+                                href={doc.file?.startsWith('http') ? doc.file : `${socketURL}/${doc.file}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-blue-500 hover:underline text-sm flex-1"
                             >
                                 {doc.name || "View Doc"}
                             </a>
-                            <span className={`px-2 py-1 rounded text-xs ${doc.status === 'approved' ? 'bg-green-100 text-green-800' :
+                            {/* <span className={`px-2 py-1 rounded text-xs ${doc.status === 'approved' ? 'bg-green-100 text-green-800' :
                                 doc.status === 'rejected' ? 'bg-red-100 text-red-800' :
                                     'bg-yellow-100 text-yellow-800'
                                 }`}>
                                 {doc.status}
-                            </span>
+                            </span> */}
                             {doc.status === 'pending' && (
                                 <div className="flex gap-1">
                                     <button
@@ -120,23 +120,23 @@ const VerificationRequests = () => {
                 </div>
             )
         },
-        {
-            key: "organizerVerificationStatus",
-            label: "Status",
-            render: (val) => (
-                <span className={`px-2 py-1 rounded text-xs font-bold ${val === 'approved' ? 'bg-green-100 text-green-800' :
-                    val === 'rejected' ? 'bg-red-100 text-red-800' :
-                        'bg-yellow-100 text-yellow-800'
-                    }`}>
-                    {val?.toUpperCase()}
-                </span>
-            )
-        },
-        {
-            key: "actions",
-            label: "Actions",
-            render: () => <span className="text-gray-400">See documents</span>
-        }
+        // {
+        //     key: "organizerVerificationStatus",
+        //     label: "Status",
+        //     render: (val) => (
+        //         <span className={`px-2 py-1 rounded text-xs font-bold ${val === 'approved' ? 'bg-green-100 text-green-800' :
+        //             val === 'rejected' ? 'bg-red-100 text-red-800' :
+        //                 'bg-yellow-100 text-yellow-800'
+        //             }`}>
+        //             {val?.toUpperCase()}
+        //         </span>
+        //     )
+        // },
+        // {
+        //     key: "actions",
+        //     label: "Actions",
+        //     render: () => <span className="text-gray-400">See documents</span>
+        // }
     ];
 
     return (
@@ -154,7 +154,7 @@ const VerificationRequests = () => {
                     <option value="pending">Pending</option>
                     <option value="approved">Approved</option>
                     <option value="rejected">Rejected</option>
-                    <option value="all">All</option>
+                    {/* <option value="all">All</option> */}
                 </select>
 
                 <input
