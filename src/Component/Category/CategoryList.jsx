@@ -236,7 +236,7 @@ const CategoryList = ({ title }) => {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium">Name (Thai)</label>
+                                <label className="block text-sm font-medium">Name in Magnolian</label>
                                 <input
                                     type="text"
                                     className="w-full border p-2 rounded"
