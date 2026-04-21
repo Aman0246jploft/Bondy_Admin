@@ -76,7 +76,7 @@ const VerificationRequests = () => {
         },
         { key: "email", label: "Email" },
         { key: "contactNumber", label: "Contact" },
-        { key: "businessType", label: "Business Type" },
+        // { key: "businessType", label: "Business Type" },
         {
             key: "documents",
             label: "Documents",
