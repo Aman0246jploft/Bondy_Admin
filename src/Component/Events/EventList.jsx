@@ -14,6 +14,45 @@ const EventList = () => {
     const [search, setSearch] = useState("");
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("");
+    const [toggleLoadingMap, setToggleLoadingMap] = useState({});
+
+    const getEventStatus = useCallback((event) => {
+        const now = new Date();
+        const startDate = event?.startDate ? new Date(event.startDate) : null;
+        const endDate = event?.endDate ? new Date(event.endDate) : null;
+
+        if (!startDate || !endDate || Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) {
+            return event?.status || "N/A";
+        }
+
+        if (now < startDate) return "Upcoming";
+        if (now <= endDate) return "Live";
+        return "Past";
+    }, []);
+
+    const toggleEventSlider = useCallback(async (eventId, checked) => {
+        setToggleLoadingMap((prev) => ({ ...prev, [eventId]: true }));
+
+        let previousRows = [];
+        setData((prev) => {
+            previousRows = prev;
+            return prev.map((item) =>
+                item._id === eventId ? { ...item, addToSlider: checked } : item
+            );
+        });
+
+        try {
+            await authAxiosClient.post("/event/admin/slider-toggle", {
+                eventId,
+                addToSlider: checked,
+            });
+        } catch (error) {
+            console.error("Error toggling event slider:", error);
+            setData(previousRows);
+        } finally {
+            setToggleLoadingMap((prev) => ({ ...prev, [eventId]: false }));
+        }
+    }, []);
 
     // Fetch Categories for Filter
     useEffect(() => {
@@ -21,8 +60,6 @@ const EventList = () => {
             try {
                 const response = await authAxiosClient.get("/category/list?type=event&limit=100");
                 if (response.data?.status) {
-                    // Check structure based on CategoryList logic, it returns response.data.data.categories
-                    setData(prev => prev); // dummy state update
                     if (response.data.data.categories) {
                         setCategories(response.data.data.categories);
                     }
@@ -111,15 +148,36 @@ const EventList = () => {
                 </div>
             )
         },
-        // We can add logic to show if it's past or upcoming based on startDate
+
+        {
+            key:"Add-to-slider",
+            label:"Add to slider",
+            render: (_val, row) => (
+                <input
+                    type="checkbox"
+                    checked={Boolean(row.addToSlider)}
+                    disabled={Boolean(toggleLoadingMap[row._id])}
+                    onChange={(e) => toggleEventSlider(row._id, e.target.checked)}
+                    className="h-4 w-4 cursor-pointer"
+                />
+            ),
+        },
+
         {
             key: "statusLabel",
             label: "Status",
             render: (_val, row) => {
-                const isPast = new Date(row.endDate) < new Date();
+                const status = getEventStatus(row);
+                const statusClass =
+                    status === "Live"
+                        ? "bg-green-100 text-green-600"
+                        : status === "Upcoming"
+                            ? "bg-blue-100 text-blue-600"
+                            : "bg-gray-100 text-gray-600";
+
                 return (
-                    <span className={`px-2 py-1 rounded text-xs ${isPast ? 'bg-gray-100 text-gray-600' : 'bg-green-100 text-green-600'}`}>
-                        {isPast ? "Past" : "Upcoming"}
+                    <span className={`px-2 py-1 rounded text-xs ${statusClass}`}>
+                        {status}
                     </span>
                 )
             }
