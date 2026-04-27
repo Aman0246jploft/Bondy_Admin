@@ -22,6 +22,7 @@ const CategoryList = ({ title }) => {
         image: ""
     });
     const [uploading, setUploading] = useState(false);
+    const [togglingFeaturedId, setTogglingFeaturedId] = useState(null);
 
     const fetchCategories = useCallback(async () => {
         setLoading(true);
@@ -133,6 +134,29 @@ const CategoryList = ({ title }) => {
         setIsModalOpen(true);
     };
 
+    const handleToggleFeatured = async (category) => {
+        if (togglingFeaturedId) return;
+
+        setTogglingFeaturedId(category._id);
+        try {
+            const response = await authAxiosClient.post(`/category/toggle-featured/${category._id}`);
+            if (response.data?.status) {
+                const updatedFeatured = response.data?.data?.featured;
+                setData((prev) => prev.map((item) => (
+                    item._id === category._id
+                        ? { ...item, featured: updatedFeatured }
+                        : item
+                )));
+            }
+        } catch (error) {
+            console.error("Toggle featured error:", error);
+            alert(error?.response?.data?.message || error.message || "Failed to toggle featured status");
+            fetchCategories();
+        } finally {
+            setTogglingFeaturedId(null);
+        }
+    };
+
     const columns = [
         {
             key: "image",
@@ -145,6 +169,19 @@ const CategoryList = ({ title }) => {
             key: "type",
             label: "Type",
             render: (val) => <span className={`capitalize px-2 py-1 rounded text-xs ${val === 'event' ? 'bg-blue-100 text-blue-800' : val === 'support_ticket' ? 'bg-orange-100 text-orange-800' : 'bg-green-100 text-green-800'}`}>{val === 'support_ticket' ? 'Support Ticket' : val}</span>
+        },
+        {
+            key: "featured",
+            label: "Featured",
+            render: (val, row) => row.type !== "event" ? null : (
+                <input
+                    type="checkbox"
+                    checked={!!val}
+                    disabled={togglingFeaturedId === row._id}
+                    onChange={() => handleToggleFeatured(row)}
+                    className="h-4 w-4 cursor-pointer"
+                />
+            )
         },
         {
             key: "actions",
