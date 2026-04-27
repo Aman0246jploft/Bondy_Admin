@@ -19,9 +19,11 @@ const CategoryList = ({ title }) => {
         name: "",
         name_thi: "",
         type: "event",
-        image: ""
+        image: "",
+        posterImage: ""
     });
     const [uploading, setUploading] = useState(false);
+    const [uploadingPoster, setUploadingPoster] = useState(false);
     const [togglingFeaturedId, setTogglingFeaturedId] = useState(null);
 
     const fetchCategories = useCallback(async () => {
@@ -80,6 +82,33 @@ const CategoryList = ({ title }) => {
         }
     };
 
+    const handlePosterUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setUploadingPoster(true);
+        const data = new FormData();
+        data.append("files", file);
+        data.append("userId", "category");
+
+        try {
+            const response = await authAxiosClient.post("/user/upload", data, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+            if (response.data?.status) {
+                const uploadedPath = response.data.data.files[0];
+                setFormData(prev => ({ ...prev, posterImage: uploadedPath }));
+            }
+        } catch (error) {
+            console.error("Poster upload error:", error);
+            alert("Poster image upload failed");
+        } finally {
+            setUploadingPoster(false);
+        }
+    };
+
     const handleSave = async (e) => {
         e.preventDefault();
         console.log("Saving Category Payload:", formData); // Debugging
@@ -94,7 +123,7 @@ const CategoryList = ({ title }) => {
             if (response.data?.status) {
                 setIsModalOpen(false);
                 setEditingCategory(null);
-                setFormData({ name: "", name_thi: "", type: "event", image: "" });
+                setFormData({ name: "", name_thi: "", type: "event", image: "", posterImage: "" });
                 fetchCategories();
             }
         } catch (error) {
@@ -121,15 +150,17 @@ const CategoryList = ({ title }) => {
         if (category) {
             setEditingCategory(category);
             const relativePath = category.image ? category.image.split('/uploads/').pop() : "";
+            const posterRelativePath = category.posterImage ? category.posterImage.split('/uploads/').pop() : "";
             setFormData({
                 name: category.name,
                 name_thi: category.name_thi || "",
                 type: category.type,
-                image: relativePath ? `uploads/${relativePath}` : ""
+                image: relativePath ? `uploads/${relativePath}` : "",
+                posterImage: posterRelativePath ? `uploads/${posterRelativePath}` : ""
             });
         } else {
             setEditingCategory(null);
-            setFormData({ name: "", name_thi: "", type: "event", image: "" });
+            setFormData({ name: "", name_thi: "", type: "event", image: "", posterImage: "" });
         }
         setIsModalOpen(true);
     };
@@ -165,6 +196,13 @@ const CategoryList = ({ title }) => {
         },
         { key: "name", label: "Name (EN)" },
         { key: "name_thi", label: "Name (THI)" },
+        {
+            key: "posterImage",
+            label: "Poster",
+            render: (val, row) => row.type !== "event" ? null : (
+                val ? <img src={val} alt="poster" className="w-14 h-10 object-cover rounded" /> : <div className="w-14 h-10 bg-gray-200 rounded flex items-center justify-center text-xs">None</div>
+            )
+        },
         {
             key: "type",
             label: "Type",
@@ -312,6 +350,21 @@ const CategoryList = ({ title }) => {
                                     <p className="text-xs text-green-600 truncate">Selected: {formData.image}</p>
                                 )}
                             </div>
+                            {formData.type === "event" && (
+                            <div>
+                                <label className="block text-sm font-medium">Poster Image</label>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    className="w-full border p-2 rounded"
+                                    onChange={handlePosterUpload}
+                                />
+                                {uploadingPoster && <p className="text-xs text-blue-600">Uploading...</p>}
+                                {formData.posterImage && (
+                                    <p className="text-xs text-green-600 truncate">Selected: {formData.posterImage}</p>
+                                )}
+                            </div>
+                            )}
                             <div className="flex justify-end gap-2 pt-4">
                                 <button
                                     type="button"
