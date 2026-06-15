@@ -196,13 +196,13 @@ const CategoryList = ({ title }) => {
         },
         { key: "name", label: "Name (EN)" },
         { key: "name_thi", label: "Name (THI)" },
-        {
-            key: "posterImage",
-            label: "Poster",
-            render: (val, row) => row.type !== "event" ? null : (
-                val ? <img src={val} alt="poster" className="w-14 h-10 object-cover rounded" /> : <div className="w-14 h-10 bg-gray-200 rounded flex items-center justify-center text-xs">None</div>
-            )
-        },
+        // {
+        //     key: "posterImage",
+        //     label: "Poster",
+        //     render: (val, row) => row.type !== "event" ? null : (
+        //         val ? <img src={val} alt="poster" className="w-14 h-10 object-cover rounded" /> : <div className="w-14 h-10 bg-gray-200 rounded flex items-center justify-center text-xs">None</div>
+        //     )
+        // },
         {
             key: "type",
             label: "Type",
@@ -350,21 +350,21 @@ const CategoryList = ({ title }) => {
                                     <p className="text-xs text-green-600 truncate">Selected: {formData.image}</p>
                                 )}
                             </div>
-                            {formData.type === "event" && (
-                            <div>
-                                <label className="block text-sm font-medium">Poster Image</label>
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    className="w-full border p-2 rounded"
-                                    onChange={handlePosterUpload}
-                                />
-                                {uploadingPoster && <p className="text-xs text-blue-600">Uploading...</p>}
-                                {formData.posterImage && (
-                                    <p className="text-xs text-green-600 truncate">Selected: {formData.posterImage}</p>
-                                )}
-                            </div>
-                            )}
+                            {/* {formData.type === "event" && (
+                                <div>
+                                    <label className="block text-sm font-medium">Poster Image</label>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        className="w-full border p-2 rounded"
+                                        onChange={handlePosterUpload}
+                                    />
+                                    {uploadingPoster && <p className="text-xs text-blue-600">Uploading...</p>}
+                                    {formData.posterImage && (
+                                        <p className="text-xs text-green-600 truncate">Selected: {formData.posterImage}</p>
+                                    )}
+                                </div>
+                            )} */}
                             <div className="flex justify-end gap-2 pt-4">
                                 <button
                                     type="button"

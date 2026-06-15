@@ -2,23 +2,32 @@
 import axios from 'axios';
 import { baseURL } from './baseUrl';
 import { useAuth } from '../auth/useAuth';
+import { loaderState } from './loaderState';
 
 const authAxiosClient = axios.create({
   baseURL: baseURL,
   timeout: 10000,
 });
 
-authAxiosClient.interceptors.request.use((config) => {
-  const token = useAuth().user
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+authAxiosClient.interceptors.request.use(
+  (config) => {
+    loaderState.show();
+    const token = useAuth().user;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    loaderState.hide();
+    return Promise.reject(error);
   }
-  return config;
-});
+);
 
 // Response interceptor
 authAxiosClient.interceptors.response.use(
   (response) => {
+    loaderState.hide();
     const { data } = response;
 
     // Handle application-level errors where HTTP status is 200 but status is false
@@ -36,6 +45,7 @@ authAxiosClient.interceptors.response.use(
     return response;
   },
   (error) => {
+    loaderState.hide();
     // Check if the error response contains "Invalid or expired token"
     if (error.response?.data?.message === 'Invalid or expired token') {
       localStorage.removeItem('kadSunInfo');

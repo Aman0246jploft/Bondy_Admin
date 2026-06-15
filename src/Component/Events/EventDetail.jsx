@@ -13,6 +13,15 @@ const fmt = (date) => {
     }
 };
 
+const fmtDateOnly = (date) => {
+    if (!date) return "N/A";
+    try {
+        return format(new Date(date), "dd MMM yyyy");
+    } catch {
+        return "N/A";
+    }
+};
+
 const StarRating = ({ rating }) => {
     const stars = Math.round(rating || 0);
     return (
@@ -50,16 +59,6 @@ const Avatar = ({ src, name, size = "w-10 h-10" }) => {
     );
 };
 
-const InfoCard = ({ icon, label, value, accent }) => (
-    <div className={`bg-white rounded-xl border p-4 flex items-start gap-3 shadow-sm ${accent || ""}`}>
-        <span className="text-2xl mt-0.5">{icon}</span>
-        <div>
-            <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">{label}</p>
-            <p className="text-sm font-semibold text-gray-800 mt-0.5">{value ?? "N/A"}</p>
-        </div>
-    </div>
-);
-
 // ─── main component ──────────────────────────────────────────────────────────
 const EventDetail = () => {
     const { eventId } = useParams();
@@ -71,8 +70,10 @@ const EventDetail = () => {
     const [reviews, setReviews] = useState([]);
     const [comments, setComments] = useState([]);
     const [attendees, setAttendees] = useState({ total: 0, recent: [] });
+    const [similarEvents, setSimilarEvents] = useState([]);
     const [activeTab, setActiveTab] = useState("overview");
     const [activeImg, setActiveImg] = useState(0);
+    const [mediaType, setMediaType] = useState("image"); // "image" or "video"
 
     useEffect(() => {
         const fetch = async () => {
@@ -86,6 +87,7 @@ const EventDetail = () => {
                     setReviews(d.reviews || []);
                     setComments(d.comments || []);
                     setAttendees(d.attendees || { total: 0, recent: [] });
+                    setSimilarEvents(d.similarEvents || []);
                 } else {
                     setError("Failed to fetch event details.");
                 }
@@ -121,378 +123,564 @@ const EventDetail = () => {
     }
 
     const images = event.posterImage || [];
+    const mediaLinks = event.mediaLinks || [];
+    const videos = event.shortTeaserVideo || [];
     const venue = event.venueAddress || {};
 
     const tabs = [
-        { id: "overview", label: "📋 Overview" },
-        // { id: "reviews", label: `⭐ Reviews (${reviews.length})` },
-        // { id: "comments", label: `💬 Comments (${comments.length})` },
+        { id: "overview", label: `📋 Overview` },
+        { id: "tickets", label: `🎟 Tickets (${event.tickets?.length || 0})` },
+        { id: "reviews", label: `⭐ Reviews (${reviews.length})` },
+        { id: "comments", label: `💬 Comments (${comments.length})` },
     ];
 
-    return (
-        <div className="min-h-screen bg-gray-50 pb-12">
-            {/* ── Top Bar ── */}
-            <div className="bg-white border-b sticky top-0 z-20 px-6 py-3 flex items-center gap-4 shadow-sm">
-                <button
-                    onClick={() => navigate("/events")}
-                    className="flex items-center gap-1 text-indigo-600 hover:text-indigo-800 font-medium text-sm"
-                >
-                    ← Back to Events
-                </button>
-                <div className="w-px h-5 bg-gray-300" />
+    // Percentage of seats booked
+    const bookedPercent = event.totalSeats > 0 ? Math.round((event.totalBooked / event.totalSeats) * 100) : 0;
 
+    return (
+        <div className="min-h-screen bg-slate-50 pb-16">
+            {/* ── Top Bar ── */}
+            <div className="bg-white border-b sticky top-0 z-20 px-6 py-4 flex items-center justify-between shadow-sm">
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => navigate("/events")}
+                        className="flex items-center gap-1 text-slate-600 hover:text-slate-800 font-medium text-sm transition"
+                    >
+                        ← Back to Events
+                    </button>
+                    <div className="w-px h-5 bg-slate-300" />
+                    {/* <h1 className="text-md font-bold text-slate-800 truncate max-w-lg">{event.eventTitle}</h1> */}
+                </div>
+                <div className="flex items-center gap-2">
+                    <StatusBadge status={event.status} />
+                </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-6 py-6 space-y-6">
-                {/* ── Hero Section ── */}
-                <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-                    {/* Poster */}
-                    <div className="lg:col-span-2 space-y-2">
-                        {images.length > 0 ? (
-                            <>
-                                <div className="w-full aspect-video rounded-2xl overflow-hidden shadow-lg border bg-gray-100">
-                                    <img
-                                        src={images[activeImg]}
-                                        alt="poster"
-                                        className="w-full h-full object-cover"
-                                    />
-                                </div>
-                                {images.length > 1 && (
-                                    <div className="flex gap-2 overflow-x-auto">
-                                        {images.map((img, i) => (
-                                            <button key={i} onClick={() => setActiveImg(i)}>
-                                                <img
-                                                    src={img}
-                                                    alt=""
-                                                    className={`w-16 h-10 object-cover rounded-lg border-2 transition ${i === activeImg ? "border-indigo-500" : "border-transparent"}`}
-                                                />
-                                            </button>
-                                        ))}
-                                    </div>
-                                )}
-                            </>
-                        ) : (
-                            <div className="w-full aspect-video rounded-2xl bg-gray-200 flex items-center justify-center text-gray-400 text-4xl">🎪</div>
-                        )}
-                    </div>
+            <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+                {/* ── Main Layout: 2 Columns ── */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                    {/* Short Info */}
-                    <div className="lg:col-span-3 space-y-4">
-                        {/* Organizer */}
-                        <div className="flex items-center gap-3">
-                            <Avatar
-                                src={event.createdBy?.profileImage}
-                                name={`${event.createdBy?.firstName || ""} ${event.createdBy?.lastName || ""}`}
-                                size="w-11 h-11"
-                            />
-                            <div>
-                                <p className="text-xs text-gray-500">Organizer</p>
-                                <p className="font-semibold text-gray-800">
-                                    {event.createdBy?.firstName} {event.createdBy?.lastName}
-                                    {event.createdBy?.isVerified && (
-                                        <span className="ml-1 text-blue-500 text-xs">✔ Verified</span>
+                    {/* Left 2 Columns: Media & Description & Tabs */}
+                    <div className="lg:col-span-2 space-y-6">
+
+                        {/* Media Display Card */}
+                        <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-4">
+                            <div className="flex items-center justify-between border-b pb-2">
+                                <span className="font-bold text-sm text-slate-700">Event Media Gallery</span>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => setMediaType("image")}
+                                        className={`px-3 py-1 text-xs rounded-lg font-medium transition ${mediaType === "image" ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+                                    >
+                                        Images ({images.length})
+                                    </button>
+                                    {videos.length > 0 && (
+                                        <button
+                                            onClick={() => setMediaType("video")}
+                                            className={`px-3 py-1 text-xs rounded-lg font-medium transition ${mediaType === "video" ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+                                        >
+                                            Teaser Video
+                                        </button>
                                     )}
-                                </p>
+                                </div>
                             </div>
-                        </div>
 
-
-                        <h1 className="text-lg font-bold text-gray-800 flex-1">{event.eventTitle}</h1>
-                        <div className="flex items-center gap-2">
-                            {event.isFeatured && (
-                                <span className="px-2 py-0.5 bg-amber-100 text-amber-700 border border-amber-300 text-xs font-semibold rounded-full">
-                                    ⭐ Featured
-                                </span>
-                            )}
-                            <StatusBadge status={event.status} />
-                        </div>
-
-
-
-
-
-
-
-                        {/* Short description */}
-                        {event.shortdesc && (
-                            <p className="text-gray-600 text-sm leading-relaxed">{event.shortdesc}</p>
-                        )}
-
-                        {/* Tags */}
-                        {event.tags?.length > 0 && (
-                            <div className="flex flex-wrap gap-2">
-                                {event.tags.map((tag, i) => (
-                                    <span key={i} className="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-xs rounded-full border border-indigo-200">
-                                        #{tag}
-                                    </span>
-                                ))}
-                            </div>
-                        )}
-
-                        {/* Category */}
-                        {event.eventCategory && (
-                            <div className="flex items-center gap-2">
-                                {event.eventCategory.image && (
-                                    <img src={event.eventCategory.image} alt="" className="w-6 h-6 rounded object-cover" />
+                            {/* Main Media Box */}
+                            <div className="w-full aspect-video rounded-xl overflow-hidden bg-slate-950 flex items-center justify-center relative group">
+                                {mediaType === "image" ? (
+                                    images.length > 0 ? (
+                                        <img
+                                            src={images[activeImg]}
+                                            alt="Event visual"
+                                            className="max-h-full max-w-full object-contain"
+                                        />
+                                    ) : (
+                                        <div className="text-slate-400 text-6xl">🎪</div>
+                                    )
+                                ) : (
+                                    videos.length > 0 && (
+                                        <video
+                                            src={videos[0]}
+                                            controls
+                                            className="w-full h-full object-contain"
+                                            poster={images[0]}
+                                        />
+                                    )
                                 )}
-                                <span className="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded">
-                                    {event.eventCategory.name}
-                                </span>
                             </div>
-                        )}
 
-                        {/* Attendees summary */}
-                        <div className="flex items-center gap-3 pt-1">
-                            <div className="flex -space-x-2">
-                                {attendees.recent.slice(0, 5).map((u) => (
-                                    <Avatar
-                                        key={u._id}
-                                        src={u.profileImage}
-                                        name={`${u.firstName} ${u.lastName}`}
-                                        size="w-8 h-8"
-                                    />
-                                ))}
-                            </div>
-                            {attendees.total > 0 && (
-                                <span className="text-sm text-gray-600 font-medium">
-                                    {attendees.total.toLocaleString()} attendee{attendees.total !== 1 ? "s" : ""}
-                                </span>
-                            )}
-                        </div>
-                    </div>
-                </div>
-
-                {/* ── Info Cards ── */}
-                <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-                    <InfoCard icon="📅" label="Start Date" value={fmt(event.startDate)} />
-                    <InfoCard icon="🏁" label="End Date" value={fmt(event.endDate)} />
-                    <InfoCard icon="⏱" label="Duration" value={event.duration} />
-                    <InfoCard
-                        icon="🎟"
-                        label="Ticket Price"
-                        value={
-                            event.isFree
-                                ? "Free"
-                                : event.ticketPrice != null
-                                    ? `₹${event.ticketPrice}`
-                                    : "N/A"
-                        }
-                    />
-                    {/* <InfoCard icon="🪑" label="Total Seats" value={event.totalSeats?.toLocaleString()} />
-                    <InfoCard icon="✅" label="Available Seats" value={event.leftSeats?.toLocaleString()} />
-                    <InfoCard icon="👥" label="Booked Seats" value={event.acquiredSeats?.toLocaleString()} />
-                    <InfoCard icon="👁" label="Total Views" value={event.totalViews?.toLocaleString()} /> */}
-                    <InfoCard icon="📍" label="Venue" value={event.venueName} />
-                    <InfoCard icon="🏙" label="City / Country" value={[venue.city, venue.country].filter(Boolean).join(", ")} />
-                    <InfoCard icon="📧" label="Contact Email" value={event.contactEmail} />
-                    <InfoCard icon="📞" label="Contact Phone" value={event.contactPhone} />
-                </div>
-
-                {/* ── Tabs ── */}
-                <div className="bg-white rounded-2xl border shadow-sm overflow-hidden">
-                    {/* Tab headers */}
-                    <div className="flex border-b bg-gray-50">
-                        {tabs.map((t) => (
-                            <button
-                                key={t.id}
-                                onClick={() => setActiveTab(t.id)}
-                                className={`px-6 py-3 text-sm font-semibold transition ${activeTab === t.id
-                                    ? "bg-white border-b-2 border-indigo-500 text-indigo-600"
-                                    : "text-gray-500 hover:text-gray-700"
-                                    }`}
-                            >
-                                {t.label}
-                            </button>
-                        ))}
-                    </div>
-
-                    {/* ── Overview Tab ── */}
-                    {activeTab === "overview" && (
-                        <div className="p-6 space-y-6">
-                            {/* Full description */}
-                            {event.description && (
-                                <div>
-                                    <h3 className="font-semibold text-gray-700 mb-2">Description</h3>
-                                    <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap">{event.description}</p>
+                            {/* Thumbnail selector */}
+                            {mediaType === "image" && images.length > 1 && (
+                                <div className="flex gap-2 overflow-x-auto pb-2">
+                                    {images.map((img, i) => (
+                                        <button key={i} onClick={() => setActiveImg(i)} className="flex-shrink-0">
+                                            <img
+                                                src={img}
+                                                alt=""
+                                                className={`w-20 h-14 object-cover rounded-lg border-2 transition ${i === activeImg ? "border-indigo-500 scale-95 shadow" : "border-slate-200 opacity-70 hover:opacity-100"}`}
+                                            />
+                                        </button>
+                                    ))}
                                 </div>
                             )}
+                        </div>
 
-                            {/* Ticket Tiers */}
-                            {event.ticketTiers?.length > 0 && (
-                                <div>
-                                    <h3 className="font-semibold text-gray-700 mb-3">Ticket Tiers</h3>
-                                    <div className="overflow-x-auto">
-                                        <table className="min-w-full text-sm border rounded-lg overflow-hidden">
-                                            <thead className="bg-gray-100">
-                                                <tr>
-                                                    {["Tier", "Price", "Qty", "Available", "Description"].map((h) => (
-                                                        <th key={h} className="px-4 py-2 text-left text-xs font-semibold text-gray-600">{h}</th>
+                        {/* Event Quick Summary */}
+                        <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm space-y-4">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    {event.eventCategory && (
+                                        <div className="flex items-center gap-2 bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-full">
+                                            {event.eventCategory.image && (
+                                                <img src={event.eventCategory.image} alt="" className="w-4 h-4 rounded-full object-cover" />
+                                            )}
+                                            <span className="text-xs font-semibold text-indigo-700 capitalize">
+                                                {event.eventCategory.name}
+                                            </span>
+                                        </div>
+                                    )}
+                                    {event.ageRestriction && (
+                                        <span className="bg-slate-100 text-slate-700 px-2 py-0.5 text-xs font-bold rounded">
+                                            {event.ageRestriction}
+                                        </span>
+                                    )}
+                                </div>
+
+                                <div className="flex gap-2">
+                                    {event.isOnline && (
+                                        <span className="bg-purple-100 text-purple-700 border border-purple-200 text-xs px-2.5 py-0.5 rounded-full font-medium">🌐 Online</span>
+                                    )}
+                                    {event.isFree && (
+                                        <span className="bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs px-2.5 py-0.5 rounded-full font-medium">🎁 Free</span>
+                                    )}
+                                </div>
+                            </div>
+
+                            <h2 className="text-2xl font-bold text-slate-800 leading-tight">{event.eventTitle}</h2>
+                            <p className="text-slate-600 text-sm leading-relaxed">{event.shortdesc}</p>
+                        </div>
+
+                        {/* Interactive Tabs */}
+                        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                            <div className="flex border-b bg-slate-50">
+                                {tabs.map((t) => (
+                                    <button
+                                        key={t.id}
+                                        onClick={() => setActiveTab(t.id)}
+                                        className={`flex-1 px-4 py-3 text-center text-sm font-semibold transition ${activeTab === t.id
+                                            ? "bg-white border-b-2 border-indigo-600 text-indigo-600"
+                                            : "text-slate-500 hover:text-slate-700"
+                                            }`}
+                                    >
+                                        {t.label}
+                                    </button>
+                                ))}
+                            </div>
+
+                            {/* ── Tab Contents ── */}
+                            <div className="p-6">
+
+                                {/* 1. Overview Tab */}
+                                {activeTab === "overview" && (
+                                    <div className="space-y-6">
+                                        <div>
+                                            <h3 className="font-bold text-slate-800 text-md border-b pb-2 mb-3">About the Event</h3>
+                                            <p className="text-slate-600 text-sm leading-relaxed whitespace-pre-wrap">{event.longdesc}</p>
+                                        </div>
+
+                                        {event.notes && (
+                                            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                                                <h4 className="font-semibold text-amber-800 text-xs uppercase tracking-wider mb-1">Important Notes</h4>
+                                                <p className="text-slate-700 text-xs leading-relaxed">{event.notes}</p>
+                                            </div>
+                                        )}
+
+                                        {/* Basic details grid */}
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="border border-slate-100 rounded-xl p-4 bg-slate-50">
+                                                <h4 className="text-xs font-bold text-slate-500 uppercase">Dress Code</h4>
+                                                <p className="text-sm font-semibold text-slate-800 mt-1">{event.dressCode || "No specific dress code"}</p>
+                                            </div>
+                                            <div className="border border-slate-100 rounded-xl p-4 bg-slate-50">
+                                                <h4 className="text-xs font-bold text-slate-500 uppercase">Refund Policy</h4>
+                                                <p className="text-sm font-semibold text-slate-800 mt-1">{event.refundPolicy || "No Refund"}</p>
+                                            </div>
+                                            <div className="border border-slate-100 rounded-xl p-4 bg-slate-50">
+                                                <h4 className="text-xs font-bold text-slate-500 uppercase">Add Ons</h4>
+                                                <p className="text-sm font-semibold text-slate-800 mt-1">{event.addOns || "None"}</p>
+                                            </div>
+                                            <div className="border border-slate-100 rounded-xl p-4 bg-slate-50">
+                                                <h4 className="text-xs font-bold text-slate-500 uppercase">Promotion Package</h4>
+                                                <p className="text-sm font-semibold text-slate-800 mt-1">
+                                                    {event.activePromotionPackage ? "Active" : "None"}
+                                                    {event.featureEventFee > 0 && ` (Fee: $${event.featureEventFee})`}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        {/* Links Section */}
+                                        {event.mediaLinks?.length > 0 && (
+                                            <div>
+                                                <h3 className="font-bold text-slate-800 text-sm mb-2">Media & External Links</h3>
+                                                <div className="flex flex-wrap gap-2">
+                                                    {event.mediaLinks.map((url, i) => (
+                                                        <a
+                                                            key={i}
+                                                            href={url}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                            className="px-3 py-1.5 bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-semibold rounded-lg transition truncate max-w-[200px]"
+                                                        >
+                                                            🔗 External Link #{i + 1}
+                                                        </a>
                                                     ))}
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {event.ticketTiers.map((tier, i) => (
-                                                    <tr key={i} className="border-t hover:bg-gray-50">
-                                                        <td className="px-4 py-2 font-medium">{tier.name}</td>
-                                                        <td className="px-4 py-2">₹{tier.price}</td>
-                                                        <td className="px-4 py-2">{tier.quantity}</td>
-                                                        <td className="px-4 py-2">{tier.available ?? "N/A"}</td>
-                                                        <td className="px-4 py-2 text-gray-500">{tier.description || "—"}</td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
-                                </div>
-                            )}
+                                )}
 
-                            {/* Venue Full Address */}
-                            {venue.address && (
-                                <div>
-                                    <h3 className="font-semibold text-gray-700 mb-1">Full Address</h3>
-                                    <p className="text-sm text-gray-600">{venue.address}, {venue.city}, {venue.country}</p>
-                                </div>
-                            )}
+                                {/* 2. Tickets Tab */}
+                                {activeTab === "tickets" && (
+                                    <div className="space-y-4">
+                                        {(!event.tickets || event.tickets.length === 0) ? (
+                                            <p className="text-slate-500 text-center py-6">No ticket tiers set up for this event.</p>
+                                        ) : (
+                                            event.tickets.map((ticket) => (
+                                                <div key={ticket._id} className="border border-slate-200 rounded-xl p-5 hover:border-indigo-300 transition duration-200 bg-white">
+                                                    <div className="flex justify-between items-start flex-wrap gap-2">
+                                                        <div>
+                                                            <h4 className="font-bold text-slate-800 text-md">{ticket.ticketName}</h4>
+                                                            <p className="text-xs text-slate-500 mt-1">{ticket.ticketShortDesc || "No description provided."}</p>
+                                                        </div>
+                                                        <span className="text-lg font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-lg">
+                                                            {ticket.price === 0 ? "Free" : `$${ticket.price}`}
+                                                        </span>
+                                                    </div>
 
-                            {/* Social / External Links */}
-                            {(event.websiteLink || event.facebookLink || event.instagramLink || event.twitterLink) && (
-                                <div>
-                                    <h3 className="font-semibold text-gray-700 mb-2">Links</h3>
-                                    <div className="flex flex-wrap gap-3">
-                                        {event.websiteLink && <a href={event.websiteLink} target="_blank" rel="noreferrer" className="text-sm text-indigo-600 hover:underline">🌐 Website</a>}
-                                        {event.facebookLink && <a href={event.facebookLink} target="_blank" rel="noreferrer" className="text-sm text-indigo-600 hover:underline">📘 Facebook</a>}
-                                        {event.instagramLink && <a href={event.instagramLink} target="_blank" rel="noreferrer" className="text-sm text-indigo-600 hover:underline">📸 Instagram</a>}
-                                        {event.twitterLink && <a href={event.twitterLink} target="_blank" rel="noreferrer" className="text-sm text-indigo-600 hover:underline">🐦 Twitter</a>}
+                                                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4 pt-4 border-t border-slate-100 text-xs">
+                                                        <div>
+                                                            <span className="text-slate-400 block">Total Quantity</span>
+                                                            <span className="font-bold text-slate-700 text-sm">{ticket.qty}</span>
+                                                        </div>
+                                                        <div>
+                                                            <span className="text-slate-400 block">Available</span>
+                                                            <span className="font-bold text-emerald-600 text-sm">{ticket.availableQty ?? ticket.qty}</span>
+                                                        </div>
+                                                        <div>
+                                                            <span className="text-slate-400 block">Sold</span>
+                                                            <span className="font-bold text-indigo-600 text-sm">{ticket.soldQty || 0}</span>
+                                                        </div>
+                                                        <div>
+                                                            <span className="text-slate-400 block">Status</span>
+                                                            <span className={`inline-block px-2 py-0.5 rounded font-bold mt-0.5 ${ticket.availableQty === 0 ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}>
+                                                                {ticket.availableQty === 0 ? "Sold Out" : "On Sale"}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="mt-4 bg-slate-50 p-2.5 rounded-lg flex flex-col sm:flex-row justify-between text-[11px] text-slate-500 gap-1">
+                                                        <span>📅 Sales Start: {fmt(ticket.salesStart)}</span>
+                                                        <span>📅 Sales End: {fmt(ticket.salesEnd)}</span>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        )}
                                     </div>
-                                </div>
-                            )}
+                                )}
 
-                            {/* Media Links */}
-                            {event.mediaLinks?.length > 0 && (
-                                <div>
-                                    <h3 className="font-semibold text-gray-700 mb-2">Media</h3>
-                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                                        {event.mediaLinks.map((url, i) => (
-                                            <a key={i} href={url} target="_blank" rel="noreferrer" className="text-sm text-indigo-600 hover:underline truncate">
-                                                🖼 Media {i + 1}
-                                            </a>
-                                        ))}
+                                {/* 3. Reviews Tab */}
+                                {activeTab === "reviews" && (
+                                    <div className="space-y-4">
+                                        {reviews.length === 0 ? (
+                                            <div className="text-center py-8 text-slate-400">
+                                                <p className="text-3xl mb-1">⭐</p>
+                                                <p className="text-sm">No reviews yet</p>
+                                            </div>
+                                        ) : (
+                                            reviews.map((r) => (
+                                                <div key={r._id} className="flex gap-4 p-4 rounded-xl border border-slate-100 bg-slate-50">
+                                                    <Avatar
+                                                        src={r.user?.profileImage}
+                                                        name={`${r.user?.firstName || ""} ${r.user?.lastName || ""}`}
+                                                        size="w-10 h-10"
+                                                    />
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="flex items-center justify-between flex-wrap gap-1">
+                                                            <p className="font-semibold text-sm text-slate-800">
+                                                                {r.user ? `${r.user.firstName} ${r.user.lastName}` : "Anonymous"}
+                                                                {r.user?.isVerified && <span className="ml-1 text-blue-500 text-[10px]">✔</span>}
+                                                            </p>
+                                                            <span className="text-[11px] text-slate-400">{fmt(r.createdAt)}</span>
+                                                        </div>
+                                                        <StarRating rating={r.rating} />
+                                                        {r.review && <p className="text-sm text-slate-600 mt-1.5">{r.review}</p>}
+                                                    </div>
+                                                </div>
+                                            ))
+                                        )}
                                     </div>
-                                </div>
-                            )}
+                                )}
 
-                            {/* Promo Code Info */}
-                            {event.promoCode && (
-                                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                                    <h3 className="font-semibold text-green-700 mb-1">Promo Code</h3>
-                                    <p className="text-sm text-green-800 font-mono">{event.promoCode}</p>
-                                    {event.promoDiscount && (
-                                        <p className="text-xs text-green-700 mt-1">Discount: {event.promoDiscount}%</p>
-                                    )}
-                                </div>
-                            )}
-
-                            {/* Other Flags */}
-                            <div className="flex flex-wrap gap-2">
-                                {event.isDraft && <span className="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full border border-yellow-300">Draft</span>}
-                                {event.isOnline && <span className="px-3 py-1 bg-purple-100 text-purple-700 text-xs rounded-full border border-purple-300">Online Event</span>}
-                                {event.isFree && <span className="px-3 py-1 bg-green-100 text-green-700 text-xs rounded-full border border-green-300">Free Event</span>}
-                                {event.fetcherEvent && <span className="px-3 py-1 bg-orange-100 text-orange-700 text-xs rounded-full border border-orange-300">Featured Promoted</span>}
+                                {/* 4. Comments Tab */}
+                                {activeTab === "comments" && (
+                                    <div className="space-y-4">
+                                        {comments.length === 0 ? (
+                                            <div className="text-center py-8 text-slate-400">
+                                                <p className="text-3xl mb-1">💬</p>
+                                                <p className="text-sm">No comments yet</p>
+                                            </div>
+                                        ) : (
+                                            comments.map((c) => (
+                                                <div key={c._id} className="flex gap-4 p-4 rounded-xl border border-slate-100 bg-slate-50">
+                                                    <Avatar
+                                                        src={c.user?.profileImage}
+                                                        name={`${c.user?.firstName || ""} ${c.user?.lastName || ""}`}
+                                                        size="w-10 h-10"
+                                                    />
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="flex items-center justify-between flex-wrap gap-1">
+                                                            <p className="font-semibold text-sm text-slate-800">
+                                                                {c.user ? `${c.user.firstName} ${c.user.lastName}` : "Anonymous"}
+                                                                {c.user?.isVerified && <span className="ml-1 text-blue-500 text-[10px]">✔</span>}
+                                                            </p>
+                                                            <span className="text-[11px] text-slate-400">{fmt(c.createdAt)}</span>
+                                                        </div>
+                                                        <p className="text-sm text-slate-600 mt-1">{c.comment}</p>
+                                                        {c.likes > 0 && (
+                                                            <p className="text-xs text-slate-400 mt-1">👍 {c.likes} likes</p>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </div>
-                    )}
 
-                    {/* ── Reviews Tab ── */}
-                    {activeTab === "reviews" && (
-                        <div className="p-6">
-                            {reviews.length === 0 ? (
-                                <div className="text-center py-12 text-gray-400">
-                                    <p className="text-4xl mb-2">⭐</p>
-                                    <p>No reviews yet</p>
-                                </div>
+                        {/* Recent Attendees Card */}
+                        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-4">
+                            <div className="flex items-center justify-between border-b pb-2">
+                                <h3 className="font-bold text-slate-800 text-sm">
+                                    👥 Attendees ({attendees.total.toLocaleString()} total)
+                                </h3>
+                            </div>
+                            {attendees.recent.length === 0 ? (
+                                <p className="text-slate-400 text-xs py-2">No attendees registered yet.</p>
                             ) : (
-                                <div className="space-y-4">
-                                    {reviews.map((r) => (
-                                        <div key={r._id} className="flex gap-4 p-4 rounded-xl border bg-gray-50 hover:bg-white transition">
+                                <div className="flex flex-wrap gap-4">
+                                    {attendees.recent.map((u) => (
+                                        <div key={u._id} className="flex flex-col items-center gap-1">
                                             <Avatar
-                                                src={r.user?.profileImage}
-                                                name={`${r.user?.firstName || ""} ${r.user?.lastName || ""}`}
-                                                size="w-10 h-10"
+                                                src={u.profileImage}
+                                                name={`${u.firstName} ${u.lastName}`}
+                                                size="w-11 h-11"
                                             />
-                                            <div className="flex-1">
-                                                <div className="flex items-center justify-between flex-wrap gap-1">
-                                                    <p className="font-semibold text-sm text-gray-800">
-                                                        {r.user ? `${r.user.firstName} ${r.user.lastName}` : "Anonymous"}
-                                                        {r.user?.isVerified && <span className="ml-1 text-blue-500 text-xs">✔</span>}
-                                                    </p>
-                                                    <span className="text-xs text-gray-400">{fmt(r.createdAt)}</span>
-                                                </div>
-                                                <StarRating rating={r.rating} />
-                                                {r.review && <p className="text-sm text-gray-600 mt-1">{r.review}</p>}
-                                            </div>
+                                            <p className="text-[10px] text-slate-600 text-center max-w-[60px] truncate">
+                                                {u.firstName}
+                                            </p>
                                         </div>
                                     ))}
                                 </div>
                             )}
                         </div>
-                    )}
 
-                    {/* ── Comments Tab ── */}
-                    {activeTab === "comments" && (
-                        <div className="p-6">
-                            {comments.length === 0 ? (
-                                <div className="text-center py-12 text-gray-400">
-                                    <p className="text-4xl mb-2">💬</p>
-                                    <p>No comments yet</p>
+                    </div>
+
+                    {/* Right 1 Column: Key Information & Sidebar Details */}
+                    <div className="space-y-6">
+
+                        {/* Organizer Profile Card */}
+                        <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm space-y-4">
+                            <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400">Created By</h3>
+                            <div className="flex items-center gap-3">
+                                <Avatar
+                                    src={event.createdBy?.profileImage}
+                                    name={`${event.createdBy?.firstName || ""} ${event.createdBy?.lastName || ""}`}
+                                    size="w-12 h-12"
+                                />
+                                <div className="min-w-0">
+                                    <p className="font-semibold text-slate-800 truncate">
+                                        {event.createdBy?.firstName} {event.createdBy?.lastName}
+                                    </p>
+                                    <p className="text-xs text-indigo-600 font-medium">
+                                        {event.createdBy?.isVerified ? "★ Verified Host" : "Host"}
+                                    </p>
                                 </div>
-                            ) : (
-                                <div className="space-y-4">
-                                    {comments.map((c) => (
-                                        <div key={c._id} className="flex gap-4 p-4 rounded-xl border bg-gray-50 hover:bg-white transition">
-                                            <Avatar
-                                                src={c.user?.profileImage}
-                                                name={`${c.user?.firstName || ""} ${c.user?.lastName || ""}`}
-                                                size="w-10 h-10"
-                                            />
-                                            <div className="flex-1">
-                                                <div className="flex items-center justify-between flex-wrap gap-1">
-                                                    <p className="font-semibold text-sm text-gray-800">
-                                                        {c.user ? `${c.user.firstName} ${c.user.lastName}` : "Anonymous"}
-                                                        {c.user?.isVerified && <span className="ml-1 text-blue-500 text-xs">✔</span>}
-                                                    </p>
-                                                    <span className="text-xs text-gray-400">{fmt(c.createdAt)}</span>
-                                                </div>
-                                                <p className="text-sm text-gray-600 mt-1">{c.comment}</p>
-                                                {c.likes > 0 && (
-                                                    <p className="text-xs text-gray-400 mt-1">👍 {c.likes} likes</p>
-                                                )}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
+                            </div>
                         </div>
-                    )}
+
+                        {/* Event Timing Card */}
+                        <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm space-y-4">
+                            <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400">Date & Time</h3>
+
+                            <div className="space-y-3">
+                                <div className="flex gap-3">
+                                    <span className="text-slate-400 text-lg">📅</span>
+                                    <div>
+                                        <span className="text-slate-400 text-xs block font-medium">Start Date & Time</span>
+                                        <span className="font-semibold text-slate-700 text-sm">{fmt(event.startDate)}</span>
+                                    </div>
+                                </div>
+                                <div className="flex gap-3">
+                                    <span className="text-slate-400 text-lg">🏁</span>
+                                    <div>
+                                        <span className="text-slate-400 text-xs block font-medium">End Date & Time</span>
+                                        <span className="font-semibold text-slate-700 text-sm">{fmt(event.endDate)}</span>
+                                    </div>
+                                </div>
+                                <div className="flex gap-3">
+                                    <span className="text-slate-400 text-lg">⏱</span>
+                                    <div>
+                                        <span className="text-slate-400 text-xs block font-medium">Event Duration</span>
+                                        <span className="font-semibold text-slate-700 text-sm">
+                                            {event.duration} {event.durationTranslation ? `(${event.durationTranslation})` : ""}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="flex gap-3">
+                                    <span className="text-slate-400 text-lg">🕒</span>
+                                    <div>
+                                        <span className="text-slate-400 text-xs block font-medium">Time Zone / Hours</span>
+                                        <span className="font-semibold text-slate-700 text-xs">
+                                            {event.startTime} - {event.endTime} ({event.timeZone})
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Venue / Location Details Card */}
+                        <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm space-y-4">
+                            <div className="flex justify-between items-center">
+                                <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400">Location</h3>
+                                <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-bold">
+                                    {event.visibility}
+                                </span>
+                            </div>
+                            <div className="space-y-3">
+                                <div className="flex items-start gap-2.5">
+                                    <span className="text-lg mt-0.5">📍</span>
+                                    <div>
+                                        <h4 className="font-bold text-slate-800 text-sm">{event.venueName}</h4>
+                                        <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                                            {venue.address && `${venue.address}, `}
+                                            {venue.city && `${venue.city}, `}
+                                            {venue.state && `${venue.state}, `}
+                                            {venue.zipcode && `${venue.zipcode}, `}
+                                            {venue.country}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {venue.coordinates && venue.coordinates.length === 2 && (
+                                    <div className="pt-2">
+                                        <span className="text-[10px] text-slate-400 block mb-1">GPS Coordinates</span>
+                                        <a
+                                            href={`https://www.google.com/maps/search/?api=1&query=${venue.coordinates[1]},${venue.coordinates[0]}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition rounded-lg text-xs font-semibold"
+                                        >
+                                            🗺 View on Google Maps
+                                            <span className="text-[10px] font-normal opacity-85">({venue.coordinates[1].toFixed(4)}, {venue.coordinates[0].toFixed(4)})</span>
+                                        </a>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Ticket Stats / Seat Tracker Card */}
+                        <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm space-y-4">
+                            <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400">Seat Tracker</h3>
+
+                            <div className="space-y-3">
+                                <div className="flex justify-between items-end">
+                                    <span className="text-xs text-slate-500 font-medium">Capacity Booked</span>
+                                    <span className="text-sm font-bold text-slate-800">{event.totalBooked} / {event.totalSeats} seats</span>
+                                </div>
+
+                                {/* Progress Bar */}
+                                <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                                    <div
+                                        className="bg-indigo-600 h-full transition-all duration-500"
+                                        style={{ width: `${Math.min(100, bookedPercent)}%` }}
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-2 pt-2 text-center text-xs">
+                                    <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                                        <span className="text-slate-400 block text-[10px]">Left Seats</span>
+                                        <span className="font-bold text-emerald-600 text-sm mt-0.5 block">{event.leftSeats}</span>
+                                    </div>
+                                    <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                                        <span className="text-slate-400 block text-[10px]">Ticket Available</span>
+                                        <span className="font-bold text-indigo-600 text-sm mt-0.5 block">{event.ticketQtyAvailable}</span>
+                                    </div>
+                                </div>
+
+                                {event.isFewSeatsAvailable && (
+                                    <div className="bg-rose-50 text-rose-700 border border-rose-100 rounded-lg p-2.5 text-center text-xs font-semibold animate-pulse">
+                                        ⚠️ Selling out fast! Only a few seats left.
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
 
-                {/* ── Recent Attendees Card ── */}
-                {attendees.total > 0 && (
-                    <div className="bg-white rounded-2xl border shadow-sm p-6">
-                        <h3 className="font-bold text-gray-800 mb-4">
-                            👥 Recent Attendees
-                            <span className="ml-2 text-sm font-normal text-gray-500">({attendees.total.toLocaleString()} total)</span>
-                        </h3>
-                        <div className="flex flex-wrap gap-4">
-                            {attendees.recent.map((u) => (
-                                <div key={u._id} className="flex flex-col items-center gap-1">
-                                    <Avatar
-                                        src={u.profileImage}
-                                        name={`${u.firstName} ${u.lastName}`}
-                                        size="w-12 h-12"
-                                    />
-                                    <p className="text-xs text-gray-600 text-center max-w-[64px] truncate">
-                                        {u.firstName}
-                                    </p>
+                {/* ── Similar Events Section ── */}
+                {similarEvents.length > 0 && (
+                    <div className="pt-8 border-t border-slate-200 space-y-6">
+                        <h2 className="text-xl font-bold text-slate-800">Similar Events You Might Like</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {similarEvents.map((item) => (
+                                <div
+                                    key={item._id}
+                                    onClick={() => navigate(`/events/${item._id}`)}
+                                    className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition duration-200 cursor-pointer group flex flex-col justify-between"
+                                >
+                                    <div>
+                                        {/* Image */}
+                                        <div className="aspect-video bg-slate-100 relative overflow-hidden">
+                                            {item.posterImage && item.posterImage.length > 0 ? (
+                                                <img
+                                                    src={item.posterImage[0]}
+                                                    alt={item.eventTitle}
+                                                    className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-slate-400 text-3xl">🎪</div>
+                                            )}
+                                            <div className="absolute top-3 right-3">
+                                                <StatusBadge status={item.status} />
+                                            </div>
+                                        </div>
+
+                                        {/* Info */}
+                                        <div className="p-5 space-y-3">
+                                            {item.eventCategory && (
+                                                <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider bg-indigo-50 px-2 py-0.5 rounded">
+                                                    {item.eventCategory.name}
+                                                </span>
+                                            )}
+                                            <h3 className="font-bold text-slate-800 text-sm leading-snug group-hover:text-indigo-600 transition truncate">
+                                                {item.eventTitle}
+                                            </h3>
+                                            <p className="text-xs text-slate-500 line-clamp-2">
+                                                {item.shortdesc}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="px-5 py-4 border-t border-slate-50 bg-slate-50 flex items-center justify-between text-xs text-slate-500">
+                                        <span>📍 {item.venueAddress?.city || "Unknown"}, {item.venueAddress?.country || ""}</span>
+                                        <span className="font-semibold text-indigo-600">
+                                            {item.duration || "N/A"}
+                                        </span>
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -500,8 +688,8 @@ const EventDetail = () => {
                 )}
 
                 {/* ── Meta Footer ── */}
-                <div className="text-xs text-gray-400 text-right">
-                    Event ID: {event._id} &nbsp;·&nbsp; Created: {fmt(event.createdAt)}
+                <div className="text-xs text-slate-400 text-right pt-6 border-t border-slate-200">
+                    Event ID: {event._id} &nbsp;·&nbsp; Created: {fmt(event.createdAt)} &nbsp;·&nbsp; Last Updated: {fmt(event.updatedAt)}
                 </div>
             </div>
         </div>

@@ -1,11 +1,13 @@
 // src/App.jsx
 
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
 import LayoutWrapper from "./Component/Layout/LayoutWrapper";
 import Loader from "./Component/Common/Loader";
+import LoadingOverlay from "./Component/Common/LoadingOverlay";
+import { loaderState } from "./api/loaderState";
 
 
 // Lazy-loaded pages
@@ -36,8 +38,18 @@ const FinanceDashboard = lazy(() => import("./Pages/Finance/FinanceDashboard"));
 const Reports = lazy(() => import("./Pages/Report/Reports"));
 
 function App() {
+  const [globalLoading, setGlobalLoading] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = loaderState.subscribe((isLoading) => {
+      setGlobalLoading(isLoading);
+    });
+    return unsubscribe;
+  }, []);
+
   return (
     <Router>
+      <LoadingOverlay isLoading={globalLoading} />
       <Suspense fallback={<Loader />}>
         <Routes>
           {/* Public Routes */}

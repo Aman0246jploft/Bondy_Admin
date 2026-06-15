@@ -96,23 +96,23 @@ const UserList = ({ roleId, title }) => {
         },
         { key: "email", label: "Email" },
         { key: "contactNumber", label: "Contact" },
-        {
-            key: "isDisable",
-            label: "Status",
-            render: (value, row, rowIndex) => (
-                <label className="inline-flex items-center cursor-pointer">
-                    <input
-                        type="checkbox"
-                        className="sr-only peer"
-                        checked={!value}
-                        onChange={() => toggleStatus(row, rowIndex)}
-                    />
-                    <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-green-500 relative transition-colors">
-                        <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full peer-checked:translate-x-5 transition-transform" />
-                    </div>
-                </label>
-            ),
-        },
+        // {
+        //     key: "isDisable",
+        //     label: "Status",
+        //     render: (value, row, rowIndex) => (
+        //         <label className="inline-flex items-center cursor-pointer">
+        //             <input
+        //                 type="checkbox"
+        //                 className="sr-only peer"
+        //                 checked={!value}
+        //                 onChange={() => toggleStatus(row, rowIndex)}
+        //             />
+        //             <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-green-500 relative transition-colors">
+        //                 <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full peer-checked:translate-x-5 transition-transform" />
+        //             </div>
+        //         </label>
+        //     ),
+        // },
         {
             key: "actions",
             label: "Actions",
