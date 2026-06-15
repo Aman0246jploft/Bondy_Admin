@@ -8,7 +8,7 @@ import CategoryReducer from '../slices/categorySlice';
 export const store = configureStore({
   reducer: {
     user: userReducer,
-    category:CategoryReducer
+    category: CategoryReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(logger),

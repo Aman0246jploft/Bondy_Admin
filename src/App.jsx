@@ -17,6 +17,7 @@ const Organizers = lazy(() => import("./Pages/User/Organizers"));
 const UserDetailPage = lazy(() => import("./Pages/User/UserDetailPage"));
 const VerificationRequests = lazy(() => import("./Pages/Verification/VerificationRequests"));
 const Categories = lazy(() => import("./Pages/Category/Categories"));
+const Banners = lazy(() => import("./Pages/Banner/Banners"));
 const Events = lazy(() => import("./Pages/Events/Events"));
 const EventDetailPage = lazy(() => import("./Pages/Events/EventDetailPage"));
 const Courses = lazy(() => import("./Pages/Courses/Courses"));
@@ -53,6 +54,7 @@ function App() {
               <Route path="/users/:userId" element={<UserDetailPage />} />
               <Route path="/verification-requests" element={<VerificationRequests />} />
               <Route path="/categories" element={<Categories />} />
+              <Route path="/banners" element={<Banners />} />
               <Route path="/events" element={<Events />} />
               <Route path="/events/:eventId" element={<EventDetailPage />} />
               <Route path="/courses" element={<Courses />} />
