@@ -112,6 +112,11 @@ const TaxList = ({ title }) => {
             render: (val, row) => row.type === 'percentage' ? `${val}%` : val
         },
         {
+            key: "description",
+            label: "Description",
+            render: (val) => val || "-"
+        },
+        {
             key: "active",
             label: "Status",
             render: (val) => (
