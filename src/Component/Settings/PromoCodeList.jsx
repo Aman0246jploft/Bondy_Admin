@@ -10,6 +10,7 @@ const PromoCodeList = ({ title }) => {
     const [total, setTotal] = useState(0);
     const [page, setPage] = useState(1);
     const [limit] = useState(10);
+    const [filterType, setFilterType] = useState('default');
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingPromo, setEditingPromo] = useState(null);
@@ -31,6 +32,7 @@ const PromoCodeList = ({ title }) => {
                 params: {
                     pageNo: page,
                     size: limit,
+                    filter: filterType,
                 },
             });
             if (response.data?.status) {
@@ -42,7 +44,7 @@ const PromoCodeList = ({ title }) => {
         } finally {
             setLoading(false);
         }
-    }, [page, limit]);
+    }, [page, limit, filterType]);
 
     useEffect(() => {
         fetchPromoCodes();
@@ -173,12 +175,25 @@ const PromoCodeList = ({ title }) => {
         <div className="p-4 space-y-4">
             <div className="flex justify-between items-center">
                 <h2 className="text-xl font-bold">{title}</h2>
-                <button
-                    onClick={() => openModal()}
-                    className="bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-blue-700"
-                >
-                    <FiPlus /> Add Promo Code
-                </button>
+                <div className="flex items-center gap-4">
+                    <select
+                        className="border border-gray-300 p-2 rounded focus:outline-none"
+                        value={filterType}
+                        onChange={(e) => {
+                            setFilterType(e.target.value);
+                            setPage(1);
+                        }}
+                    >
+                        <option value="default">Default Promos</option>
+                        <option value="all">All Promos</option>
+                    </select>
+                    <button
+                        onClick={() => openModal()}
+                        className="bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-blue-700"
+                    >
+                        <FiPlus /> Add Promo Code
+                    </button>
+                </div>
             </div>
 
             <DataTable columns={columns} data={data} loading={loading} />
