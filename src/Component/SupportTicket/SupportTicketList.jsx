@@ -177,7 +177,7 @@ const SupportTicketList = ({ title }) => {
                 payload.adminComment = updateFormData.adminComment.trim();
             }
 
-            const response = await authAxiosClient.put(
+            const response = await authAxiosClient.post(
                 `/support/admin/update/${selectedTicket.ticketId}`,
                 payload
             );
