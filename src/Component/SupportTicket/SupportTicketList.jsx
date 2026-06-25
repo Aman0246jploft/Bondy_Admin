@@ -460,7 +460,7 @@ const SupportTicketList = ({ title }) => {
                                 >
                                     ✕
                                 </button>
-                            </div>0
+                            </div>
 
                             <div className="space-y-4">
                                 <div className="grid grid-cols-2 gap-4">
@@ -518,12 +518,12 @@ const SupportTicketList = ({ title }) => {
 
                                 <div className="border-t pt-4">
                                     <label className="block text-sm font-medium text-gray-600 mb-2">Subject</label>
-                                    <p className="text-sm">{selectedTicket.subject}</p>
+                                    <p className="text-sm" style={{ wordBreak: "break-word" }}>{selectedTicket.subject}</p>
                                 </div>
 
                                 <div className="border-t pt-4">
                                     <label className="block text-sm font-medium text-gray-600 mb-2">Description</label>
-                                    <p className="text-sm whitespace-pre-wrap">{selectedTicket.description}</p>
+                                    <p className="text-sm whitespace-pre-wrap" style={{ wordBreak: "break-word" }}>{selectedTicket.description}</p>
                                 </div>
 
                                 {selectedTicket.images && selectedTicket.images.length > 0 && (
@@ -545,44 +545,23 @@ const SupportTicketList = ({ title }) => {
                                 {selectedTicket.adminComments && selectedTicket.adminComments.length > 0 && (
                                     <div className="border-t pt-4">
                                         <label className="block text-sm font-medium text-gray-600 mb-2">Admin Comments</label>
-                                        <div className="space-y-2">
+                                        <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
                                             {selectedTicket.adminComments.map((comment, idx) => (
-                                                <div key={idx} className="bg-gray-50 p-3 rounded">
+                                                <div key={idx} className="p-3 rounded border" style={{ backgroundColor: theme.colors.background === "#fff" ? "#f9fafb" : "rgba(255,255,255,0.05)", borderColor: theme.colors.border, wordBreak: "break-word" }}>
                                                     <div className="flex justify-between items-start mb-1">
-                                                        <p className="text-sm font-medium">
+                                                        <p className="text-sm font-medium" style={{ color: theme.colors.primary || "#23ada4" }}>
                                                             {comment.adminId
                                                                 ? `${comment.adminId.firstName || ""} ${comment.adminId.lastName || ""}`.trim() || "Admin"
                                                                 : "Admin"}
                                                         </p>
-                                                        <p className="text-xs text-gray-500">{formatDate(comment.createdAt)}</p>
+                                                        <p className="text-xs text-gray-400">{formatDate(comment.createdAt)}</p>
                                                     </div>
-                                                    <p className="text-sm">{comment.comment}</p>
+                                                    <p className="text-sm" style={{ color: theme.colors.textPrimary }}>{comment.comment}</p>
                                                 </div>
                                             ))}
                                         </div>
                                     </div>
                                 )}
-
-                                <div className="flex justify-end gap-2 pt-4 border-t">
-                                    <button
-                                        onClick={() => {
-                                            setIsDetailModalOpen(false);
-                                            handleOpenUpdateModal(selectedTicket);
-                                        }}
-                                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                                    >
-                                        Update Status
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            setIsDetailModalOpen(false);
-                                            setSelectedTicket(null);
-                                        }}
-                                        className="px-4 py-2 border rounded"
-                                    >
-                                        Close
-                                    </button>
-                                </div>
                             </div>
                         </div>
                     </div>
