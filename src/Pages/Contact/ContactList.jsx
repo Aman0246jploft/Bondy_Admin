@@ -59,7 +59,7 @@ const ContactList = () => {
     };
 
     const statusColors = {
-        New: "bg-blue-100 text-blue-800",
+        New: "bg-teal-100 text-teal-800",
         Read: "bg-yellow-100 text-yellow-800",
         Replied: "bg-green-100 text-green-800",
     };
@@ -74,7 +74,7 @@ const ContactList = () => {
 
             {loading ? (
                 <div className="flex justify-center p-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500"></div>
                 </div>
             ) : (
                 <>
@@ -104,7 +104,7 @@ const ContactList = () => {
                                                 {contact.fullName}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                                <a href={`mailto:${contact.email}`} className="text-blue-500 hover:text-blue-700">
+                                                <a href={`mailto:${contact.email}`} className="text-teal-500 hover:text-teal-700">
                                                     {contact.email}
                                                 </a>
                                             </td>
@@ -120,7 +120,7 @@ const ContactList = () => {
                                                         {contact.message.substring(0, 50)}...
                                                         <button
                                                             onClick={() => setSelectedContact(contact)}
-                                                            className="text-blue-500 hover:text-blue-700 ml-1 text-xs font-bold underline"
+                                                            className="text-teal-500 hover:text-teal-700 ml-1 text-xs font-bold underline"
                                                         >
                                                             Read More
                                                         </button>
@@ -133,7 +133,7 @@ const ContactList = () => {
                                                 <select
                                                     value={contact.status}
                                                     onChange={(e) => handleStatusUpdate(contact._id, e.target.value)}
-                                                    className={`px-2 py-1 rounded-full text-xs font-semibold border-0 cursor-pointer focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${statusColors[contact.status] || "bg-gray-100 text-gray-800"}`}
+                                                    className={`px-2 py-1 rounded-full text-xs font-semibold border-0 cursor-pointer focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 ${statusColors[contact.status] || "bg-gray-100 text-gray-800"}`}
                                                 >
                                                     <option value="New">New</option>
                                                     <option value="Read">Read</option>
@@ -181,7 +181,7 @@ const ContactList = () => {
                                 <button
                                     key={i + 1}
                                     onClick={() => setPage(i + 1)}
-                                    className={`px-3 py-1 rounded border ${page === i + 1 ? "bg-blue-500 text-white border-blue-500" : ""
+                                    className={`px-3 py-1 rounded border ${page === i + 1 ? "bg-teal-500 text-white border-teal-500" : ""
                                         }`}
                                     style={page !== i + 1 ? {
                                         borderColor: theme.colors.border,
@@ -238,7 +238,7 @@ const ContactList = () => {
                         <div className="mt-6 flex justify-end">
                             <button
                                 onClick={() => setSelectedContact(null)}
-                                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                                className="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 transition"
                             >
                                 Close
                             </button>

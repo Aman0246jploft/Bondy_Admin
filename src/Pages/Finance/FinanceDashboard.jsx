@@ -23,13 +23,13 @@ const STATUS_COLORS = {
 // ─── Stat Card ────────────────────────────────────────────────────────────────
 const StatCard = ({ label, value, sub, color = "blue" }) => {
   const border = {
-    blue: "border-blue-400",
+    blue: "border-teal-400",
     green: "border-green-400",
     yellow: "border-yellow-400",
     red: "border-red-400",
     purple: "border-purple-400",
-    indigo: "border-indigo-400",
-  }[color] || "border-blue-400";
+    indigo: "border-teal-400",
+  }[color] || "border-teal-400";
 
   return (
     <div className={`bg-white rounded-xl shadow p-5 border-l-4 ${border}`}>
@@ -269,7 +269,7 @@ const FinanceDashboard = () => {
       const res = await financeApi.getGlobalSettings();
       if (res?.status) {
         const settings = res.data?.settings || [];
-        
+
         const commCfg = settings.find((s) => s.key === "COMMISSION_CONFIG");
         if (commCfg) {
           setCommission(commCfg.value);
@@ -390,7 +390,7 @@ const FinanceDashboard = () => {
                 <button
                   onClick={handleCommissionSave}
                   disabled={commissionSaving}
-                  className="bg-blue-500 text-white text-xs px-2 py-1 rounded hover:bg-blue-600 disabled:opacity-50"
+                  className="bg-teal-500 text-white text-xs px-2 py-1 rounded hover:bg-teal-600 disabled:opacity-50"
                 >
                   {commissionSaving ? "..." : "Save"}
                 </button>
@@ -403,12 +403,12 @@ const FinanceDashboard = () => {
               </>
             ) : (
               <>
-                <span className="text-lg font-bold text-blue-600">
+                <span className="text-lg font-bold text-teal-600">
                   {commission != null ? `${commission}%` : "—"}
                 </span>
                 <button
                   onClick={() => setCommissionEdit(true)}
-                  className="text-xs text-blue-500 hover:underline"
+                  className="text-xs text-teal-500 hover:underline"
                 >
                   Edit
                 </button>
@@ -432,7 +432,7 @@ const FinanceDashboard = () => {
                 <button
                   onClick={handleMinPayoutSave}
                   disabled={minPayoutSaving}
-                  className="bg-indigo-500 text-white text-xs px-2 py-1 rounded hover:bg-indigo-600 disabled:opacity-50"
+                  className="bg-teal-500 text-white text-xs px-2 py-1 rounded hover:bg-teal-600 disabled:opacity-50"
                 >
                   {minPayoutSaving ? "..." : "Save"}
                 </button>
@@ -445,12 +445,12 @@ const FinanceDashboard = () => {
               </>
             ) : (
               <>
-                <span className="text-lg font-bold text-indigo-600">
+                <span className="text-lg font-bold text-teal-600">
                   ₮{Number(minPayout || 0).toLocaleString()}
                 </span>
                 <button
                   onClick={() => setMinPayoutEdit(true)}
-                  className="text-xs text-indigo-500 hover:underline"
+                  className="text-xs text-teal-500 hover:underline"
                 >
                   Edit
                 </button>
@@ -486,7 +486,7 @@ const FinanceDashboard = () => {
             <input
               type="text"
               placeholder="Search ID, name, or course..."
-              className="border rounded-lg px-3 py-2 text-sm w-56 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="border rounded-lg px-3 py-2 text-sm w-56 focus:outline-none focus:ring-2 focus:ring-teal-400"
               value={txnSearch}
               onChange={(e) => { setTxnSearch(e.target.value); setTxnPage(1); }}
             />
@@ -528,12 +528,12 @@ const FinanceDashboard = () => {
                       {t.eventId?.eventTitle || t.courseId?.courseTitle || "—"}
                     </td>
                     <td className="px-4 py-3">
-                      <span className="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-700 font-medium">
+                      <span className="px-2 py-1 rounded-full text-xs bg-teal-100 text-teal-700 font-medium">
                         {t.bookingType}
                       </span>
                     </td>
                     <td className="px-4 py-3 font-semibold text-gray-800">{fmt(t.totalAmount)}</td>
-                    <td className="px-4 py-3 text-indigo-600">{fmt(t.commissionAmount)}</td>
+                    <td className="px-4 py-3 text-teal-600">{fmt(t.commissionAmount)}</td>
                     <td className="px-4 py-3 text-green-600">{fmt(t.organizerEarning)}</td>
                     <td className="px-4 py-3 text-gray-500">{fmtDate(t.createdAt)}</td>
                   </tr>
@@ -575,7 +575,7 @@ const FinanceDashboard = () => {
           <h2 className="font-semibold text-gray-700">Payout Requests</h2>
           <div className="flex gap-3 flex-wrap">
             <select
-              className="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
               value={statusFilter}
               onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
             >
@@ -587,7 +587,7 @@ const FinanceDashboard = () => {
             <input
               type="text"
               placeholder="Search by name or email..."
-              className="border rounded-lg px-3 py-2 text-sm w-56 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="border rounded-lg px-3 py-2 text-sm w-56 focus:outline-none focus:ring-2 focus:ring-teal-400"
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             />

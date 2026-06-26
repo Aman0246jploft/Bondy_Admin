@@ -111,8 +111,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             borderColor: theme.colors.border,
           }}
         >
-          <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
-            <span className="text-white font-bold text-lg">L</span>
+          <div className="w-10 h-10  rounded-lg flex items-center justify-center flex-shrink-0">
+            <img src="public\sidebar-logo.svg" />
           </div>
           {/* Always show text on mobile, conditionally on desktop */}
           <div className={clsx("ml-3 overflow-hidden", !isOpen && "md:hidden")}>
@@ -120,7 +120,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
               className="text-xl font-bold"
               style={{ color: theme.colors.textPrimary }}
             >
-              MyApp
+              Bondy
             </h1>
             <p
               className="text-xs"

@@ -20,7 +20,7 @@ const Avatar = ({ src, name, size = "w-16 h-16" }) => {
     return src ? (
         <img src={src} alt={name} className={`${size} rounded-full object-cover border-4 border-white shadow-md`} />
     ) : (
-        <div className={`${size} rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xl border-4 border-white shadow-md`}>
+        <div className={`${size} rounded-full bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-xl border-4 border-white shadow-md`}>
             {initials}
         </div>
     );
@@ -84,7 +84,7 @@ const UserDetail = () => {
         return (
             <div className="flex items-center justify-center min-h-screen">
                 <div className="text-center">
-                    <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                    <div className="w-12 h-12 border-4 border-teal-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
                     <p className="text-gray-500">Loading profile details…</p>
                 </div>
             </div>
@@ -95,7 +95,7 @@ const UserDetail = () => {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen gap-4">
                 <p className="text-red-500 font-semibold">{error || "User not found."}</p>
-                <button onClick={() => navigate(location.state?.from || "/")} className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                <button onClick={() => navigate(location.state?.from || "/")} className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700">
                     ← Go Back
                 </button>
             </div>
@@ -128,9 +128,9 @@ const UserDetail = () => {
                 <p className="text-xs text-gray-500 mt-1">
                     {item.eventCategory?.name || item.courseCategory?.name || "Uncategorized"}
                 </p>
-                <p className="text-xs text-indigo-600 mt-1 font-medium">
-                    {type === 'event' 
-                        ? (item.startDate ? fmt(item.startDate) : "N/A") 
+                <p className="text-xs text-teal-600 mt-1 font-medium">
+                    {type === 'event'
+                        ? (item.startDate ? fmt(item.startDate) : "N/A")
                         : (item.schedules?.[0]?.startDate ? fmt(item.schedules[0].startDate) : "N/A")}
                 </p>
             </div>
@@ -144,7 +144,7 @@ const UserDetail = () => {
             <div className="bg-white border-b sticky top-0 z-20 px-6 py-3 flex items-center gap-4 shadow-sm">
                 <button
                     onClick={() => navigate(backPath)}
-                    className="flex items-center gap-1 text-indigo-600 hover:text-indigo-800 font-medium text-sm"
+                    className="flex items-center gap-1 text-teal-600 hover:text-teal-800 font-medium text-sm"
                 >
                     ← Back to {isOrganizer ? "Organizers" : "Customers"}
                 </button>
@@ -167,7 +167,7 @@ const UserDetail = () => {
             </div>
 
             <div className="max-w-7xl mx-auto px-6 py-6 space-y-6">
-                
+
                 {/* ── Profile Header Section ── */}
                 <div className="bg-white rounded-2xl border shadow-sm p-6 flex flex-col md:flex-row gap-6 items-start">
                     <Avatar src={profileImage} name={fullName} size="w-24 h-24" />
@@ -189,7 +189,7 @@ const UserDetail = () => {
                                 <p className="text-xs text-gray-400 uppercase font-semibold mb-1">Interests</p>
                                 <div className="flex flex-wrap gap-1">
                                     {interestedCategories.map(cat => (
-                                        <span key={cat} className="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-xs rounded-md border border-indigo-100">
+                                        <span key={cat} className="px-2 py-0.5 bg-teal-50 text-teal-700 text-xs rounded-md border border-teal-100">
                                             {cat}
                                         </span>
                                     ))}
@@ -210,11 +210,11 @@ const UserDetail = () => {
                 {/* ── Organizer Specifics ── */}
                 {isOrganizer && (
                     <div className="space-y-6">
-                        
+
                         <div className="w-full h-px bg-gray-200 my-8" />
-                        
+
                         <h3 className="text-lg font-bold text-gray-800">Organizer Business Profile</h3>
-                        
+
                         {/* Business Info & Verification */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="bg-white rounded-xl border p-5 shadow-sm space-y-4">
@@ -224,16 +224,15 @@ const UserDetail = () => {
                                 </div>
                                 <div>
                                     <p className="text-xs text-gray-500 uppercase font-bold mb-1">Organizer Status</p>
-                                    <span className={`px-2 py-1 rounded text-xs font-semibold ${
-                                        organizerVerificationStatus === 'approved' ? 'bg-green-100 text-green-700' :
+                                    <span className={`px-2 py-1 rounded text-xs font-semibold ${organizerVerificationStatus === 'approved' ? 'bg-green-100 text-green-700' :
                                         organizerVerificationStatus === 'rejected' ? 'bg-red-100 text-red-700' :
-                                        'bg-blue-100 text-blue-700'
-                                    }`}>
+                                            'bg-teal-100 text-teal-700'
+                                        }`}>
                                         {organizerVerificationStatus?.toUpperCase() || "PENDING"}
                                     </span>
                                 </div>
                             </div>
-                            
+
                             <div className="bg-white rounded-xl border p-5 shadow-sm">
                                 <p className="text-xs text-gray-500 uppercase font-bold mb-3">Submitted Documents</p>
                                 {documents?.length > 0 ? (
@@ -250,15 +249,14 @@ const UserDetail = () => {
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center gap-3">
-                                                    <span className={`text-xs font-bold px-2 py-1 rounded ${
-                                                        doc.status === 'approved' ? 'text-green-700 bg-green-50' : 
-                                                        doc.status === 'rejected' ? 'text-red-700 bg-red-50' : 
-                                                        'text-blue-700 bg-blue-50'
-                                                    }`}>
+                                                    <span className={`text-xs font-bold px-2 py-1 rounded ${doc.status === 'approved' ? 'text-green-700 bg-green-50' :
+                                                        doc.status === 'rejected' ? 'text-red-700 bg-red-50' :
+                                                            'text-teal-700 bg-teal-50'
+                                                        }`}>
                                                         {doc.status?.toUpperCase()}
                                                     </span>
                                                     {doc.file && (
-                                                        <a href={doc.file} target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline text-xs font-medium">
+                                                        <a href={doc.file} target="_blank" rel="noreferrer" className="text-teal-600 hover:underline text-xs font-medium">
                                                             View
                                                         </a>
                                                     )}
@@ -285,21 +283,19 @@ const UserDetail = () => {
                             <div className="flex border-b bg-gray-50">
                                 <button
                                     onClick={() => setActiveTab("events")}
-                                    className={`px-6 py-3 text-sm font-semibold transition ${
-                                        activeTab === "events"
-                                            ? "bg-white border-b-2 border-indigo-500 text-indigo-600"
-                                            : "text-gray-500 hover:text-gray-700"
-                                    }`}
+                                    className={`px-6 py-3 text-sm font-semibold transition ${activeTab === "events"
+                                        ? "bg-white border-b-2 border-teal-500 text-teal-600"
+                                        : "text-gray-500 hover:text-gray-700"
+                                        }`}
                                 >
                                     Events
                                 </button>
                                 <button
                                     onClick={() => setActiveTab("courses")}
-                                    className={`px-6 py-3 text-sm font-semibold transition ${
-                                        activeTab === "courses"
-                                            ? "bg-white border-b-2 border-indigo-500 text-indigo-600"
-                                            : "text-gray-500 hover:text-gray-700"
-                                    }`}
+                                    className={`px-6 py-3 text-sm font-semibold transition ${activeTab === "courses"
+                                        ? "bg-white border-b-2 border-teal-500 text-teal-600"
+                                        : "text-gray-500 hover:text-gray-700"
+                                        }`}
                                 >
                                     Courses
                                 </button>

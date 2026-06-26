@@ -452,7 +452,7 @@ const VerificationRequests = () => {
                                                         href={selectedUser.socialMediaLink?.startsWith("http") ? selectedUser.socialMediaLink : `https://${selectedUser.socialMediaLink}`}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="text-blue-500 hover:underline"
+                                                        className="text-teal-500 hover:underline"
                                                     >
                                                         {selectedUser.socialMediaLink}
                                                     </a>

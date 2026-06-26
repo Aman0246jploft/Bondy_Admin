@@ -11,7 +11,7 @@ const BuySellRentMain = () => {
   const dispatch = useDispatch();
   const { showToast } = useToast();
   const categoryState = useSelector((state) => state.category);
-  
+
   const [activeTab, setActiveTab] = useState('browse'); // 'browse', 'create'
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedPostType, setSelectedPostType] = useState('sell');
@@ -138,21 +138,19 @@ const BuySellRentMain = () => {
           <nav className="-mb-px flex space-x-8">
             <button
               onClick={() => setActiveTab('browse')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                activeTab === 'browse'
-                  ? 'border-blue-500 text-blue-600'
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === 'browse'
+                  ? 'border-teal-500 text-teal-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
+                }`}
             >
               Browse Posts
             </button>
             <button
               onClick={() => setActiveTab('create')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                activeTab === 'create'
-                  ? 'border-blue-500 text-blue-600'
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === 'create'
+                  ? 'border-teal-500 text-teal-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
+                }`}
             >
               Create Post
             </button>
@@ -174,7 +172,7 @@ const BuySellRentMain = () => {
                 <select
                   value={filters.postType}
                   onChange={(e) => handleFilterChange('postType', e.target.value)}
-                  className="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-teal-500"
                 >
                   <option value="">All Types</option>
                   <option value="sell">Sell</option>
@@ -190,7 +188,7 @@ const BuySellRentMain = () => {
                 <select
                   value={filters.categoryId}
                   onChange={(e) => handleFilterChange('categoryId', e.target.value)}
-                  className="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-teal-500"
                 >
                   <option value="">All Categories</option>
                   {categories.map((category) => (
@@ -210,7 +208,7 @@ const BuySellRentMain = () => {
                   value={filters.search}
                   onChange={(e) => handleFilterChange('search', e.target.value)}
                   placeholder="Search posts..."
-                  className="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
@@ -223,7 +221,7 @@ const BuySellRentMain = () => {
                   value={filters.city}
                   onChange={(e) => handleFilterChange('city', e.target.value)}
                   placeholder="City"
-                  className="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
@@ -236,7 +234,7 @@ const BuySellRentMain = () => {
                   value={filters.minPrice}
                   onChange={(e) => handleFilterChange('minPrice', e.target.value)}
                   placeholder="Min price"
-                  className="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
@@ -249,7 +247,7 @@ const BuySellRentMain = () => {
                   value={filters.maxPrice}
                   onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
                   placeholder="Max price"
-                  className="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
@@ -301,7 +299,7 @@ const BuySellRentMain = () => {
           {!showCreateForm ? (
             <div className="bg-white p-6 rounded-lg border border-gray-200">
               <h3 className="text-lg font-semibold mb-4">Create New Post</h3>
-              
+
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -310,7 +308,7 @@ const BuySellRentMain = () => {
                   <select
                     value={selectedPostType}
                     onChange={(e) => setSelectedPostType(e.target.value)}
-                    className="border border-gray-300 rounded-lg px-3 py-2 w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="border border-gray-300 rounded-lg px-3 py-2 w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-teal-500"
                   >
                     <option value="sell">I want to Sell</option>
                     <option value="buy">I want to Buy</option>
@@ -325,7 +323,7 @@ const BuySellRentMain = () => {
                   <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="border border-gray-300 rounded-lg px-3 py-2 w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="border border-gray-300 rounded-lg px-3 py-2 w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-teal-500"
                   >
                     <option value="">Select a category</option>
                     {categories.map((category) => (

@@ -159,7 +159,7 @@ const PromoCodeList = ({ title }) => {
             render: (value, row) => (
                 <div className="flex gap-3">
                     <button onClick={() => openModal(row)}>
-                        <FiEdit2 className="w-4 h-4 text-blue-500 hover:text-blue-700" />
+                        <FiEdit2 className="w-4 h-4 text-teal-500 hover:text-teal-700" />
                     </button>
                     <button onClick={() => handleDelete(row)}>
                         <BsTrash2 className="w-4 h-4 text-red-500 hover:text-red-700" />
@@ -175,7 +175,7 @@ const PromoCodeList = ({ title }) => {
                 <h2 className="text-xl font-bold">{title}</h2>
                 <button
                     onClick={() => openModal()}
-                    className="bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-blue-700"
+                    className="bg-teal-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-teal-700"
                 >
                     <FiPlus /> Add Promo Code
                 </button>
@@ -299,7 +299,7 @@ const PromoCodeList = ({ title }) => {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                                    className="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700"
                                 >
                                     Save
                                 </button>

@@ -40,8 +40,8 @@ const StatusBadge = ({ status }) => {
         Active: "bg-green-100 text-green-700 border border-green-300",
         Live: "bg-green-100 text-green-700 border border-green-300",
         LIVE: "bg-green-100 text-green-700 border border-green-300",
-        Upcoming: "bg-blue-100 text-blue-700 border border-blue-300",
-        UPCOMING: "bg-blue-100 text-blue-700 border border-blue-300",
+        Upcoming: "bg-teal-100 text-teal-700 border border-teal-300",
+        UPCOMING: "bg-teal-100 text-teal-700 border border-teal-300",
         Past: "bg-gray-100 text-gray-600 border border-gray-300",
         PAST: "bg-gray-100 text-gray-600 border border-gray-300",
     };
@@ -71,7 +71,7 @@ const Avatar = ({ src, name, size = "w-10 h-10" }) => {
     return src ? (
         <img src={src} alt={name} className={`${size} rounded-full object-cover border-2 border-white shadow`} />
     ) : (
-        <div className={`${size} rounded-full bg-blue-200 text-blue-800 flex items-center justify-center font-bold text-sm border-2 border-white shadow`}>
+        <div className={`${size} rounded-full bg-teal-200 text-teal-800 flex items-center justify-center font-bold text-sm border-2 border-white shadow`}>
             {initials}
         </div>
     );
@@ -113,7 +113,7 @@ const CourseDetail = () => {
         return (
             <div className="flex items-center justify-center min-h-screen">
                 <div className="text-center">
-                    <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                    <div className="w-12 h-12 border-4 border-teal-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
                     <p className="text-gray-500">Loading course details…</p>
                 </div>
             </div>
@@ -124,7 +124,7 @@ const CourseDetail = () => {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen gap-4">
                 <p className="text-red-500 font-semibold">{error || "Course not found."}</p>
-                <button onClick={() => navigate("/courses")} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                <button onClick={() => navigate("/courses")} className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700">
                     ← Back to Courses
                 </button>
             </div>
@@ -181,14 +181,14 @@ const CourseDetail = () => {
                                 <div className="flex gap-2">
                                     <button
                                         onClick={() => setMediaType("image")}
-                                        className={`px-3 py-1 text-xs rounded-lg font-medium transition ${mediaType === "image" ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+                                        className={`px-3 py-1 text-xs rounded-lg font-medium transition ${mediaType === "image" ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
                                     >
                                         Images ({images.length})
                                     </button>
                                     {videos.length > 0 && (
                                         <button
                                             onClick={() => setMediaType("video")}
-                                            className={`px-3 py-1 text-xs rounded-lg font-medium transition ${mediaType === "video" ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+                                            className={`px-3 py-1 text-xs rounded-lg font-medium transition ${mediaType === "video" ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
                                         >
                                             Teaser Video
                                         </button>
@@ -228,7 +228,7 @@ const CourseDetail = () => {
                                             <img
                                                 src={img}
                                                 alt=""
-                                                className={`w-20 h-14 object-cover rounded-lg border-2 transition ${i === activeImg ? "border-blue-500 scale-95 shadow" : "border-slate-200 opacity-70 hover:opacity-100"}`}
+                                                className={`w-20 h-14 object-cover rounded-lg border-2 transition ${i === activeImg ? "border-teal-500 scale-95 shadow" : "border-slate-200 opacity-70 hover:opacity-100"}`}
                                             />
                                         </button>
                                     ))}
@@ -240,11 +240,11 @@ const CourseDetail = () => {
                         <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm space-y-4">
                             <div className="flex items-center justify-between">
                                 {course.courseCategory && (
-                                    <div className="flex items-center gap-2 bg-blue-50 border border-blue-100 px-3 py-1 rounded-full">
+                                    <div className="flex items-center gap-2 bg-teal-50 border border-teal-100 px-3 py-1 rounded-full">
                                         {course.courseCategory.image && (
                                             <img src={course.courseCategory.image} alt="" className="w-4 h-4 rounded-full object-cover" />
                                         )}
-                                        <span className="text-xs font-semibold text-blue-700 capitalize">
+                                        <span className="text-xs font-semibold text-teal-700 capitalize">
                                             {course.courseCategory.name}
                                         </span>
                                     </div>
@@ -271,7 +271,7 @@ const CourseDetail = () => {
                                         key={t.id}
                                         onClick={() => setActiveTab(t.id)}
                                         className={`flex-1 px-4 py-3 text-center text-sm font-semibold transition ${activeTab === t.id
-                                            ? "bg-white border-b-2 border-blue-600 text-blue-600"
+                                            ? "bg-white border-b-2 border-teal-600 text-teal-600"
                                             : "text-slate-500 hover:text-slate-700"
                                             }`}
                                     >
@@ -376,7 +376,7 @@ const CourseDetail = () => {
                                             </div>
                                         ) : (
                                             batches.map((batch) => (
-                                                <div key={batch._id} className="border border-slate-200 rounded-xl p-5 hover:border-blue-300 transition duration-200 bg-white">
+                                                <div key={batch._id} className="border border-slate-200 rounded-xl p-5 hover:border-teal-300 transition duration-200 bg-white">
                                                     <div className="flex justify-between items-start flex-wrap gap-2 border-b pb-3 mb-4">
                                                         <div>
                                                             <h4 className="font-bold text-slate-800 text-md">{batch.batchName}</h4>
@@ -404,7 +404,7 @@ const CourseDetail = () => {
                                                         </div>
                                                         <div>
                                                             <span className="text-slate-400 block">Enrolled Seats</span>
-                                                            <span className="font-bold text-blue-600 text-sm">{batch.acquiredSeats}</span>
+                                                            <span className="font-bold text-teal-600 text-sm">{batch.acquiredSeats}</span>
                                                         </div>
                                                         <div>
                                                             <span className="text-slate-400 block">Reserved Externally</span>
@@ -413,7 +413,7 @@ const CourseDetail = () => {
                                                     </div>
 
                                                     <div className="mt-4 bg-slate-50 p-3 rounded-lg flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-2">
-                                                        <span className="font-semibold text-blue-600">
+                                                        <span className="font-semibold text-teal-600">
                                                             🕒 Time: {formatTime(batch.startTime)} - {formatTime(batch.endTime)}
                                                         </span>
                                                         {batch.isFull && (
@@ -431,8 +431,8 @@ const CourseDetail = () => {
                                 {/* Weekly Schedule Tab */}
                                 {activeTab === "weekly" && course.weeklySchedule && (
                                     <div className="space-y-6">
-                                        <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-4">
-                                            <h4 className="font-bold text-blue-800 text-xs uppercase tracking-wider mb-1">Ongoing Enrollment Schedule</h4>
+                                        <div className="bg-teal-50 border border-teal-100 rounded-xl p-4 mb-4">
+                                            <h4 className="font-bold text-teal-800 text-xs uppercase tracking-wider mb-1">Ongoing Enrollment Schedule</h4>
                                             <p className="text-slate-700 text-xs">
                                                 This course follows an ongoing schedule. Below are the class slots available for each day of the week.
                                             </p>
@@ -447,7 +447,7 @@ const CourseDetail = () => {
                                                             <span className="font-bold text-slate-800 text-sm flex items-center gap-1.5">
                                                                 🗓️ {dayName}
                                                             </span>
-                                                            <span className="text-xs bg-indigo-50 text-indigo-700 font-semibold px-2 py-0.5 rounded">
+                                                            <span className="text-xs bg-teal-50 text-teal-700 font-semibold px-2 py-0.5 rounded">
                                                                 {dayData.date}
                                                             </span>
                                                         </div>
@@ -471,7 +471,7 @@ const CourseDetail = () => {
                                                                     )}
 
                                                                     <div className="flex justify-between items-center text-[11px] border-t pt-2 mt-1">
-                                                                        <span className="text-blue-600 font-medium">
+                                                                        <span className="text-teal-600 font-medium">
                                                                             🕒 {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
                                                                         </span>
                                                                         <span className="text-slate-500">
@@ -507,7 +507,7 @@ const CourseDetail = () => {
                                     <p className="font-semibold text-slate-800 truncate">
                                         {course.createdBy?.firstName} {course.createdBy?.lastName}
                                     </p>
-                                    <p className="text-xs text-blue-600 font-medium">
+                                    <p className="text-xs text-teal-600 font-medium">
                                         {course.createdBy?.isVerified ? "★ Verified Instructor" : "Instructor"}
                                     </p>
                                 </div>
@@ -583,7 +583,7 @@ const CourseDetail = () => {
                                             href={`https://www.google.com/maps/search/?api=1&query=${venue.coordinates[1]},${venue.coordinates[0]}`}
                                             target="_blank"
                                             rel="noreferrer"
-                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 transition rounded-lg text-xs font-semibold"
+                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-teal-50 text-teal-700 hover:bg-teal-100 transition rounded-lg text-xs font-semibold"
                                         >
                                             🗺 View on Google Maps
                                             <span className="text-[10px] font-normal opacity-85">({venue.coordinates[1].toFixed(4)}, {venue.coordinates[0].toFixed(4)})</span>
@@ -596,9 +596,9 @@ const CourseDetail = () => {
                         {/* Pricing details */}
                         <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm space-y-4">
                             <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400">Pricing</h3>
-                            <div className="flex justify-between items-center bg-blue-50/50 border border-blue-100 rounded-xl p-4">
+                            <div className="flex justify-between items-center bg-teal-50/50 border border-teal-100 rounded-xl p-4">
                                 <span className="text-xs font-bold text-slate-500 block uppercase">Course Price</span>
-                                <span className="text-lg font-bold text-blue-600">
+                                <span className="text-lg font-bold text-teal-600">
                                     {course.price === 0 ? "Free" : `₹${course.price}`}
                                 </span>
                             </div>
@@ -616,7 +616,7 @@ const CourseDetail = () => {
                                 {/* Progress Bar */}
                                 <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
                                     <div
-                                        className="bg-blue-600 h-full transition-all duration-500"
+                                        className="bg-teal-600 h-full transition-all duration-500"
                                         style={{ width: `${Math.min(100, bookedPercent)}%` }}
                                     />
                                 </div>
@@ -628,7 +628,7 @@ const CourseDetail = () => {
                                     </div>
                                     <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
                                         <span className="text-slate-400 block text-[10px]">Enrollment Type</span>
-                                        <span className="font-bold text-blue-600 text-[10px] mt-1 block uppercase truncate">{course.enrollmentType}</span>
+                                        <span className="font-bold text-teal-600 text-[10px] mt-1 block uppercase truncate">{course.enrollmentType}</span>
                                     </div>
                                 </div>
                             </div>

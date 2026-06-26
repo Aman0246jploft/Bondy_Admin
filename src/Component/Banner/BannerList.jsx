@@ -153,11 +153,11 @@ const BannerList = ({ title }) => {
             label: "Banner Image / GIF",
             render: (val) => val ? <img src={val} alt="banner" className="w-24 h-12 object-cover rounded border" /> : <div className="w-24 h-12 bg-gray-200 rounded flex items-center justify-center text-xs">No Image</div>
         },
-        { 
-            key: "linkUrl", 
-            label: "Redirect URL",
-            render: (val) => val ? <a href={val} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline break-all">{val}</a> : <span className="text-gray-400">None</span>
-        },
+        // {
+        //     key: "linkUrl",
+        //     label: "Redirect URL",
+        //     render: (val) => val ? <a href={val} target="_blank" rel="noopener noreferrer" className="text-teal-500 hover:underline break-all">{val}</a> : <span className="text-gray-400">None</span>
+        // },
         {
             key: "isActive",
             label: "Active",
@@ -177,7 +177,7 @@ const BannerList = ({ title }) => {
             render: (value, row) => (
                 <div className="flex gap-3">
                     <button onClick={() => openModal(row)}>
-                        <FiEdit2 className="w-4 h-4 text-blue-500 hover:text-blue-700" />
+                        <FiEdit2 className="w-4 h-4 text-teal-500 hover:text-teal-700" />
                     </button>
                     <button onClick={() => handleDelete(row)}>
                         <BsTrash2 className="w-4 h-4 text-red-500 hover:text-red-700" />
@@ -194,7 +194,7 @@ const BannerList = ({ title }) => {
                 <div>
                     <button
                         onClick={() => openModal()}
-                        className="bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-blue-700 font-medium"
+                        className="bg-teal-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-teal-700 font-medium"
                     >
                         <FiPlus /> Add Banner
                     </button>
@@ -242,12 +242,12 @@ const BannerList = ({ title }) => {
                                     className="w-full border p-2 rounded mt-1"
                                     onChange={handleFileUpload}
                                 />
-                                {uploading && <p className="text-xs text-blue-600 mt-1">Uploading...</p>}
+                                {uploading && <p className="text-xs text-teal-600 mt-1">Uploading...</p>}
                                 {formData.image && (
                                     <p className="text-xs text-green-600 truncate mt-1">Selected path: {formData.image}</p>
                                 )}
                             </div>
-                            <div>
+                            {/* <div>
                                 <label className="block text-sm font-medium">Redirect URL</label>
                                 <input
                                     type="url"
@@ -259,7 +259,7 @@ const BannerList = ({ title }) => {
                                         setFormData(prev => ({ ...prev, linkUrl: val }));
                                     }}
                                 />
-                            </div>
+                            </div> */}
                             <div className="flex items-center gap-2">
                                 <input
                                     type="checkbox"
@@ -284,7 +284,7 @@ const BannerList = ({ title }) => {
                                 <button
                                     type="submit"
                                     disabled={uploading}
-                                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+                                    className="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 disabled:opacity-50"
                                 >
                                     Save
                                 </button>

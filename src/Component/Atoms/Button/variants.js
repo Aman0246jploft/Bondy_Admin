@@ -1,5 +1,5 @@
 export const VARIANTS = {
-  primary: "bg-blue-600 text-white hover:bg-blue-700",
+  primary: "bg-teal-600 text-white hover:bg-teal-700",
   secondary: "bg-red-200 text-red-800 hover:bg-red-300",
   danger: "bg-red-600 text-white hover:bg-red-700",
   ghost: "bg-transparent text-gray-700 hover:bg-gray-100",

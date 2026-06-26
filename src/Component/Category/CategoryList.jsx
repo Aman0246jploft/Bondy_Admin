@@ -206,7 +206,7 @@ const CategoryList = ({ title }) => {
         {
             key: "type",
             label: "Type",
-            render: (val) => <span className={`capitalize px-2 py-1 rounded text-xs ${val === 'event' ? 'bg-blue-100 text-blue-800' : val === 'support_ticket' ? 'bg-orange-100 text-orange-800' : 'bg-green-100 text-green-800'}`}>{val === 'support_ticket' ? 'Support Ticket' : val}</span>
+            render: (val) => <span className={`capitalize px-2 py-1 rounded text-xs ${val === 'event' ? 'bg-teal-100 text-teal-800' : val === 'support_ticket' ? 'bg-orange-100 text-orange-800' : 'bg-green-100 text-green-800'}`}>{val === 'support_ticket' ? 'Support Ticket' : val}</span>
         },
         {
             key: "featured",
@@ -227,7 +227,7 @@ const CategoryList = ({ title }) => {
             render: (value, row) => (
                 <div className="flex gap-3">
                     <button onClick={() => openModal(row)}>
-                        <FiEdit2 className="w-4 h-4 text-blue-500 hover:text-blue-700" />
+                        <FiEdit2 className="w-4 h-4 text-teal-500 hover:text-teal-700" />
                     </button>
                     <button onClick={() => handleDelete(row)}>
                         <BsTrash2 className="w-4 h-4 text-red-500 hover:text-red-700" />
@@ -261,7 +261,7 @@ const CategoryList = ({ title }) => {
                     />
                     <button
                         onClick={() => openModal()}
-                        className="bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-blue-700"
+                        className="bg-teal-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-teal-700"
                     >
                         <FiPlus /> Add Category
                     </button>
@@ -345,7 +345,7 @@ const CategoryList = ({ title }) => {
                                     className="w-full border p-2 rounded"
                                     onChange={handleFileUpload}
                                 />
-                                {uploading && <p className="text-xs text-blue-600">Uploading...</p>}
+                                {uploading && <p className="text-xs text-teal-600">Uploading...</p>}
                                 {formData.image && (
                                     <p className="text-xs text-green-600 truncate">Selected: {formData.image}</p>
                                 )}
@@ -359,7 +359,7 @@ const CategoryList = ({ title }) => {
                                         className="w-full border p-2 rounded"
                                         onChange={handlePosterUpload}
                                     />
-                                    {uploadingPoster && <p className="text-xs text-blue-600">Uploading...</p>}
+                                    {uploadingPoster && <p className="text-xs text-teal-600">Uploading...</p>}
                                     {formData.posterImage && (
                                         <p className="text-xs text-green-600 truncate">Selected: {formData.posterImage}</p>
                                     )}
@@ -375,7 +375,7 @@ const CategoryList = ({ title }) => {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                                    className="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700"
                                 >
                                     Save
                                 </button>

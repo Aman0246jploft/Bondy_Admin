@@ -150,8 +150,8 @@ const EventList = () => {
         },
 
         {
-            key:"Add-to-slider",
-            label:"Add to slider",
+            key: "Add-to-slider",
+            label: "Add to slider",
             render: (_val, row) => (
                 <input
                     type="checkbox"
@@ -172,7 +172,7 @@ const EventList = () => {
                     status === "Live"
                         ? "bg-green-100 text-green-600"
                         : status === "Upcoming"
-                            ? "bg-blue-100 text-blue-600"
+                            ? "bg-teal-100 text-teal-600"
                             : "bg-gray-100 text-gray-600";
 
                 return (
@@ -188,7 +188,7 @@ const EventList = () => {
             render: (_val, row) => (
                 <button
                     onClick={() => navigate(`/events/${row._id}`)}
-                    className="px-3 py-1 bg-indigo-600 text-white text-xs rounded hover:bg-indigo-700 transition whitespace-nowrap"
+                    className="px-3 py-1 bg-teal-600 text-white text-xs rounded hover:bg-teal-700 transition whitespace-nowrap"
                 >
                     View Details
                 </button>

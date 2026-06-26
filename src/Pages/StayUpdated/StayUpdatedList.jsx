@@ -55,7 +55,7 @@ const StayUpdatedList = () => {
 
             {loading ? (
                 <div className="flex justify-center p-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500"></div>
                 </div>
             ) : (
                 <>
@@ -125,7 +125,7 @@ const StayUpdatedList = () => {
                                 <button
                                     key={i + 1}
                                     onClick={() => setPage(i + 1)}
-                                    className={`px-3 py-1 rounded border ${page === i + 1 ? "bg-blue-500 text-white border-blue-500" : ""
+                                    className={`px-3 py-1 rounded border ${page === i + 1 ? "bg-teal-500 text-white border-teal-500" : ""
                                         }`}
                                     style={page !== i + 1 ? {
                                         borderColor: theme.colors.border,

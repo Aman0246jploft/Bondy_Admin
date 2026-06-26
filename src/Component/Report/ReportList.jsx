@@ -163,12 +163,12 @@ const ReportList = ({ title }) => {
             render: (_, row) => (
                 <div className="flex gap-3">
                     <button onClick={() => { setSelectedReport(row); setIsDetailModalOpen(true); }} className="p-1 hover:bg-gray-100 rounded" title="View Details">
-                        <FiEye className="text-blue-500 w-4 h-4" />
+                        <FiEye className="text-teal-500 w-4 h-4" />
                     </button>
                     {row.status === "pending" && (
                         <button
                             onClick={() => handleOpenResolveModal(row)}
-                            className="px-2 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600"
+                            className="px-2 py-1 text-xs bg-teal-500 text-white rounded hover:bg-teal-600"
                             title="Update Status"
                         >
                             Update
@@ -348,7 +348,7 @@ const ReportList = ({ title }) => {
                             )}
                             <div className="flex justify-end gap-2 pt-4">
                                 <button type="button" onClick={() => setIsResolveModalOpen(false)} className="px-4 py-2 border rounded" disabled={resolveLoading}>Cancel</button>
-                                <button type="submit" className={`px-4 py-2 text-white rounded bg-blue-600 hover:bg-blue-700 disabled:opacity-50`} disabled={resolveLoading}>
+                                <button type="submit" className={`px-4 py-2 text-white rounded bg-teal-600 hover:bg-teal-700 disabled:opacity-50`} disabled={resolveLoading}>
                                     {resolveLoading ? "Processing..." : `Confirm Update`}
                                 </button>
                             </div>

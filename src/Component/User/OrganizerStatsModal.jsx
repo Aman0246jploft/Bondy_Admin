@@ -211,9 +211,9 @@ const OrganizerStatsModal = ({ organizer, onClose }) => {
             <div className="p-6 space-y-6">
                 {/* Wallet Info */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                    <div className="bg-teal-50 p-4 rounded-lg border border-teal-200">
                         <h3 className="text-sm font-semibold text-gray-600 mb-2">Current Wallet Balance</h3>
-                        <p className="text-2xl font-bold text-blue-600">{formatCurrency(summary.wallet.currentBalance || 0)}</p>
+                        <p className="text-2xl font-bold text-teal-600">{formatCurrency(summary.wallet.currentBalance || 0)}</p>
                     </div>
                     <div className="bg-green-50 p-4 rounded-lg border border-green-200">
                         <h3 className="text-sm font-semibold text-gray-600 mb-2">Total Earnings</h3>
@@ -259,7 +259,7 @@ const OrganizerStatsModal = ({ organizer, onClose }) => {
                         </div>
                         <div>
                             <p className="text-sm text-gray-600">Organizer Earning</p>
-                            <p className="text-xl font-bold text-blue-600">{formatCurrency(summary.transactions.totalOrganizerEarning || 0)}</p>
+                            <p className="text-xl font-bold text-teal-600">{formatCurrency(summary.transactions.totalOrganizerEarning || 0)}</p>
                         </div>
                     </div>
                 </div>
@@ -312,7 +312,7 @@ const OrganizerStatsModal = ({ organizer, onClose }) => {
                     </div>
                     <button
                         onClick={applyTransactionFilters}
-                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                        className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600"
                     >
                         Apply Filters
                     </button>
@@ -347,7 +347,7 @@ const OrganizerStatsModal = ({ organizer, onClose }) => {
                                     <tr key={txn._id} className="hover:bg-gray-50">
                                         <td className="px-4 py-2 border text-sm">{txn.bookingId}</td>
                                         <td className="px-4 py-2 border text-sm">
-                                            <span className={`px-2 py-1 rounded text-xs ${txn.bookingType === "EVENT" ? "bg-blue-100 text-blue-700" : "bg-purple-100 text-purple-700"}`}>
+                                            <span className={`px-2 py-1 rounded text-xs ${txn.bookingType === "EVENT" ? "bg-teal-100 text-teal-700" : "bg-purple-100 text-purple-700"}`}>
                                                 {txn.bookingType}
                                             </span>
                                         </td>
@@ -443,7 +443,7 @@ const OrganizerStatsModal = ({ organizer, onClose }) => {
                     </div>
                     <button
                         onClick={applyWalletFilters}
-                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                        className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600"
                     >
                         Apply Filters
                     </button>
@@ -473,7 +473,7 @@ const OrganizerStatsModal = ({ organizer, onClose }) => {
                                     <tr key={entry._id} className="hover:bg-gray-50">
                                         <td className="px-4 py-2 border text-sm">
                                             <span className={`px-2 py-1 rounded text-xs ${entry.type === "TICKET_SALE" ? "bg-green-100 text-green-700" :
-                                                entry.type === "PAYOUT_REQUEST" ? "bg-blue-100 text-blue-700" :
+                                                entry.type === "PAYOUT_REQUEST" ? "bg-teal-100 text-teal-700" :
                                                     entry.type === "REFUND" ? "bg-red-100 text-red-700" :
                                                         "bg-gray-100 text-gray-700"
                                                 }`}>
@@ -545,7 +545,7 @@ const OrganizerStatsModal = ({ organizer, onClose }) => {
                         </select>
                         <button
                             onClick={applyPayoutFilters}
-                            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                            className="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600"
                         >
                             Apply Filters
                         </button>
@@ -646,7 +646,7 @@ const OrganizerStatsModal = ({ organizer, onClose }) => {
                     <button
                         onClick={() => setActiveTab("overview")}
                         className={`px-6 py-3 font-semibold ${activeTab === "overview"
-                            ? "bg-white border-b-2 border-blue-500 text-blue-600"
+                            ? "bg-white border-b-2 border-teal-500 text-teal-600"
                             : "text-gray-600 hover:text-gray-800"
                             }`}
                     >
@@ -655,7 +655,7 @@ const OrganizerStatsModal = ({ organizer, onClose }) => {
                     <button
                         onClick={() => setActiveTab("transactions")}
                         className={`px-6 py-3 font-semibold ${activeTab === "transactions"
-                            ? "bg-white border-b-2 border-blue-500 text-blue-600"
+                            ? "bg-white border-b-2 border-teal-500 text-teal-600"
                             : "text-gray-600 hover:text-gray-800"
                             }`}
                     >
@@ -664,7 +664,7 @@ const OrganizerStatsModal = ({ organizer, onClose }) => {
                     <button
                         onClick={() => setActiveTab("wallet")}
                         className={`px-6 py-3 font-semibold ${activeTab === "wallet"
-                            ? "bg-white border-b-2 border-blue-500 text-blue-600"
+                            ? "bg-white border-b-2 border-teal-500 text-teal-600"
                             : "text-gray-600 hover:text-gray-800"
                             }`}
                     >
@@ -673,7 +673,7 @@ const OrganizerStatsModal = ({ organizer, onClose }) => {
                     <button
                         onClick={() => setActiveTab("payouts")}
                         className={`px-6 py-3 font-semibold ${activeTab === "payouts"
-                            ? "bg-white border-b-2 border-blue-500 text-blue-600"
+                            ? "bg-white border-b-2 border-teal-500 text-teal-600"
                             : "text-gray-600 hover:text-gray-800"
                             }`}
                     >

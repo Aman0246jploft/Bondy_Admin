@@ -35,7 +35,7 @@ const StarRating = ({ rating }) => {
 const StatusBadge = ({ status }) => {
     const map = {
         Live: "bg-green-100 text-green-700 border border-green-300",
-        Upcoming: "bg-blue-100 text-blue-700 border border-blue-300",
+        Upcoming: "bg-teal-100 text-teal-700 border border-teal-300",
         Past: "bg-gray-100 text-gray-600 border border-gray-300",
         Ongoing: "bg-orange-100 text-orange-700 border border-orange-300",
     };
@@ -53,7 +53,7 @@ const Avatar = ({ src, name, size = "w-10 h-10" }) => {
     return src ? (
         <img src={src} alt={name} className={`${size} rounded-full object-cover border-2 border-white shadow`} />
     ) : (
-        <div className={`${size} rounded-full bg-indigo-200 text-indigo-800 flex items-center justify-center font-bold text-sm border-2 border-white shadow`}>
+        <div className={`${size} rounded-full bg-teal-200 text-teal-800 flex items-center justify-center font-bold text-sm border-2 border-white shadow`}>
             {initials}
         </div>
     );
@@ -104,7 +104,7 @@ const EventDetail = () => {
         return (
             <div className="flex items-center justify-center min-h-screen">
                 <div className="text-center">
-                    <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                    <div className="w-12 h-12 border-4 border-teal-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
                     <p className="text-gray-500">Loading event details…</p>
                 </div>
             </div>
@@ -115,7 +115,7 @@ const EventDetail = () => {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen gap-4">
                 <p className="text-red-500 font-semibold">{error || "Event not found."}</p>
-                <button onClick={() => navigate("/events")} className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                <button onClick={() => navigate("/events")} className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700">
                     ← Back to Events
                 </button>
             </div>
@@ -170,14 +170,14 @@ const EventDetail = () => {
                                 <div className="flex gap-2">
                                     <button
                                         onClick={() => setMediaType("image")}
-                                        className={`px-3 py-1 text-xs rounded-lg font-medium transition ${mediaType === "image" ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+                                        className={`px-3 py-1 text-xs rounded-lg font-medium transition ${mediaType === "image" ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
                                     >
                                         Images ({images.length})
                                     </button>
                                     {videos.length > 0 && (
                                         <button
                                             onClick={() => setMediaType("video")}
-                                            className={`px-3 py-1 text-xs rounded-lg font-medium transition ${mediaType === "video" ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+                                            className={`px-3 py-1 text-xs rounded-lg font-medium transition ${mediaType === "video" ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
                                         >
                                             Teaser Video
                                         </button>
@@ -217,7 +217,7 @@ const EventDetail = () => {
                                             <img
                                                 src={img}
                                                 alt=""
-                                                className={`w-20 h-14 object-cover rounded-lg border-2 transition ${i === activeImg ? "border-indigo-500 scale-95 shadow" : "border-slate-200 opacity-70 hover:opacity-100"}`}
+                                                className={`w-20 h-14 object-cover rounded-lg border-2 transition ${i === activeImg ? "border-teal-500 scale-95 shadow" : "border-slate-200 opacity-70 hover:opacity-100"}`}
                                             />
                                         </button>
                                     ))}
@@ -230,11 +230,11 @@ const EventDetail = () => {
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
                                     {event.eventCategory && (
-                                        <div className="flex items-center gap-2 bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-full">
+                                        <div className="flex items-center gap-2 bg-teal-50 border border-teal-100 px-3 py-1 rounded-full">
                                             {event.eventCategory.image && (
                                                 <img src={event.eventCategory.image} alt="" className="w-4 h-4 rounded-full object-cover" />
                                             )}
-                                            <span className="text-xs font-semibold text-indigo-700 capitalize">
+                                            <span className="text-xs font-semibold text-teal-700 capitalize">
                                                 {event.eventCategory.name}
                                             </span>
                                         </div>
@@ -268,7 +268,7 @@ const EventDetail = () => {
                                         key={t.id}
                                         onClick={() => setActiveTab(t.id)}
                                         className={`flex-1 px-4 py-3 text-center text-sm font-semibold transition ${activeTab === t.id
-                                            ? "bg-white border-b-2 border-indigo-600 text-indigo-600"
+                                            ? "bg-white border-b-2 border-teal-600 text-teal-600"
                                             : "text-slate-500 hover:text-slate-700"
                                             }`}
                                     >
@@ -347,13 +347,13 @@ const EventDetail = () => {
                                             <p className="text-slate-500 text-center py-6">No ticket tiers set up for this event.</p>
                                         ) : (
                                             event.tickets.map((ticket) => (
-                                                <div key={ticket._id} className="border border-slate-200 rounded-xl p-5 hover:border-indigo-300 transition duration-200 bg-white">
+                                                <div key={ticket._id} className="border border-slate-200 rounded-xl p-5 hover:border-teal-300 transition duration-200 bg-white">
                                                     <div className="flex justify-between items-start flex-wrap gap-2">
                                                         <div>
                                                             <h4 className="font-bold text-slate-800 text-md">{ticket.ticketName}</h4>
                                                             <p className="text-xs text-slate-500 mt-1">{ticket.ticketShortDesc || "No description provided."}</p>
                                                         </div>
-                                                        <span className="text-lg font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-lg">
+                                                        <span className="text-lg font-bold text-teal-600 bg-teal-50 border border-teal-100 px-3 py-1 rounded-lg">
                                                             {ticket.price === 0 ? "Free" : `$${ticket.price}`}
                                                         </span>
                                                     </div>
@@ -369,7 +369,7 @@ const EventDetail = () => {
                                                         </div>
                                                         <div>
                                                             <span className="text-slate-400 block">Sold</span>
-                                                            <span className="font-bold text-indigo-600 text-sm">{ticket.soldQty || 0}</span>
+                                                            <span className="font-bold text-teal-600 text-sm">{ticket.soldQty || 0}</span>
                                                         </div>
                                                         <div>
                                                             <span className="text-slate-400 block">Status</span>
@@ -409,7 +409,7 @@ const EventDetail = () => {
                                                         <div className="flex items-center justify-between flex-wrap gap-1">
                                                             <p className="font-semibold text-sm text-slate-800">
                                                                 {r.user ? `${r.user.firstName} ${r.user.lastName}` : "Anonymous"}
-                                                                {r.user?.isVerified && <span className="ml-1 text-blue-500 text-[10px]">✔</span>}
+                                                                {r.user?.isVerified && <span className="ml-1 text-teal-500 text-[10px]">✔</span>}
                                                             </p>
                                                             <span className="text-[11px] text-slate-400">{fmt(r.createdAt)}</span>
                                                         </div>
@@ -442,7 +442,7 @@ const EventDetail = () => {
                                                         <div className="flex items-center justify-between flex-wrap gap-1">
                                                             <p className="font-semibold text-sm text-slate-800">
                                                                 {c.user ? `${c.user.firstName} ${c.user.lastName}` : "Anonymous"}
-                                                                {c.user?.isVerified && <span className="ml-1 text-blue-500 text-[10px]">✔</span>}
+                                                                {c.user?.isVerified && <span className="ml-1 text-teal-500 text-[10px]">✔</span>}
                                                             </p>
                                                             <span className="text-[11px] text-slate-400">{fmt(c.createdAt)}</span>
                                                         </div>
@@ -504,7 +504,7 @@ const EventDetail = () => {
                                     <p className="font-semibold text-slate-800 truncate">
                                         {event.createdBy?.firstName} {event.createdBy?.lastName}
                                     </p>
-                                    <p className="text-xs text-indigo-600 font-medium">
+                                    <p className="text-xs text-teal-600 font-medium">
                                         {event.createdBy?.isVerified ? "★ Verified Host" : "Host"}
                                     </p>
                                 </div>
@@ -581,7 +581,7 @@ const EventDetail = () => {
                                             href={`https://www.google.com/maps/search/?api=1&query=${venue.coordinates[1]},${venue.coordinates[0]}`}
                                             target="_blank"
                                             rel="noreferrer"
-                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition rounded-lg text-xs font-semibold"
+                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-teal-50 text-teal-700 hover:bg-teal-100 transition rounded-lg text-xs font-semibold"
                                         >
                                             🗺 View on Google Maps
                                             <span className="text-[10px] font-normal opacity-85">({venue.coordinates[1].toFixed(4)}, {venue.coordinates[0].toFixed(4)})</span>
@@ -604,7 +604,7 @@ const EventDetail = () => {
                                 {/* Progress Bar */}
                                 <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
                                     <div
-                                        className="bg-indigo-600 h-full transition-all duration-500"
+                                        className="bg-teal-600 h-full transition-all duration-500"
                                         style={{ width: `${Math.min(100, bookedPercent)}%` }}
                                     />
                                 </div>
@@ -616,7 +616,7 @@ const EventDetail = () => {
                                     </div>
                                     <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
                                         <span className="text-slate-400 block text-[10px]">Ticket Available</span>
-                                        <span className="font-bold text-indigo-600 text-sm mt-0.5 block">{event.ticketQtyAvailable}</span>
+                                        <span className="font-bold text-teal-600 text-sm mt-0.5 block">{event.ticketQtyAvailable}</span>
                                     </div>
                                 </div>
 
@@ -662,11 +662,11 @@ const EventDetail = () => {
                                         {/* Info */}
                                         <div className="p-5 space-y-3">
                                             {item.eventCategory && (
-                                                <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider bg-indigo-50 px-2 py-0.5 rounded">
+                                                <span className="text-[10px] font-bold text-teal-600 uppercase tracking-wider bg-teal-50 px-2 py-0.5 rounded">
                                                     {item.eventCategory.name}
                                                 </span>
                                             )}
-                                            <h3 className="font-bold text-slate-800 text-sm leading-snug group-hover:text-indigo-600 transition truncate">
+                                            <h3 className="font-bold text-slate-800 text-sm leading-snug group-hover:text-teal-600 transition truncate">
                                                 {item.eventTitle}
                                             </h3>
                                             <p className="text-xs text-slate-500 line-clamp-2">
@@ -677,7 +677,7 @@ const EventDetail = () => {
 
                                     <div className="px-5 py-4 border-t border-slate-50 bg-slate-50 flex items-center justify-between text-xs text-slate-500">
                                         <span>📍 {item.venueAddress?.city || "Unknown"}, {item.venueAddress?.country || ""}</span>
-                                        <span className="font-semibold text-indigo-600">
+                                        <span className="font-semibold text-teal-600">
                                             {item.duration || "N/A"}
                                         </span>
                                     </div>

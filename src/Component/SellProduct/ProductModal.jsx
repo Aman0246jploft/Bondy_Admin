@@ -120,7 +120,7 @@ export default function ProductModal({ onClose, onSubmit }) {
                 <button
                   type="button"
                   key={key}
-                  className={`px-2 py-1 rounded border text-center ${form.condition === key ? 'bg-blue-500 text-white' : 'bg-gray-100'
+                  className={`px-2 py-1 rounded border text-center ${form.condition === key ? 'bg-teal-500 text-white' : 'bg-gray-100'
                     }`}
                   onClick={() => setForm(prev => ({ ...prev, condition: key }))}
                 >
@@ -218,7 +218,7 @@ export default function ProductModal({ onClose, onSubmit }) {
           {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded mt-4"
+            className="w-full bg-teal-600 text-white py-2 rounded mt-4"
           >
             Submit
           </button>

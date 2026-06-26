@@ -7,7 +7,7 @@ export const darkTheme = {
     tertiary: "#0f172a",         // very dark for tertiary elements
 
     // Backgrounds
-    background: "#0f172a",       // dark background color (very dark blue-gray)
+    background: "#0f172a",       // dark background color (very dark teal-gray)
 
     // Sidebar
     sidebarText: "#9ca3af",      // light gray for text in the sidebar
@@ -41,8 +41,8 @@ export const darkTheme = {
     buttonTextOnDanger: "#ffffff",
     buttonTextOnSecondary: "#f3f4f6",
     buttonTextOnGhost: "#f3f4f6", // light text for ghost buttons
-    buttonPrimary: "#3b82f6",        // Blue-500 (same as light)
-    buttonPrimaryHover: "#2563eb",  // Blue-600 (same as light)
+    buttonPrimary: "#3b82f6",        // teal-500 (same as light)
+    buttonPrimaryHover: "#2563eb",  // teal-600 (same as light)
     buttonSecondary: "#374151",      // Dark gray
     buttonSecondaryHover: "#4b5563", // Lighter dark gray
     buttonDanger: "#ef4444",         // Red-500 (same as light)

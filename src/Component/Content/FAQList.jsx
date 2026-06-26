@@ -153,7 +153,7 @@ const FAQList = () => {
                 </h1>
                 <button
                     onClick={() => openModal()}
-                    className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    className="flex items-center px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700"
                 >
                     <AiOutlinePlus className="mr-2" />
                     Add FAQ
@@ -185,7 +185,7 @@ const FAQList = () => {
                         <div className="flex items-center gap-2 ml-4">
                             <button
                                 onClick={() => openModal(faq)}
-                                className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+                                className="p-2 text-teal-600 hover:bg-teal-50 rounded-full transition-colors"
                                 title="Edit"
                             >
                                 <AiOutlineEdit size={20} />
@@ -235,7 +235,7 @@ const FAQList = () => {
                                 value={formData.question}
                                 onChange={handleChange}
                                 required
-                                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                                 style={{
                                     backgroundColor: theme.colors.background,
                                     color: theme.colors.textPrimary,
@@ -252,7 +252,7 @@ const FAQList = () => {
                                 onChange={handleChange}
                                 required
                                 rows={4}
-                                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                                 style={{
                                     backgroundColor: theme.colors.background,
                                     color: theme.colors.textPrimary,
@@ -269,7 +269,7 @@ const FAQList = () => {
                                     name="order"
                                     value={formData.order}
                                     onChange={handleChange}
-                                    className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                                     style={{
                                         backgroundColor: theme.colors.background,
                                         color: theme.colors.textPrimary,
@@ -284,7 +284,7 @@ const FAQList = () => {
                                         name="isActive"
                                         checked={formData.isActive}
                                         onChange={handleChange}
-                                        className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500"
+                                        className="w-5 h-5 text-teal-600 rounded focus:ring-teal-500"
                                     />
                                     <span className="ml-2 text-sm font-medium">Is Active?</span>
                                 </label>
@@ -302,7 +302,7 @@ const FAQList = () => {
                             <button
                                 type="submit"
                                 disabled={saving}
-                                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                                className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50"
                             >
                                 {saving ? "Saving..." : "Save FAQ"}
                             </button>

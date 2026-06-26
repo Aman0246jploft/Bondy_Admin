@@ -127,11 +127,11 @@ const UserList = ({ roleId, title }) => {
                         </button>
                     )}
                     {/* <button onClick={() => console.log("Edit", row)}>
-                        <FiEdit2 className="w-4 h-4 text-blue-500 hover:text-blue-700" />
+                        <FiEdit2 className="w-4 h-4 text-teal-500 hover:text-teal-700" />
                     </button> */}
                     <button
                         onClick={() => navigate(`/users/${row._id}`)}
-                        className="px-3 py-1 bg-indigo-600 text-white text-xs rounded hover:bg-indigo-700 transition whitespace-nowrap"
+                        className="px-3 py-1 bg-teal-600 text-white text-xs rounded hover:bg-teal-700 transition whitespace-nowrap"
                     >
                         View Details
                     </button>

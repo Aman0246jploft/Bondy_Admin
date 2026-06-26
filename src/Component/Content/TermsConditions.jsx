@@ -85,7 +85,7 @@ const TermsConditions = () => {
                 <button
                     onClick={handleSave}
                     disabled={loading}
-                    className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                    className="flex items-center px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50"
                 >
                     <AiOutlineSave className="mr-2" />
                     {loading ? "Saving..." : "Save Changes"}

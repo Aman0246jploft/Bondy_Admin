@@ -120,7 +120,7 @@ const CourseList = () => {
             render: (_val, row) => (
                 <button
                     onClick={() => navigate(`/courses/${row._id}`)}
-                    className="px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition whitespace-nowrap"
+                    className="px-3 py-1 bg-teal-600 text-white text-xs rounded hover:bg-teal-700 transition whitespace-nowrap"
                 >
                     View Details
                 </button>
