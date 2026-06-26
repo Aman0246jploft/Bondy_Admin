@@ -124,11 +124,11 @@ const PromoCodeList = ({ title }) => {
 
     const columns = [
         { key: "code", label: "Code" },
-        {
-            key: "discountType",
-            label: "Type",
-            render: (val) => <span className="capitalize">{val}</span>
-        },
+        // {
+        //     key: "discountType",
+        //     label: "Type",
+        //     render: (val) => <span className="capitalize">{val}</span>
+        // },
         {
             key: "discountValue",
             label: "Value",
@@ -219,7 +219,7 @@ const PromoCodeList = ({ title }) => {
                                     onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value.toUpperCase() }))}
                                 />
                             </div>
-                            <div>
+                            {/* <div>
                                 <label className="block text-sm font-medium">Type</label>
                                 <select
                                     className="w-full border p-2 rounded"
@@ -229,7 +229,7 @@ const PromoCodeList = ({ title }) => {
                                     <option value="percentage">Percentage</option>
                                     <option value="fixed">Fixed</option>
                                 </select>
-                            </div>
+                            </div> */}
                             <div>
                                 <label className="block text-sm font-medium">Value</label>
                                 <input

@@ -373,7 +373,7 @@ const FinanceDashboard = () => {
         {/* Commission inline editor */}
         <div className="flex flex-wrap items-center gap-4">
           {/* Commission inline editor */}
-          <div className="flex items-center gap-3 bg-white rounded-xl shadow px-4 py-3">
+          {/* <div className="flex items-center gap-3 bg-white rounded-xl shadow px-4 py-3">
             <span className="text-sm text-gray-500">Commission:</span>
             {commissionEdit ? (
               <>
@@ -414,7 +414,7 @@ const FinanceDashboard = () => {
                 </button>
               </>
             )}
-          </div>
+          </div> */}
 
           {/* Min Payout inline editor */}
           <div className="flex items-center gap-3 bg-white rounded-xl shadow px-4 py-3">
@@ -468,13 +468,13 @@ const FinanceDashboard = () => {
           ))}
         </div>
       ) : stats ? (
-        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           <StatCard label="Total Revenue" value={fmt(stats.totalRevenue)} sub={`${stats.transactionCount} transactions`} color="blue" />
-          <StatCard label="Platform Commission" value={fmt(stats.totalCommission)} color="indigo" />
+          {/* <StatCard label="Platform Commission" value={fmt(stats.totalCommission)} color="indigo" /> */}
           <StatCard label="Organizer Earnings" value={fmt(stats.totalOrganizerEarnings)} color="green" />
           <StatCard label="Total Payouts Made" value={fmt(stats.totalPayoutsMade)} color="purple" />
           <StatCard label="Pending Payouts" value={fmt(stats.pendingPayoutsAmount)} sub={`${stats.pendingPayoutCount} requests`} color="yellow" />
-          <StatCard label="Refunds" value={fmt(stats.refundTotal)} sub={`${stats.refundCount} cases`} color="red" />
+          {/* <StatCard label="Refunds" value={fmt(stats.refundTotal)} sub={`${stats.refundCount} cases`} color="red" /> */}
         </div>
       ) : null}
 
@@ -496,7 +496,7 @@ const FinanceDashboard = () => {
           <table className="min-w-full text-sm">
             <thead className="bg-gray-50">
               <tr>
-                {["Booking ID", "Customer", "Item", "Type", "Total", "Commission", "Org. Earning", "Date"].map((h) => (
+                {["Booking ID", "Customer", "Item", "Type", "Total", "Org. Earning", "Date"].map((h) => (
                   <th key={h} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {h}
                   </th>
@@ -533,7 +533,7 @@ const FinanceDashboard = () => {
                       </span>
                     </td>
                     <td className="px-4 py-3 font-semibold text-gray-800">{fmt(t.totalAmount)}</td>
-                    <td className="px-4 py-3 text-teal-600">{fmt(t.commissionAmount)}</td>
+                    {/* <td className="px-4 py-3 text-teal-600">{fmt(t.commissionAmount)}</td> */}
                     <td className="px-4 py-3 text-green-600">{fmt(t.organizerEarning)}</td>
                     <td className="px-4 py-3 text-gray-500">{fmtDate(t.createdAt)}</td>
                   </tr>

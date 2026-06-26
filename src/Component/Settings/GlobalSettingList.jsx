@@ -23,9 +23,9 @@ const GlobalSettingList = ({ title }) => {
                 // Filter to show only COMMISSION_CONFIG as requested
                 const allSettings = response.data.data.settings;
                 const filteredSettings = allSettings.filter(item =>
-                    item.key === 'COMMISSION_CONFIG' ||
-                    item.key === 'FEATURE_EVENT_FEE' ||
-                    item.key === 'REFERRAL_REWARD_AMOUNT' ||
+                    // item.key === 'COMMISSION_CONFIG' ||
+                    // item.key === 'FEATURE_EVENT_FEE' ||
+                    // item.key === 'REFERRAL_REWARD_AMOUNT' ||
                     item.key === 'MIN_PAYOUT_CONFIG' ||
                     item.key === 'SOCIAL_LINKS'
                 );
@@ -114,12 +114,12 @@ const GlobalSettingList = ({ title }) => {
         <div className="p-4 space-y-4">
             <div className="flex justify-between items-center">
                 <h2 className="text-xl font-bold">{title}</h2>
-                <button
+                {/* <button
                     onClick={() => openModal()}
                     className="bg-teal-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-teal-700"
                 >
                     <FiPlus /> Add Setting
-                </button>
+                </button> */}
             </div>
 
             <DataTable columns={columns} data={data} loading={loading} />

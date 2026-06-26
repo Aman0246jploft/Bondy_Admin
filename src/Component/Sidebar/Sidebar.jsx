@@ -45,7 +45,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     { name: "Contact Messages", href: "/contacts", icon: AiOutlineMail },
     // { name: "Update Signups", href: "/stay-updated", icon: AiOutlineMail },
     { name: "Reports", href: "/reports", icon: AiOutlineFileText },
-    { name: "Notifications", href: "/#", icon: AiOutlineBell },
+    // { name: "Notifications", href: "/#", icon: AiOutlineBell },
   ];
 
   return (
