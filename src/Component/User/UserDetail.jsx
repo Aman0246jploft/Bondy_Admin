@@ -119,9 +119,12 @@ const UserDetail = () => {
     const renderEventListCard = (item, type) => (
         <div key={item._id} className="flex gap-4 p-4 border rounded-xl hover:bg-gray-50 transition cursor-pointer" onClick={() => navigate(`/${type === 'event' ? 'events' : 'courses'}/${item._id}`)}>
             <img
-                src={item.posterImage?.[0] || "https://via.placeholder.com/150"}
+                src={item.posterImage?.[0] || "/sidebar-logo.svg"}
                 alt="poster"
                 className="w-20 h-16 object-cover rounded-md flex-shrink-0"
+                onError={(e) => {
+                    e.target.src = "/sidebar-logo.svg";
+                }}
             />
             <div className="flex-1 min-w-0">
                 <h4 className="font-semibold text-gray-800 text-sm truncate">{type === 'event' ? item.eventTitle : item.courseTitle}</h4>
@@ -189,7 +192,7 @@ const UserDetail = () => {
                                 <p className="text-xs text-gray-400 uppercase font-semibold mb-1">Interests</p>
                                 <div className="flex flex-wrap gap-1">
                                     {interestedCategories.map(cat => (
-                                        <span key={cat} className="px-2 py-0.5 bg-teal-50 text-teal-700 text-xs rounded-md border border-teal-100">
+                                        <span key={cat} className="px-2 py-0.5 capitalize bg-teal-50 text-teal-700 text-xs rounded-md border border-teal-100">
                                             {cat}
                                         </span>
                                     ))}
@@ -217,7 +220,7 @@ const UserDetail = () => {
 
                         {/* Business Info & Verification */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="bg-white rounded-xl border p-5 shadow-sm space-y-4">
+                            {/* <div className="bg-white rounded-xl border p-5 shadow-sm space-y-4">
                                 <div>
                                     <p className="text-xs text-gray-500 uppercase font-bold">Business Type</p>
                                     <p className="font-semibold text-gray-800">{businessType || "Not Specified"}</p>
@@ -231,9 +234,9 @@ const UserDetail = () => {
                                         {organizerVerificationStatus?.toUpperCase() || "PENDING"}
                                     </span>
                                 </div>
-                            </div>
+                            </div> */}
 
-                            <div className="bg-white rounded-xl border p-5 shadow-sm">
+                            {/* <div className="bg-white rounded-xl border p-5 shadow-sm">
                                 <p className="text-xs text-gray-500 uppercase font-bold mb-3">Submitted Documents</p>
                                 {documents?.length > 0 ? (
                                     <div className="space-y-3">
@@ -267,7 +270,7 @@ const UserDetail = () => {
                                 ) : (
                                     <p className="text-sm text-gray-400 italic">No documents uploaded.</p>
                                 )}
-                            </div>
+                            </div> */}
                         </div>
 
                         {/* Financial Stats */}
