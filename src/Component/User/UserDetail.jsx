@@ -219,58 +219,135 @@ const UserDetail = () => {
                         <h3 className="text-lg font-bold text-gray-800">Organizer Business Profile</h3>
 
                         {/* Business Info & Verification */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {/* <div className="bg-white rounded-xl border p-5 shadow-sm space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="bg-white rounded-xl border p-5 shadow-sm space-y-4">
+                                <h4 className="font-bold text-gray-700 border-b pb-2 text-sm">Business Details</h4>
+                                <div>
+                                    <p className="text-xs text-gray-500 uppercase font-bold">Business Name</p>
+                                    <p className="font-semibold text-gray-800 text-sm">{userProfile.businessName || "N/A"}</p>
+                                </div>
                                 <div>
                                     <p className="text-xs text-gray-500 uppercase font-bold">Business Type</p>
-                                    <p className="font-semibold text-gray-800">{businessType || "Not Specified"}</p>
+                                    <p className="font-semibold text-gray-800 text-sm">{businessType || "N/A"}</p>
                                 </div>
-                                <div>
-                                    <p className="text-xs text-gray-500 uppercase font-bold mb-1">Organizer Status</p>
-                                    <span className={`px-2 py-1 rounded text-xs font-semibold ${organizerVerificationStatus === 'approved' ? 'bg-green-100 text-green-700' :
-                                        organizerVerificationStatus === 'rejected' ? 'bg-red-100 text-red-700' :
-                                            'bg-teal-100 text-teal-700'
-                                        }`}>
-                                        {organizerVerificationStatus?.toUpperCase() || "PENDING"}
-                                    </span>
-                                </div>
-                            </div> */}
+                                {userProfile.socialMediaLink && (
+                                    <div>
+                                        <p className="text-xs text-gray-500 uppercase font-bold">Social Media Link</p>
+                                        <a href={userProfile.socialMediaLink} target="_blank" rel="noopener noreferrer" className="text-teal-600 hover:underline text-sm font-medium break-all">
+                                            {userProfile.socialMediaLink}
+                                        </a>
+                                    </div>
+                                )}
+                                {userProfile.shortDesc && (
+                                    <div>
+                                        <p className="text-xs text-gray-500 uppercase font-bold">Business Description</p>
+                                        <p className="text-gray-600 text-xs leading-relaxed mt-1 p-2.5 bg-gray-50 rounded-lg border whitespace-pre-line">
+                                            {userProfile.shortDesc}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
 
-                            {/* <div className="bg-white rounded-xl border p-5 shadow-sm">
-                                <p className="text-xs text-gray-500 uppercase font-bold mb-3">Submitted Documents</p>
-                                {documents?.length > 0 ? (
-                                    <div className="space-y-3">
-                                        {documents.map((doc, i) => (
-                                            <div key={i} className="flex items-center justify-between p-2 pb-3 border-b last:border-0 last:pb-0">
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-xl">📄</span>
-                                                    <div>
-                                                        <p className="text-sm font-semibold text-gray-800">{doc.name}</p>
-                                                        {doc.status === 'rejected' && doc.reason && (
-                                                            <p className="text-xs text-red-500">{doc.reason}</p>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-center gap-3">
-                                                    <span className={`text-xs font-bold px-2 py-1 rounded ${doc.status === 'approved' ? 'text-green-700 bg-green-50' :
-                                                        doc.status === 'rejected' ? 'text-red-700 bg-red-50' :
-                                                            'text-teal-700 bg-teal-50'
-                                                        }`}>
-                                                        {doc.status?.toUpperCase()}
-                                                    </span>
-                                                    {doc.file && (
-                                                        <a href={doc.file} target="_blank" rel="noreferrer" className="text-teal-600 hover:underline text-xs font-medium">
-                                                            View
+                            <div className="bg-white rounded-xl border p-5 shadow-sm space-y-4">
+                                <h4 className="font-bold text-gray-700 border-b pb-2 text-sm">Verification Statuses</h4>
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between border-b pb-2">
+                                        <span className="text-sm font-medium text-gray-700">Business Verification</span>
+                                        <span className={`px-2 py-1 rounded text-xs font-semibold ${userProfile.businessVerificationStatus === 'approved' ? 'bg-green-100 text-green-700' :
+                                            userProfile.businessVerificationStatus === 'rejected' ? 'bg-red-100 text-red-700' :
+                                                'bg-teal-100 text-teal-700'
+                                            }`}>
+                                            {userProfile.businessVerificationStatus?.toUpperCase() || "PENDING"}
+                                        </span>
+                                    </div>
+
+                                    {userProfile.verifications?.email && (
+                                        <div className="flex items-center justify-between border-b pb-2">
+                                            <span className="text-sm font-medium text-gray-700">Email Verification</span>
+                                            <span className={`px-2 py-1 rounded text-xs font-semibold ${userProfile.verifications.email.isVerified ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+                                                {userProfile.verifications.email.isVerified ? 'VERIFIED' : 'UNVERIFIED'}
+                                            </span>
+                                        </div>
+                                    )}
+
+                                    {userProfile.verifications?.phone && (
+                                        <div className="flex items-center justify-between border-b pb-2">
+                                            <span className="text-sm font-medium text-gray-700">Phone Verification</span>
+                                            <span className={`px-2 py-1 rounded text-xs font-semibold ${userProfile.verifications.phone.isVerified ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+                                                {userProfile.verifications.phone.isVerified ? 'VERIFIED' : 'UNVERIFIED'}
+                                            </span>
+                                        </div>
+                                    )}
+
+                                    {userProfile.verifications?.idVerification?.nationalId && (
+                                        <div className="flex flex-col border-b pb-2">
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-sm font-medium text-gray-700">National ID</span>
+                                                <span className={`px-2 py-1 rounded text-xs font-semibold ${(userProfile.verifications.idVerification.nationalId.status === 'verified' || userProfile.verifications.idVerification.nationalId.status === 'approved') ? 'bg-green-100 text-green-700' :
+                                                    userProfile.verifications.idVerification.nationalId.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                                                        'bg-gray-100 text-gray-600'
+                                                    }`}>
+                                                    {userProfile.verifications.idVerification.nationalId.status?.toUpperCase() || "UNVERIFIED"}
+                                                </span>
+                                            </div>
+                                            {(userProfile.verifications.idVerification.nationalId.frontImage || userProfile.verifications.idVerification.nationalId.backImage) && (
+                                                <div className="flex gap-3 mt-1.5 text-xs">
+                                                    {userProfile.verifications.idVerification.nationalId.frontImage && (
+                                                        <a href={userProfile.verifications.idVerification.nationalId.frontImage} target="_blank" rel="noreferrer" className="text-teal-600 hover:underline font-medium">
+                                                            📄 Front Image
+                                                        </a>
+                                                    )}
+                                                    {userProfile.verifications.idVerification.nationalId.backImage && (
+                                                        <a href={userProfile.verifications.idVerification.nationalId.backImage} target="_blank" rel="noreferrer" className="text-teal-600 hover:underline font-medium">
+                                                            📄 Back Image
                                                         </a>
                                                     )}
                                                 </div>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {userProfile.verifications?.idVerification?.drivingLicence && (
+                                        <div className="flex flex-col border-b pb-2">
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-sm font-medium text-gray-700">Driving Licence</span>
+                                                <span className={`px-2 py-1 rounded text-xs font-semibold ${(userProfile.verifications.idVerification.drivingLicence.status === 'verified' || userProfile.verifications.idVerification.drivingLicence.status === 'approved') ? 'bg-green-100 text-green-700' :
+                                                    userProfile.verifications.idVerification.drivingLicence.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                                                        'bg-gray-100 text-gray-600'
+                                                    }`}>
+                                                    {userProfile.verifications.idVerification.drivingLicence.status?.toUpperCase() || "UNVERIFIED"}
+                                                </span>
                                             </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <p className="text-sm text-gray-400 italic">No documents uploaded.</p>
-                                )}
-                            </div> */}
+                                            {(userProfile.verifications.idVerification.drivingLicence.frontImage || userProfile.verifications.idVerification.drivingLicence.backImage) && (
+                                                <div className="flex gap-3 mt-1.5 text-xs">
+                                                    {userProfile.verifications.idVerification.drivingLicence.frontImage && (
+                                                        <a href={userProfile.verifications.idVerification.drivingLicence.frontImage} target="_blank" rel="noreferrer" className="text-teal-600 hover:underline font-medium">
+                                                            📄 Front Image
+                                                        </a>
+                                                    )}
+                                                    {userProfile.verifications.idVerification.drivingLicence.backImage && (
+                                                        <a href={userProfile.verifications.idVerification.drivingLicence.backImage} target="_blank" rel="noreferrer" className="text-teal-600 hover:underline font-medium">
+                                                            📄 Back Image
+                                                        </a>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {userProfile.verifications?.bankVerification && (
+                                        <div className="flex items-center justify-between pb-1">
+                                            <span className="text-sm font-medium text-gray-700">Bank Verification</span>
+                                            <span className={`px-2 py-1 rounded text-xs font-semibold ${(userProfile.verifications.bankVerification.status === 'verified' || userProfile.verifications.bankVerification.status === 'approved') ? 'bg-green-100 text-green-700' :
+                                                userProfile.verifications.bankVerification.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                                                    'bg-gray-100 text-gray-600'
+                                                }`}>
+                                                {userProfile.verifications.bankVerification.status?.toUpperCase() || "UNVERIFIED"}
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                         </div>
 
                         {/* Financial Stats */}
