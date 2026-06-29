@@ -112,7 +112,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           }}
         >
           <div className="w-10 h-10  rounded-lg flex items-center justify-center flex-shrink-0">
-            <img src="public\sidebar-logo.svg" />
+            <img src="/sidebar-logo.svg" />
           </div>
           {/* Always show text on mobile, conditionally on desktop */}
           <div className={clsx("ml-3 overflow-hidden", !isOpen && "md:hidden")}>
