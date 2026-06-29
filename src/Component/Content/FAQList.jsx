@@ -37,7 +37,9 @@ const FAQList = () => {
     const [currentFAQ, setCurrentFAQ] = useState(null); // For editing
     const [formData, setFormData] = useState({
         question: "",
+        question_mn: "",
         answer: "",
+        answer_mn: "",
         order: 0,
         isActive: true,
     });
@@ -69,7 +71,9 @@ const FAQList = () => {
             setCurrentFAQ(faq);
             setFormData({
                 question: faq.question,
+                question_mn: faq.question_mn || "",
                 answer: faq.answer,
+                answer_mn: faq.answer_mn || "",
                 order: faq.order,
                 isActive: faq.isActive,
             });
@@ -77,7 +81,9 @@ const FAQList = () => {
             setCurrentFAQ(null);
             setFormData({
                 question: "",
+                question_mn: "",
                 answer: "",
+                answer_mn: "",
                 order: faqs.length + 1,
                 isActive: true,
             });
@@ -179,8 +185,14 @@ const FAQList = () => {
                                     <span className="bg-red-100 text-red-800 text-xs px-2 py-0.5 rounded-full">Inactive</span>
                                 )}
                             </div>
-                            <h3 className="font-semibold text-lg mb-1" style={{ color: theme.colors.textPrimary }}>{faq.question}</h3>
-                            <p className="text-sm text-gray-500 line-clamp-2">{faq.answer}</p>
+                            <h3 className="font-semibold text-lg mb-1" style={{ color: theme.colors.textPrimary }}>
+                                {faq.question}
+                                {faq.question_mn && <span className="block text-xs font-normal text-teal-600 mt-0.5">MN: {faq.question_mn}</span>}
+                            </h3>
+                            <p className="text-sm text-gray-500 line-clamp-2">
+                                {faq.answer}
+                                {faq.answer_mn && <span className="block text-xs font-normal text-teal-500 mt-0.5">MN: {faq.answer_mn}</span>}
+                            </p>
                         </div>
                         <div className="flex items-center gap-2 ml-4">
                             <button
@@ -228,7 +240,7 @@ const FAQList = () => {
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium mb-1">Question</label>
+                            <label className="block text-sm font-medium mb-1">Question (English)</label>
                             <input
                                 type="text"
                                 name="question"
@@ -245,12 +257,44 @@ const FAQList = () => {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium mb-1">Answer</label>
+                            <label className="block text-sm font-medium mb-1">Question (Mongolian)</label>
+                            <input
+                                type="text"
+                                name="question_mn"
+                                value={formData.question_mn}
+                                onChange={handleChange}
+                                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                style={{
+                                    backgroundColor: theme.colors.background,
+                                    color: theme.colors.textPrimary,
+                                    borderColor: theme.colors.border
+                                }}
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Answer (English)</label>
                             <textarea
                                 name="answer"
                                 value={formData.answer}
                                 onChange={handleChange}
                                 required
+                                rows={4}
+                                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                style={{
+                                    backgroundColor: theme.colors.background,
+                                    color: theme.colors.textPrimary,
+                                    borderColor: theme.colors.border
+                                }}
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Answer (Mongolian)</label>
+                            <textarea
+                                name="answer_mn"
+                                value={formData.answer_mn}
+                                onChange={handleChange}
                                 rows={4}
                                 className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                                 style={{

@@ -9,6 +9,8 @@ import "react-quill-new/dist/quill.snow.css";
 const TermsConditions = () => {
     const { theme } = useTheme();
     const [content, setContent] = useState("");
+    const [contentMn, setContentMn] = useState("");
+    const [activeTab, setActiveTab] = useState("en");
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(true);
 
@@ -21,14 +23,32 @@ const TermsConditions = () => {
     const fetchContent = async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.get(`${API_URL}/api/v1/globalsetting/terms_conditions`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            if (response.data.data) {
-                setContent(response.data.data.value);
+
+            // Fetch English
+            try {
+                const response = await axios.get(`${API_URL}/api/v1/globalsetting/terms_conditions`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                if (response.data.data) {
+                    setContent(response.data.data.value);
+                }
+            } catch (error) {
+                console.error("Error fetching English terms and conditions:", error);
+            }
+
+            // Fetch Mongolian
+            try {
+                const responseMn = await axios.get(`${API_URL}/api/v1/globalsetting/terms_conditions_mn`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                if (responseMn.data.data) {
+                    setContentMn(responseMn.data.data.value);
+                }
+            } catch (error) {
+                console.error("Error fetching Mongolian terms and conditions:", error);
             }
         } catch (error) {
-            console.error("Error fetching terms and conditions:", error);
+            console.error("Error in fetchContent:", error);
         } finally {
             setFetching(false);
         }
@@ -38,6 +58,8 @@ const TermsConditions = () => {
         setLoading(true);
         try {
             const token = localStorage.getItem("token");
+
+            // Save English
             await axios.post(
                 `${API_URL}/api/v1/globalsetting/upsert`,
                 {
@@ -49,6 +71,20 @@ const TermsConditions = () => {
                     headers: { Authorization: `Bearer ${token}` },
                 }
             );
+
+            // Save Mongolian
+            await axios.post(
+                `${API_URL}/api/v1/globalsetting/upsert`,
+                {
+                    key: "terms_conditions_mn",
+                    value: contentMn,
+                    description: "HTML content for Terms and Conditions page in Mongolian",
+                },
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+
             toast.success("Terms & Conditions updated successfully");
         } catch (error) {
             console.error("Error updating terms and conditions:", error);
@@ -93,14 +129,35 @@ const TermsConditions = () => {
             </div>
 
             <div className="bg-white rounded-lg shadow-md p-6" style={{ backgroundColor: theme.colors.cardBg }}>
+                <div className="flex border-b mb-4">
+                    <button
+                        onClick={() => setActiveTab("en")}
+                        className={`py-2 px-4 font-medium transition-all ${activeTab === "en"
+                                ? "border-b-2 border-teal-600 text-teal-600"
+                                : "text-gray-400 hover:text-gray-500"
+                            }`}
+                    >
+                        English
+                    </button>
+                    <button
+                        onClick={() => setActiveTab("mn")}
+                        className={`py-2 px-4 font-medium transition-all ${activeTab === "mn"
+                                ? "border-b-2 border-teal-600 text-teal-600"
+                                : "text-gray-400 hover:text-gray-500"
+                            }`}
+                    >
+                        Mongolian
+                    </button>
+                </div>
                 <p className="mb-4 text-sm text-gray-400">
-                    Use the editor below to manage the Terms & Conditions content.
+                    Use the editor below to manage the Terms & Conditions content in {activeTab === "en" ? "English" : "Mongolian"}.
                 </p>
                 <div className="quill-container">
                     <ReactQuill
+                        key={activeTab}
                         theme="snow"
-                        value={content}
-                        onChange={setContent}
+                        value={activeTab === "en" ? content : contentMn}
+                        onChange={activeTab === "en" ? setContent : setContentMn}
                         modules={modules}
                         style={{
                             height: "500px",
