@@ -149,14 +149,25 @@ const CategoryList = ({ title }) => {
     const openModal = (category = null) => {
         if (category) {
             setEditingCategory(category);
-            const relativePath = category.image ? category.image.split('/uploads/').pop() : "";
-            const posterRelativePath = category.posterImage ? category.posterImage.split('/uploads/').pop() : "";
+            
+            const getSafePath = (url) => {
+                if (!url) return "";
+                if (url.startsWith("http://") || url.startsWith("https://")) {
+                    if (url.includes("/uploads/")) {
+                        const relative = url.split('/uploads/').pop();
+                        return `uploads/${relative}`;
+                    }
+                    return url;
+                }
+                return url;
+            };
+
             setFormData({
                 name: category.name,
                 name_thi: category.name_thi || "",
                 type: category.type,
-                image: relativePath ? `uploads/${relativePath}` : "",
-                posterImage: posterRelativePath ? `uploads/${posterRelativePath}` : ""
+                image: getSafePath(category.image),
+                posterImage: getSafePath(category.posterImage)
             });
         } else {
             setEditingCategory(null);
