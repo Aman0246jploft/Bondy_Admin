@@ -149,7 +149,6 @@ const CategoryList = ({ title }) => {
     const openModal = (category = null) => {
         if (category) {
             setEditingCategory(category);
-            
             const getSafePath = (url) => {
                 if (!url) return "";
                 if (url.startsWith("http://") || url.startsWith("https://")) {

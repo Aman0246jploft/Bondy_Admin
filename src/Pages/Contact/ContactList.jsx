@@ -100,11 +100,19 @@ const ContactList = () => {
                                             <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: theme.colors.textPrimary }}>
                                                 {(page - 1) * limit + index + 1}
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium" style={{ color: theme.colors.textPrimary }}>
+                                            <td
+                                                className="px-6 py-4 text-sm font-medium max-w-[180px] truncate"
+                                                style={{ color: theme.colors.textPrimary }}
+                                                title={contact.fullName}
+                                            >
                                                 {contact.fullName}
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                                <a href={`mailto:${contact.email}`} className="text-teal-500 hover:text-teal-700">
+                                            <td className="px-6 py-4 text-sm max-w-[200px] truncate">
+                                                <a
+                                                    href={`mailto:${contact.email}`}
+                                                    className="text-teal-500 hover:text-teal-700 block truncate"
+                                                    title={contact.email}
+                                                >
                                                     {contact.email}
                                                 </a>
                                             </td>

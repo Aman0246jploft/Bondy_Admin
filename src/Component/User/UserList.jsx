@@ -6,6 +6,7 @@ import { AiOutlineBarChart } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../../api/authAxiosClient";
 import OrganizerStatsModal from "./OrganizerStatsModal";
+import { toast } from "react-toastify";
 
 const UserList = ({ roleId, title }) => {
     const navigate = useNavigate();
@@ -47,7 +48,31 @@ const UserList = ({ roleId, title }) => {
         return () => clearTimeout(timer);
     }, [fetchUsers]);
 
+    const getLoggedInUserId = () => {
+        try {
+            const token = localStorage.getItem("token");
+            if (token) {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                return payload.userId;
+            }
+        } catch (e) {
+            console.error("Error decoding token:", e);
+        }
+        return null;
+    };
+
     const toggleStatus = async (user, index) => {
+        const loggedInUserId = getLoggedInUserId();
+        if (loggedInUserId && user._id === loggedInUserId) {
+            toast.error("You cannot deactivate your own admin account!");
+            return;
+        }
+
+        const actionText = user.isDisable ? "activate" : "deactivate";
+        if (!window.confirm(`Are you sure you want to ${actionText} ${user.firstName || 'this user'}?`)) {
+            return;
+        }
+
         try {
             const newStatus = !user.isDisable;
             const response = await axiosClient.patch(`/user/toggle-disable/${user._id}`, {
@@ -57,10 +82,11 @@ const UserList = ({ roleId, title }) => {
                 const newData = [...data];
                 newData[index] = { ...user, isDisable: newStatus };
                 setData(newData);
+                toast.success(`User ${newStatus ? "deactivated" : "activated"} successfully`);
             }
         } catch (error) {
             console.error("Error updating status:", error);
-            alert(error.message || "Failed to update status");
+            toast.error(error.message || "Failed to update status");
         }
     };
 
@@ -96,23 +122,23 @@ const UserList = ({ roleId, title }) => {
         },
         { key: "email", label: "Email" },
         { key: "contactNumber", label: "Contact" },
-        // {
-        //     key: "isDisable",
-        //     label: "Status",
-        //     render: (value, row, rowIndex) => (
-        //         <label className="inline-flex items-center cursor-pointer">
-        //             <input
-        //                 type="checkbox"
-        //                 className="sr-only peer"
-        //                 checked={!value}
-        //                 onChange={() => toggleStatus(row, rowIndex)}
-        //             />
-        //             <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-green-500 relative transition-colors">
-        //                 <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full peer-checked:translate-x-5 transition-transform" />
-        //             </div>
-        //         </label>
-        //     ),
-        // },
+        {
+            key: "isDisable",
+            label: "Status",
+            render: (value, row, rowIndex) => (
+                <label className="inline-flex items-center cursor-pointer">
+                    <input
+                        type="checkbox"
+                        className="sr-only peer"
+                        checked={!value}
+                        onChange={() => toggleStatus(row, rowIndex)}
+                    />
+                    <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-green-500 relative transition-colors">
+                        <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full peer-checked:translate-x-5 transition-transform" />
+                    </div>
+                </label>
+            ),
+        },
         {
             key: "actions",
             label: "Actions",

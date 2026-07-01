@@ -117,6 +117,65 @@ const ReportList = ({ title }) => {
         }
     };
 
+    const getLoggedInUserId = () => {
+        try {
+            const token = localStorage.getItem("token");
+            if (token) {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                return payload.userId;
+            }
+        } catch (e) {
+            console.error("Error decoding token:", e);
+        }
+        return null;
+    };
+
+    const handleActivateUser = async (user) => {
+        if (!user) return;
+        if (!window.confirm(`Are you sure you want to activate ${user.firstName || 'this user'}?`)) {
+            return;
+        }
+
+        try {
+            const response = await authAxiosClient.patch(`/user/toggle-disable/${user._id}`, {
+                isDisable: false,
+            });
+            if (response.data?.status) {
+                toast.success("User activated successfully");
+                fetchReports();
+            }
+        } catch (err) {
+            console.error("Error activating user:", err);
+            toast.error(err.message || "Failed to activate user");
+        }
+    };
+
+    const handleDeactivateUser = async (user) => {
+        if (!user) return;
+        const loggedInUserId = getLoggedInUserId();
+        if (loggedInUserId && user._id === loggedInUserId) {
+            toast.error("You cannot deactivate your own admin account!");
+            return;
+        }
+
+        if (!window.confirm(`Are you sure you want to deactivate ${user.firstName || 'this user'}?`)) {
+            return;
+        }
+
+        try {
+            const response = await authAxiosClient.patch(`/user/toggle-disable/${user._id}`, {
+                isDisable: true,
+            });
+            if (response.data?.status) {
+                toast.success("User deactivated successfully");
+                fetchReports();
+            }
+        } catch (err) {
+            console.error("Error deactivating user:", err);
+            toast.error(err.message || "Failed to deactivate user");
+        }
+    };
+
     const getStatusBadge = (status) => {
         const colors = {
             pending: "bg-yellow-100 text-yellow-800",
@@ -141,7 +200,19 @@ const ReportList = ({ title }) => {
         {
             key: "toUser",
             label: "Reported User",
-            render: (val) => val ? `${val.firstName} ${val.lastName}` : "Unknown"
+            render: (val) => {
+                if (!val) return "Unknown";
+                return (
+                    <div className="flex flex-col">
+                        <span>{`${val.firstName} ${val.lastName}`}</span>
+                        {val.isDisable && (
+                            <span className="text-[10px] bg-red-100 text-red-800 px-1 py-0.5 rounded font-bold w-max uppercase mt-0.5">
+                                Deactivated
+                            </span>
+                        )}
+                    </div>
+                );
+            }
         },
         {
             key: "reason",
@@ -161,7 +232,7 @@ const ReportList = ({ title }) => {
             key: "actions",
             label: "Actions",
             render: (_, row) => (
-                <div className="flex gap-3">
+                <div className="flex items-center gap-3">
                     <button onClick={() => { setSelectedReport(row); setIsDetailModalOpen(true); }} className="p-1 hover:bg-gray-100 rounded" title="View Details">
                         <FiEye className="text-teal-500 w-4 h-4" />
                     </button>
@@ -173,6 +244,25 @@ const ReportList = ({ title }) => {
                         >
                             Update
                         </button>
+                    )}
+                    {row.toUser && (
+                        row.toUser.isDisable ? (
+                            <button
+                                onClick={() => handleActivateUser(row.toUser)}
+                                className="px-2 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 whitespace-nowrap"
+                                title="Activate User"
+                            >
+                                Activate User
+                            </button>
+                        ) : (
+                            <button
+                                onClick={() => handleDeactivateUser(row.toUser)}
+                                className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 whitespace-nowrap"
+                                title="Deactivate User"
+                            >
+                                Deactivate User
+                            </button>
+                        )
                     )}
                     <button onClick={() => handleDeleteReport(row._id)} className="p-1 hover:bg-gray-100 rounded" title="Delete">
                         <FiTrash2 className="text-red-500 w-4 h-4" />

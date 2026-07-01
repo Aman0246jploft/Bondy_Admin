@@ -15,6 +15,7 @@ import {
   AiOutlineCustomerService,
   AiOutlineMail,
   AiOutlineDollar,
+  AiOutlineBug,
 } from "react-icons/ai";
 import { useTheme } from "../../contexts/theme/hook/useTheme";
 import clsx from "clsx";
@@ -45,6 +46,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     { name: "Contact Messages", href: "/contacts", icon: AiOutlineMail },
     // { name: "Update Signups", href: "/stay-updated", icon: AiOutlineMail },
     { name: "Reports", href: "/reports", icon: AiOutlineFileText },
+    { name: "Bug Reports", href: "/bugs", icon: AiOutlineBug },
     // { name: "Notifications", href: "/#", icon: AiOutlineBell },
   ];
 
