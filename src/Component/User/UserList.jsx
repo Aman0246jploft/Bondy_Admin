@@ -129,12 +129,12 @@ const UserList = ({ roleId, title }) => {
                 <label className="inline-flex items-center cursor-pointer">
                     <input
                         type="checkbox"
-                        className="sr-only peer"
+                        className="hidden"
                         checked={!value}
                         onChange={() => toggleStatus(row, rowIndex)}
                     />
-                    <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-green-500 relative transition-colors">
-                        <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full peer-checked:translate-x-5 transition-transform" />
+                    <div className={`w-11 h-6 rounded-full relative transition-colors duration-200 ${!value ? "bg-[#23ada4]" : "bg-gray-300"}`}>
+                        <div className={`absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform duration-200 ${!value ? "translate-x-5" : "translate-x-0"}`} />
                     </div>
                 </label>
             ),
