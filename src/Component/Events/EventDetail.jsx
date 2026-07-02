@@ -535,7 +535,8 @@ const EventDetail = () => {
                                     <div>
                                         <span className="text-slate-400 text-xs block font-medium">Event Duration</span>
                                         <span className="font-semibold text-slate-700 text-sm">
-                                            {event.duration} {event.durationTranslation ? `(${event.durationTranslation})` : ""}
+                                            {event.duration}
+                                            {/* {event.durationTranslation ? `(${event.durationTranslation})` : ""} */}
                                         </span>
                                     </div>
                                 </div>

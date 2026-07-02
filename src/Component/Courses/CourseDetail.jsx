@@ -544,7 +544,8 @@ const CourseDetail = () => {
                                     <div>
                                         <span className="text-slate-400 text-xs block font-medium">Duration</span>
                                         <span className="font-semibold text-slate-700 text-sm">
-                                            {course.duration} {course.durationTranslation ? `(${course.durationTranslation})` : ""}
+                                            {course.duration}
+                                            {/* {course.durationTranslation ? `(${course.durationTranslation})` : ""} */}
                                         </span>
                                     </div>
                                 </div>

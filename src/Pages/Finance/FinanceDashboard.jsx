@@ -457,7 +457,7 @@ const FinanceDashboard = () => {
               </>
             )}
           </div>
-        </div>savyad aashi muujya yaa saina ssahiayu
+        </div>
       </div>
 
       {/* ── Stat Cards ── */}
