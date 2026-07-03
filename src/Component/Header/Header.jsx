@@ -337,7 +337,7 @@ const Header = ({ toggleSidebar }) => {
               }}
             >
               <Image
-                src={userData?.profileImage || "/api/placeholder/32/32"}
+                src={'/sidebar-logo.svg'}
                 alt="Profile"
                 width={32}
                 height={32}
