@@ -305,10 +305,10 @@ const EventDetail = () => {
                                                 <h4 className="text-xs font-bold text-slate-500 uppercase">Refund Policy</h4>
                                                 <p className="text-sm font-semibold text-slate-800 mt-1">{event.refundPolicy || "No Refund"}</p>
                                             </div>
-                                            <div className="border border-slate-100 rounded-xl p-4 bg-slate-50">
+                                            {/* <div className="border border-slate-100 rounded-xl p-4 bg-slate-50">
                                                 <h4 className="text-xs font-bold text-slate-500 uppercase">Add Ons</h4>
                                                 <p className="text-sm font-semibold text-slate-800 mt-1">{event.addOns || "None"}</p>
-                                            </div>
+                                            </div> */}
                                             <div className="border border-slate-100 rounded-xl p-4 bg-slate-50">
                                                 <h4 className="text-xs font-bold text-slate-500 uppercase">Promotion Package</h4>
                                                 <p className="text-sm font-semibold text-slate-800 mt-1">
