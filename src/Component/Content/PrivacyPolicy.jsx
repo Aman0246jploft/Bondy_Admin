@@ -23,7 +23,7 @@ const PrivacyPolicy = () => {
     const fetchContent = async () => {
         try {
             const token = localStorage.getItem("token");
-            
+
             // Fetch English
             try {
                 const response = await axios.get(`${API_URL}/api/v1/globalsetting/privacy_policy`, {
@@ -58,7 +58,7 @@ const PrivacyPolicy = () => {
         setLoading(true);
         try {
             const token = localStorage.getItem("token");
-            
+
             // Save English
             await axios.post(
                 `${API_URL}/api/v1/globalsetting/upsert`,
@@ -132,21 +132,19 @@ const PrivacyPolicy = () => {
                 <div className="flex border-b mb-4">
                     <button
                         onClick={() => setActiveTab("en")}
-                        className={`py-2 px-4 font-medium transition-all ${
-                            activeTab === "en"
-                                ? "border-b-2 border-teal-600 text-teal-600"
-                                : "text-gray-400 hover:text-gray-500"
-                        }`}
+                        className={`py-2 px-4 font-medium transition-all ${activeTab === "en"
+                            ? "border-b-2 border-teal-600 text-teal-600"
+                            : "text-gray-400 hover:text-gray-500"
+                            }`}
                     >
                         English
                     </button>
                     <button
                         onClick={() => setActiveTab("mn")}
-                        className={`py-2 px-4 font-medium transition-all ${
-                            activeTab === "mn"
-                                ? "border-b-2 border-teal-600 text-teal-600"
-                                : "text-gray-400 hover:text-gray-500"
-                        }`}
+                        className={`py-2 px-4 font-medium transition-all ${activeTab === "mn"
+                            ? "border-b-2 border-teal-600 text-teal-600"
+                            : "text-gray-400 hover:text-gray-500"
+                            }`}
                     >
                         Mongolian
                     </button>
