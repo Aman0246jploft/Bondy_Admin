@@ -31,7 +31,7 @@ const DataTable = ({ columns, data }) => {
 
   return (
     <>
-      <div className="overflow-x-auto w-full">
+      <div className="table-responsive overflow-x-auto w-full">
         <table
           className="min-w-full text-sm text-left table-fixed border"
           style={{ borderColor: theme.colors.border }}
@@ -74,7 +74,7 @@ const DataTable = ({ columns, data }) => {
                   return (
                     <td
                       key={col.key}
-                      className="p-2 max-w-[200px] truncate align-top"
+                      className="p-2 truncate align-top"
                       onMouseEnter={(e) => handleMouseEnter(e, value)}
                       onMouseLeave={handleMouseLeave}
                     >

@@ -249,7 +249,7 @@ const CategoryList = ({ title }) => {
 
     return (
         <div className="p-4 space-y-4">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center flex-wrap gap-4">
                 <h2 className="text-xl font-bold">{title}</h2>
                 <div className="flex gap-4">
                     <select

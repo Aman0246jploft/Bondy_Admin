@@ -36,7 +36,7 @@ const MainLayout = ({ children }) => {
 
   return (
     <div
-      className="flex h-screen"
+      className="h-screen"
       style={{ backgroundColor: theme.colors.background }}
     >
       {/* Sidebar */}
