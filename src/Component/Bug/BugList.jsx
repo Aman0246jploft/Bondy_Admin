@@ -53,10 +53,12 @@ const BugList = ({ title }) => {
         {
             key: "title",
             label: "Bug Title",
+            render: (val) => val && val.length > 30 ? `${val.substring(0, 30)}...` : (val || "N/A")
         },
         {
             key: "description",
             label: "Description",
+            render: (val) => val && val.length > 50 ? `${val.substring(0, 50)}...` : (val || "N/A")
         },
         {
             key: "createdAt",
