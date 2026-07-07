@@ -27,7 +27,8 @@ const GlobalSettingList = ({ title }) => {
                     // item.key === 'FEATURE_EVENT_FEE' ||
                     // item.key === 'REFERRAL_REWARD_AMOUNT' ||
                     item.key === 'MIN_PAYOUT_CONFIG' ||
-                    item.key === 'SOCIAL_LINKS'
+                    item.key === 'SOCIAL_LINKS' ||
+                    item.key === 'CANCELLATION_FEE_PERCENT'
                 );
 
                 console.log("filteredSettings1111", filteredSettings);
