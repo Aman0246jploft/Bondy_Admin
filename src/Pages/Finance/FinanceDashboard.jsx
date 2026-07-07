@@ -4,7 +4,7 @@ import financeApi from "../../api/financeApi";
 import { toast } from "react-toastify";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-const fmt = (n) => `$${Number(n || 0).toLocaleString()}`;
+const fmt = (n) => `₮${Number(n || 0).toLocaleString()}`;
 const fmtDate = (d) =>
   d
     ? new Date(d).toLocaleDateString("en-GB", {

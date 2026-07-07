@@ -313,7 +313,7 @@ const EventDetail = () => {
                                                 <h4 className="text-xs font-bold text-slate-500 uppercase">Promotion Package</h4>
                                                 <p className="text-sm font-semibold text-slate-800 mt-1">
                                                     {event.activePromotionPackage ? "Active" : "None"}
-                                                    {event.featureEventFee > 0 && ` (Fee: $${event.featureEventFee})`}
+                                                    {event.featureEventFee > 0 && ` (Fee: ₮${event.featureEventFee})`}
                                                 </p>
                                             </div>
                                         </div>
@@ -354,7 +354,7 @@ const EventDetail = () => {
                                                             <p className="text-xs text-slate-500 mt-1">{ticket.ticketShortDesc || "No description provided."}</p>
                                                         </div>
                                                         <span className="text-lg font-bold text-teal-600 bg-teal-50 border border-teal-100 px-3 py-1 rounded-lg">
-                                                            {ticket.price === 0 ? "Free" : `$${ticket.price}`}
+                                                            {ticket.price === 0 ? "Free" : `₮${ticket.price}`}
                                                         </span>
                                                     </div>
 
