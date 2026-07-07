@@ -182,7 +182,7 @@ const OrganizerStatsModal = ({ organizer, onClose }) => {
     };
 
     const formatCurrency = (amount) => {
-        return `₹${(amount || 0).toFixed(2)}`;
+        return `₮${(amount || 0).toFixed(2)}`;
     };
 
     const formatDate = (date) => {

@@ -306,7 +306,7 @@ const CourseDetail = () => {
                                                     <div>
                                                         <span className="text-xs font-bold text-slate-400 block uppercase">1-Month Pass</span>
                                                         <span className="text-lg font-bold text-slate-800 mt-1 block">
-                                                            {course.oneMonthPassEnabled ? `₹${course.oneMonthPassPrice}` : "Disabled"}
+                                                            {course.oneMonthPassEnabled ? `₮${course.oneMonthPassPrice}` : "Disabled"}
                                                         </span>
                                                     </div>
                                                     <span className={`text-[10px] font-bold mt-2 inline-block self-start px-2 py-0.5 rounded ${course.oneMonthPassEnabled ? "bg-emerald-100 text-emerald-800" : "bg-slate-200 text-slate-600"}`}>
@@ -318,7 +318,7 @@ const CourseDetail = () => {
                                                     <div>
                                                         <span className="text-xs font-bold text-slate-400 block uppercase">3-Month Pass</span>
                                                         <span className="text-lg font-bold text-slate-800 mt-1 block">
-                                                            {course.threeMonthPassEnabled ? `₹${course.threeMonthPassPrice}` : "Disabled"}
+                                                            {course.threeMonthPassEnabled ? `₮${course.threeMonthPassPrice}` : "Disabled"}
                                                         </span>
                                                     </div>
                                                     <span className={`text-[10px] font-bold mt-2 inline-block self-start px-2 py-0.5 rounded ${course.threeMonthPassEnabled ? "bg-emerald-100 text-emerald-800" : "bg-slate-200 text-slate-600"}`}>
@@ -600,7 +600,7 @@ const CourseDetail = () => {
                             <div className="flex justify-between items-center bg-teal-50/50 border border-teal-100 rounded-xl p-4">
                                 <span className="text-xs font-bold text-slate-500 block uppercase">Course Price</span>
                                 <span className="text-lg font-bold text-teal-600">
-                                    {course.price === 0 ? "Free" : `₹${course.price}`}
+                                    {course.price === 0 ? "Free" : `₮${course.price}`}
                                 </span>
                             </div>
                         </div>

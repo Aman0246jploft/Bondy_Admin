@@ -355,7 +355,7 @@ const UserDetail = () => {
                             <InfoCard icon="📅" label="Events Hosted" value={totalEventsHosted} />
                             <InfoCard icon="📚" label="Courses Added" value={totalCoursesAdded} />
                             <InfoCard icon="🎟" label="Total Tickets Sold" value={totalTicketSold} />
-                            <InfoCard icon="💰" label="Total Earnings" value={`₹${((netEarningEvents || 0) + (netEarningCourses || 0)).toLocaleString()}`} accent="border-green-200 bg-green-50" />
+                            <InfoCard icon="💰" label="Total Earnings" value={`₮${((netEarningEvents || 0) + (netEarningCourses || 0)).toLocaleString()}`} accent="border-green-200 bg-green-50" />
                         </div>
 
                         {/* Events & Courses Tabs */}
