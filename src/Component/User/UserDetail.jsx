@@ -183,9 +183,12 @@ const UserDetail = () => {
                             {dob && <span className="flex items-center gap-1">🎂 {fmt(dob)}</span>}
                         </div>
                         {bio && (
-                            <p className="text-gray-600 text-sm leading-relaxed mt-2 p-3 bg-gray-50 rounded-lg border">
-                                {bio}
-                            </p>
+                            <div className="w-3/4">
+                                <p className="text-xs text-gray-400 uppercase font-semibold mb-1">BIO</p>
+                                <p className="text-gray-600 text-sm leading-relaxed rounded-lg ">
+                                    {bio}
+                                </p>
+                            </div>
                         )}
                         {interestedCategories?.length > 0 && (
                             <div className="mt-3">
