@@ -53,6 +53,7 @@ const DataTable = ({ columns, data }) => {
               ))}
             </tr>
           </thead>
+          
           <tbody>
             {data?.map((row, rowIndex) => (
               <tr
