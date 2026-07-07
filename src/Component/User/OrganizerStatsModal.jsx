@@ -319,7 +319,7 @@ const OrganizerStatsModal = ({ organizer, onClose }) => {
                 </div>
 
                 {/* Transactions Table */}
-                <div className="overflow-x-auto">
+                <div className="table-responsive overflow-x-auto">
                     <table className="min-w-full bg-white border">
                         <thead className="bg-gray-100">
                             <tr>
@@ -450,7 +450,7 @@ const OrganizerStatsModal = ({ organizer, onClose }) => {
                 </div>
 
                 {/* Wallet History Table */}
-                <div className="overflow-x-auto">
+                <div className="table-responsive overflow-x-auto">
                     <table className="min-w-full bg-white border">
                         <thead className="bg-gray-100">
                             <tr>
@@ -553,7 +553,7 @@ const OrganizerStatsModal = ({ organizer, onClose }) => {
                 </div>
 
                 {/* Payouts Table */}
-                <div className="overflow-x-auto">
+                <div className="table-responsive overflow-x-auto">
                     <table className="min-w-full bg-white border">
                         <thead className="bg-gray-100">
                             <tr>
