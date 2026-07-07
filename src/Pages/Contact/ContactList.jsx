@@ -78,7 +78,7 @@ const ContactList = () => {
                 </div>
             ) : (
                 <>
-                    <div className="overflow-x-auto rounded-lg shadow" style={{ backgroundColor: theme.colors.cardBg }}>
+                    <div className="table-responsive overflow-x-auto rounded-lg shadow" style={{ backgroundColor: theme.colors.cardBg }}>
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead style={{ backgroundColor: theme.colors.background }}>
                                 <tr>

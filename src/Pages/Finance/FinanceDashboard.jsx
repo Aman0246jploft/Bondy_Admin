@@ -492,7 +492,7 @@ const FinanceDashboard = () => {
             />
           </div>
         </div>
-        <div className="overflow-x-auto">
+        <div className="table-responsive overflow-x-auto">
           <table className="min-w-full text-sm">
             <thead className="bg-gray-50">
               <tr>
@@ -594,7 +594,7 @@ const FinanceDashboard = () => {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="table-responsive overflow-x-auto">
           <table className="min-w-full text-sm">
             <thead className="bg-gray-50">
               <tr>
