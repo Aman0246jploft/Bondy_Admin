@@ -274,7 +274,10 @@ const PromotionPackageList = ({ title }) => {
                                     }}
                                 >
                                     {formData.packageType === "COURSE" ? (
-                                        <option value="homePage">Home page</option>
+                                        <>
+                                            <option value="homePage">Homepage</option>
+                                            <option value="explorePage">Explore Page</option>
+                                        </>
                                     ) : (
                                         <>
                                             <option value="homePage">Homepage</option>
