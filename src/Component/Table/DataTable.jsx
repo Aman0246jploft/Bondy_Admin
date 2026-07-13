@@ -11,11 +11,12 @@ const DataTable = ({ columns, data }) => {
   });
 
   const handleMouseEnter = (e, value) => {
-    if (String(value).length > 30) {
+    const text = typeof value === "string" ? value : (value !== undefined && value !== null ? String(value) : "");
+    if (text.length > 50) {
       const rect = e.target.getBoundingClientRect();
       setTooltip({
         visible: true,
-        content: String(value),
+        content: text,
         x: rect.left,
         y: rect.top - 10,
       });
@@ -53,7 +54,7 @@ const DataTable = ({ columns, data }) => {
               ))}
             </tr>
           </thead>
-          
+
           <tbody>
             {data?.map((row, rowIndex) => (
               <tr
@@ -69,17 +70,24 @@ const DataTable = ({ columns, data }) => {
                   const value = row[col.key];
 
                   const content = col.render
-                    ? col.render(value, row, rowIndex) // <-- Fix: include rowIndex
-                    : String(value);
+                    ? col.render(value, row, rowIndex)
+                    : (value !== undefined && value !== null ? String(value) : "");
+
+                  const isStringContent = typeof content === "string";
+                  const displayContent = isStringContent && content.length > 50
+                    ? content.slice(0, 50) + "..."
+                    : content;
+
+                  const tooltipContent = isStringContent ? content : value;
 
                   return (
                     <td
                       key={col.key}
                       className="p-2 truncate align-top"
-                      onMouseEnter={(e) => handleMouseEnter(e, value)}
+                      onMouseEnter={(e) => handleMouseEnter(e, tooltipContent)}
                       onMouseLeave={handleMouseLeave}
                     >
-                      <div className="truncate">{content}</div>
+                      <div className="truncate">{displayContent}</div>
                     </td>
                   );
                 })}
