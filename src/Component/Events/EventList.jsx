@@ -149,19 +149,19 @@ const EventList = () => {
             )
         },
 
-        {
-            key: "Add-to-slider",
-            label: "Add to slider",
-            render: (_val, row) => (
-                <input
-                    type="checkbox"
-                    checked={Boolean(row.addToSlider)}
-                    disabled={Boolean(toggleLoadingMap[row._id])}
-                    onChange={(e) => toggleEventSlider(row._id, e.target.checked)}
-                    className="h-4 w-4 cursor-pointer"
-                />
-            ),
-        },
+        // {
+        //     key: "Add-to-slider",
+        //     label: "Add to slider",
+        //     render: (_val, row) => (
+        //         <input
+        //             type="checkbox"
+        //             checked={Boolean(row.addToSlider)}
+        //             disabled={Boolean(toggleLoadingMap[row._id])}
+        //             onChange={(e) => toggleEventSlider(row._id, e.target.checked)}
+        //             className="h-4 w-4 cursor-pointer"
+        //         />
+        //     ),
+        // },
 
         {
             key: "statusLabel",

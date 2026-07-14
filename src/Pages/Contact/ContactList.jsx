@@ -229,7 +229,7 @@ const ContactList = () => {
                         >
                             ✕
                         </button>
-                        <h3 className="text-xl font-bold mb-2" style={{ color: theme.colors.textPrimary }}>
+                        <h3 className="text-xl font-bold mb-2 break-words" style={{ color: theme.colors.textPrimary, overflowWrap: "break-word", wordBreak: "break-word" }}>
                             Message from {selectedContact.fullName}
                         </h3>
                         <p className="text-sm mb-4" style={{ color: theme.colors.textSecondary }}>
@@ -238,8 +238,8 @@ const ContactList = () => {
                             <strong>Status:</strong> <span className={`px-2 py-0.5 rounded text-xs ${statusColors[selectedContact.status]}`}>{selectedContact.status}</span>
                         </p>
                         <div
-                            className="mt-4 p-4 rounded max-h-[60vh] overflow-y-auto"
-                            style={{ backgroundColor: theme.colors.background, color: theme.colors.textPrimary }}
+                            className="mt-4 p-4 rounded max-h-[60vh] overflow-y-auto break-words"
+                            style={{ backgroundColor: theme.colors.background, color: theme.colors.textPrimary, overflowWrap: "break-word", wordBreak: "break-word" }}
                         >
                             {selectedContact.message}
                         </div>
