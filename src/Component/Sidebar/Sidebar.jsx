@@ -36,6 +36,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     { name: "Events", href: "/events", icon: AiOutlineCalendar },
     { name: "Courses", href: "/courses", icon: AiOutlineBook },
     { name: "Taxes", href: "/taxes", icon: AiOutlineSetting },
+    { name: "Banks", href: "/banks", icon: AiOutlineSetting },
     { name: "Promo Codes", href: "/promo-codes", icon: AiOutlineFileText },
     { name: "Promotion Packages", href: "/promotion-packages", icon: AiOutlineFileText },
     { name: "Global Settings", href: "/settings", icon: AiOutlineSetting },
