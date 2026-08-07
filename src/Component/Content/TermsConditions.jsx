@@ -133,8 +133,8 @@ const TermsConditions = () => {
                     <button
                         onClick={() => setActiveTab("en")}
                         className={`py-2 px-4 font-medium transition-all ${activeTab === "en"
-                                ? "border-b-2 border-teal-600 text-teal-600"
-                                : "text-gray-400 hover:text-gray-500"
+                            ? "border-b-2 border-teal-600 text-teal-600"
+                            : "text-gray-400 hover:text-gray-500"
                             }`}
                     >
                         English
@@ -142,8 +142,8 @@ const TermsConditions = () => {
                     <button
                         onClick={() => setActiveTab("mn")}
                         className={`py-2 px-4 font-medium transition-all ${activeTab === "mn"
-                                ? "border-b-2 border-teal-600 text-teal-600"
-                                : "text-gray-400 hover:text-gray-500"
+                            ? "border-b-2 border-teal-600 text-teal-600"
+                            : "text-gray-400 hover:text-gray-500"
                             }`}
                     >
                         Mongolian
