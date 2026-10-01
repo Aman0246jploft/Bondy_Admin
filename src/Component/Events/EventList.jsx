@@ -149,19 +149,68 @@ const EventList = () => {
             )
         },
 
-        // {
-        //     key: "Add-to-slider",
-        //     label: "Add to slider",
-        //     render: (_val, row) => (
-        //         <input
-        //             type="checkbox"
-        //             checked={Boolean(row.addToSlider)}
-        //             disabled={Boolean(toggleLoadingMap[row._id])}
-        //             onChange={(e) => toggleEventSlider(row._id, e.target.checked)}
-        //             className="h-4 w-4 cursor-pointer"
-        //         />
-        //     ),
-        // },
+        {
+            key: "addToSlider",
+            label: (
+                <span style={{ display: "flex", alignItems: "center", gap: "4px" }} title="Events marked here appear in the hero banner on the frontend">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                        <rect x="2" y="3" width="20" height="14" rx="2" /><polyline points="8 21 12 17 16 21" /><line x1="12" y1="17" x2="12" y2="21" />
+                    </svg>
+                    Banner
+                </span>
+            ),
+            render: (_val, row) => {
+                const isOn = Boolean(row.addToSlider);
+                const isLoading = Boolean(toggleLoadingMap[row._id]);
+                return (
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "3px" }}>
+                        {isLoading ? (
+                            <svg style={{ animation: "spin 1s linear infinite", width: "16px", height: "16px", color: "#0d9488" }} viewBox="0 0 24 24" fill="none">
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeDasharray="32" strokeDashoffset="12" />
+                            </svg>
+                        ) : (
+                            <button
+                                type="button"
+                                title={isOn ? "Remove from banner slider" : "Add to banner slider"}
+                                onClick={() => toggleEventSlider(row._id, !isOn)}
+                                style={{
+                                    position: "relative",
+                                    display: "inline-flex",
+                                    height: "20px",
+                                    width: "36px",
+                                    alignItems: "center",
+                                    borderRadius: "9999px",
+                                    border: "none",
+                                    cursor: "pointer",
+                                    backgroundColor: isOn ? "#0d9488" : "#d1d5db",
+                                    transition: "background-color 0.2s",
+                                    padding: 0,
+                                }}
+                            >
+                                <span
+                                    style={{
+                                        display: "inline-block",
+                                        width: "14px",
+                                        height: "14px",
+                                        borderRadius: "9999px",
+                                        backgroundColor: "#fff",
+                                        boxShadow: "0 1px 3px rgba(0,0,0,0.3)",
+                                        transform: isOn ? "translateX(19px)" : "translateX(3px)",
+                                        transition: "transform 0.2s",
+                                    }}
+                                />
+                            </button>
+                        )}
+                        {isOn && (
+                            <span style={{ fontSize: "10px", fontWeight: 700, color: "#0d9488", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                                Live
+                            </span>
+                        )}
+                    </div>
+                );
+            },
+        },
+
 
         {
             key: "statusLabel",
