@@ -29,6 +29,7 @@ const Banks = lazy(() => import("./Pages/Settings/Banks"));
 const PromoCodes = lazy(() => import("./Pages/Settings/PromoCodes"));
 const PromotionPackages = lazy(() => import("./Pages/Settings/PromotionPackages"));
 const GlobalSettings = lazy(() => import("./Pages/Settings/GlobalSettings"));
+const FooterManagementPage = lazy(() => import("./Pages/Settings/FooterManagement/FooterManagementPage"));
 const PrivacyPolicy = lazy(() => import("./Component/Content/PrivacyPolicy"));
 const TermsConditions = lazy(() => import("./Component/Content/TermsConditions"));
 const FAQs = lazy(() => import("./Component/Content/FAQList"));
@@ -78,6 +79,7 @@ function App() {
               <Route path="/promo-codes" element={<PromoCodes />} />
               <Route path="/promotion-packages" element={<PromotionPackages />} />
               <Route path="/settings" element={<GlobalSettings />} />
+              <Route path="/footer-management" element={<FooterManagementPage />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms-conditions" element={<TermsConditions />} />
               <Route path="/faqs" element={<FAQs />} />
