@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import authAxiosClient from "../../api/authAxiosClient";
 import { format } from "date-fns";
+import { toast } from "react-toastify";
 
 // ─── helpers ─────────────────────────────────────────────────────────────────
 const fmt = (date) => {
@@ -50,6 +51,26 @@ const UserDetail = () => {
     const [error, setError] = useState(null);
     const [userProfile, setUserProfile] = useState(null);
     const [activeTab, setActiveTab] = useState("events"); // For organizers: events | courses
+    const [isPromoting, setIsPromoting] = useState(false);
+
+    const handleTogglePromote = async () => {
+        if (!userProfile) return;
+        setIsPromoting(true);
+        try {
+            const newPromote = !userProfile.isPromoted;
+            const res = await authAxiosClient.patch(`/user/toggle-promote/${userProfile._id || userId}`, {
+                isPromoted: newPromote,
+            });
+            if (res.data?.status) {
+                setUserProfile(prev => ({ ...prev, isPromoted: newPromote }));
+                toast.success(`Organizer ${newPromote ? "promoted" : "unpromoted"} successfully`);
+            }
+        } catch (err) {
+            toast.error(err.response?.data?.message || err.message || "Failed to update promotion");
+        } finally {
+            setIsPromoting(false);
+        }
+    };
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -165,6 +186,22 @@ const UserDetail = () => {
                         <span className="px-3 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full border border-amber-200">
                             UNVERIFIED
                         </span>
+                    )}
+                    {isOrganizer && (
+                        <button
+                            type="button"
+                            disabled={isPromoting}
+                            onClick={handleTogglePromote}
+                            className={`px-3 py-1 text-xs font-bold rounded-full border transition flex items-center gap-1.5 cursor-pointer ${
+                                userProfile.isPromoted
+                                    ? "bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-200"
+                                    : "bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-200"
+                            }`}
+                            title="Toggle whether this organizer appears in 'Promoted organizers' on the homepage"
+                        >
+                            <span>★</span>
+                            {userProfile.isPromoted ? "PROMOTED ON HOMEPAGE" : "PROMOTE ORGANIZER"}
+                        </button>
                     )}
                 </div>
             </div>

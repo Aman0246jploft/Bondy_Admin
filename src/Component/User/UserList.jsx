@@ -90,6 +90,24 @@ const UserList = ({ roleId, title }) => {
         }
     };
 
+    const togglePromote = async (user, index) => {
+        try {
+            const newPromoteStatus = !user.isPromoted;
+            const response = await axiosClient.patch(`/user/toggle-promote/${user._id}`, {
+                isPromoted: newPromoteStatus,
+            });
+            if (response.data?.status) {
+                const newData = [...data];
+                newData[index] = { ...user, isPromoted: newPromoteStatus };
+                setData(newData);
+                toast.success(`Organizer ${newPromoteStatus ? "promoted" : "unpromoted"} successfully`);
+            }
+        } catch (error) {
+            console.error("Error updating promotion status:", error);
+            toast.error(error.response?.data?.message || error.message || "Failed to update promotion status");
+        }
+    };
+
     const handleDelete = async (user) => {
         if (window.confirm(`Are you sure you want to delete ${user.firstName || 'this user'}?`)) {
             try {
@@ -122,6 +140,32 @@ const UserList = ({ roleId, title }) => {
         },
         { key: "email", label: "Email" },
         { key: "contactNumber", label: "Contact" },
+        ...(roleId === 2 ? [{
+            key: "isPromoted",
+            label: "Promoted",
+            render: (value, row, rowIndex) => (
+                <div className="flex items-center gap-2">
+                    <label className="inline-flex items-center cursor-pointer" title={value ? "Promoted on Homepage" : "Click to promote on Homepage"}>
+                        <input
+                            type="checkbox"
+                            className="hidden"
+                            checked={Boolean(value)}
+                            onChange={() => togglePromote(row, rowIndex)}
+                        />
+                        <div className={`w-11 h-6 rounded-full relative transition-colors duration-200 ${value ? "bg-amber-500" : "bg-gray-300"}`}>
+                            <div className={`absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform duration-200 ${value ? "translate-x-5" : "translate-x-0"}`} />
+                        </div>
+                    </label>
+                    {value ? (
+                        <span className="px-2 py-0.5 text-[11px] font-bold rounded-full bg-amber-100 text-amber-800 border border-amber-300 whitespace-nowrap">
+                            ★ Promoted
+                        </span>
+                    ) : (
+                        <span className="text-xs text-gray-400">Regular</span>
+                    )}
+                </div>
+            ),
+        }] : []),
         {
             key: "isDisable",
             label: "Status",
