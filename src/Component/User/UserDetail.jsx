@@ -192,11 +192,10 @@ const UserDetail = () => {
                             type="button"
                             disabled={isPromoting}
                             onClick={handleTogglePromote}
-                            className={`px-3 py-1 text-xs font-bold rounded-full border transition flex items-center gap-1.5 cursor-pointer ${
-                                userProfile.isPromoted
-                                    ? "bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-200"
-                                    : "bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-200"
-                            }`}
+                            className={`px-3 py-1 text-xs font-bold rounded-full border transition flex items-center gap-1.5 cursor-pointer ${userProfile.isPromoted
+                                ? "bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-200"
+                                : "bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-200"
+                                }`}
                             title="Toggle whether this organizer appears in 'Promoted organizers' on the homepage"
                         >
                             <span>★</span>
