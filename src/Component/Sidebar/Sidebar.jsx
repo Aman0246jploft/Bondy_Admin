@@ -51,8 +51,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     { name: "Bug Reports", href: "/bugs", icon: AiOutlineBug },
     //footer-management
     { name: "Footer Management", href: "/footer-management", icon: AiOutlineLayout },
-
-    // { name: "Notifications", href: "/#", icon: AiOutlineBell },
+    { name: "Notifications", href: "/notifications", icon: AiOutlineBell },
   ];
 
   return (
