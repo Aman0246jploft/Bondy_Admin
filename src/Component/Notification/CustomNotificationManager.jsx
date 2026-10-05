@@ -225,11 +225,10 @@ const CustomNotificationManager = () => {
             <div
               key={key}
               onClick={() => setTarget(key)}
-              className={`cursor-pointer rounded-xl p-5 border transition-all duration-200 relative overflow-hidden shadow-sm ${
-                isSelected
-                  ? "border-teal-600 ring-2 ring-teal-500/20 bg-teal-50/40"
-                  : "bg-white hover:border-gray-300 hover:shadow"
-              }`}
+              className={`cursor-pointer rounded-xl p-5 border transition-all duration-200 relative overflow-hidden shadow-sm ${isSelected
+                ? "border-teal-600 ring-2 ring-teal-500/20 bg-teal-50/40"
+                : "bg-white hover:border-gray-300 hover:shadow"
+                }`}
             >
               <div className="flex items-start justify-between">
                 <div>
@@ -248,11 +247,10 @@ const CustomNotificationManager = () => {
                 </div>
 
                 <div
-                  className={`w-6 h-6 rounded-full flex items-center justify-center border transition-all ${
-                    isSelected
-                      ? "bg-teal-600 border-teal-600 text-white"
-                      : "border-gray-300 bg-white"
-                  }`}
+                  className={`w-6 h-6 rounded-full flex items-center justify-center border transition-all ${isSelected
+                    ? "bg-teal-600 border-teal-600 text-white"
+                    : "border-gray-300 bg-white"
+                    }`}
                 >
                   {isSelected && <FiCheck className="w-3.5 h-3.5 stroke-[3]" />}
                 </div>
@@ -297,11 +295,10 @@ const CustomNotificationManager = () => {
                       type="button"
                       key={key}
                       onClick={() => setTarget(key)}
-                      className={`flex flex-col items-center justify-center p-3 rounded-xl border text-center transition-all ${
-                        isSelected
-                          ? "border-teal-600 bg-teal-50 text-teal-900 font-semibold shadow-sm ring-1 ring-teal-600"
-                          : "border-gray-200 bg-gray-50/50 hover:bg-gray-100 text-gray-700"
-                      }`}
+                      className={`flex flex-col items-center justify-center p-3 rounded-xl border text-center transition-all ${isSelected
+                        ? "border-teal-600 bg-teal-50 text-teal-900 font-semibold shadow-sm ring-1 ring-teal-600"
+                        : "border-gray-200 bg-gray-50/50 hover:bg-gray-100 text-gray-700"
+                        }`}
                     >
                       <Icon className={`w-5 h-5 mb-1.5 ${isSelected ? "text-teal-700" : "text-gray-500"}`} />
                       <span className="text-xs font-semibold">{config.label}</span>
@@ -359,7 +356,7 @@ const CustomNotificationManager = () => {
             </div>
 
             {/* Deep Link / Action URL (Optional) */}
-            <div>
+            {/* <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1.5">
                 4. Action Link / Deep Link <span className="text-xs font-normal text-gray-400">(Optional)</span>
               </label>
@@ -377,7 +374,7 @@ const CustomNotificationManager = () => {
                 />
               </div>
 
-              {/* Quick Select Preset Chips */}
+
               <div className="flex flex-wrap items-center gap-1.5 mt-2">
                 <span className="text-xs text-gray-400 mr-1">Quick presets:</span>
                 {PRESET_LINKS.map((preset) => (
@@ -385,17 +382,16 @@ const CustomNotificationManager = () => {
                     key={preset.label}
                     type="button"
                     onClick={() => setDeepLink(preset.value)}
-                    className={`text-xs px-2.5 py-1 rounded-lg border transition-all ${
-                      deepLink === preset.value
-                        ? "bg-teal-50 border-teal-300 text-teal-700 font-medium"
-                        : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100"
-                    }`}
+                    className={`text-xs px-2.5 py-1 rounded-lg border transition-all ${deepLink === preset.value
+                      ? "bg-teal-50 border-teal-300 text-teal-700 font-medium"
+                      : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100"
+                      }`}
                   >
                     {preset.label}
                   </button>
                 ))}
               </div>
-            </div>
+            </div> */}
 
             {/* Submit Action */}
             <div className="pt-2">
@@ -553,12 +549,12 @@ const CustomNotificationManager = () => {
                   const Icon = targetConfig.icon;
                   const formattedDate = item.createdAt
                     ? new Date(item.createdAt).toLocaleString("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
                     : "—";
 
                   return (
