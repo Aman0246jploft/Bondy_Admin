@@ -218,19 +218,19 @@ const CategoryList = ({ title }) => {
             label: "Type",
             render: (val) => <span className={`capitalize px-2 py-1 rounded text-xs ${val === 'event' ? 'bg-teal-100 text-teal-800' : val === 'support_ticket' ? 'bg-orange-100 text-orange-800' : 'bg-green-100 text-green-800'}`}>{val === 'support_ticket' ? 'Support Ticket' : val}</span>
         },
-        {
-            key: "featured",
-            label: "Featured",
-            render: (val, row) => row.type !== "event" ? null : (
-                <input
-                    type="checkbox"
-                    checked={!!val}
-                    disabled={togglingFeaturedId === row._id}
-                    onChange={() => handleToggleFeatured(row)}
-                    className="h-4 w-4 cursor-pointer"
-                />
-            )
-        },
+        // {
+        //     key: "featured",
+        //     label: "Featured",
+        //     render: (val, row) => row.type !== "event" ? null : (
+        //         <input
+        //             type="checkbox"
+        //             checked={!!val}
+        //             disabled={togglingFeaturedId === row._id}
+        //             onChange={() => handleToggleFeatured(row)}
+        //             className="h-4 w-4 cursor-pointer"
+        //         />
+        //     )
+        // },
         {
             key: "actions",
             label: "Actions",
