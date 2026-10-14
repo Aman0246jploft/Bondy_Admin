@@ -1,0 +1,184 @@
+.lg-preview {
+  margin-top: 28px;
+  padding: 22px;
+  border-radius: 22px;
+  background: #0b0b0b;
+  color: #fff;
+  font-family: Inter, sans-serif;
+}
+
+.lg-preview-label {
+  margin: 0 0 16px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8a8a8a;
+}
+
+.lg-preview .lg-h1 {
+  margin: 0;
+  font-size: clamp(28px, 3vw, 36px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.lg-preview .lg-card {
+  box-sizing: border-box;
+  margin-top: 18px;
+  padding: clamp(20px, 2.4vw, 30px);
+  border: 1px solid #303030;
+  border-radius: 22px;
+  background: #161616;
+}
+
+.lg-preview .lg-body {
+  counter-reset: lgsec;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: #a0a0a0;
+}
+
+.lg-preview .lg-body > *:first-child {
+  margin-top: 0;
+}
+
+.lg-preview .lg-body h1 {
+  display: none;
+}
+
+.lg-preview .lg-body h1,
+.lg-preview .lg-body h2,
+.lg-preview .lg-body h3,
+.lg-preview .lg-body h4 {
+  margin: 22px 0 0;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-weight: 700;
+  color: #fff;
+}
+
+.lg-preview .lg-body > :first-child {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.lg-preview .lg-body h2 {
+  font-size: 18px;
+}
+
+.lg-preview .lg-body h2::before {
+  counter-increment: lgsec;
+  content: counter(lgsec);
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  color: #8a8a8a;
+}
+
+.lg-preview .lg-body h2:has(.lg-eyebrow)::before {
+  content: none;
+  display: none;
+  counter-increment: none;
+}
+
+.lg-preview .lg-body .lg-sec {
+  padding: 22px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.lg-preview .lg-body .lg-sec:first-of-type {
+  border-top: none;
+  padding-top: 8px;
+}
+
+.lg-preview .lg-body .lg-sec h1,
+.lg-preview .lg-body .lg-sec h2,
+.lg-preview .lg-body .lg-sec h3,
+.lg-preview .lg-body .lg-sec h4 {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.lg-preview .lg-body .lg-eyebrow {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #8a8a8a;
+}
+
+.lg-preview .lg-body .lg-h3 {
+  margin: 16px 0 0;
+  padding: 0;
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  color: #e4e4e4;
+}
+
+.lg-preview .lg-body .lg-quote {
+  margin: 10px 0 0;
+  padding: 14px 16px;
+  border: 1px solid #303030;
+  border-radius: 14px;
+  background: #1c1c1c;
+  color: #c4c4c4;
+}
+
+.lg-preview .lg-body .lg-defs {
+  margin: 9px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.lg-preview .lg-body .lg-defs b {
+  color: #fff;
+}
+
+.lg-preview .lg-body h3,
+.lg-preview .lg-body h4 {
+  font-size: 14px;
+  color: #e4e4e4;
+  border-top: none;
+  padding-top: 0;
+}
+
+.lg-preview .lg-body p {
+  margin: 9px 0 0;
+}
+
+.lg-preview .lg-body ul,
+.lg-preview .lg-body ol {
+  margin: 9px 0 0;
+  padding-left: 20px;
+}
+
+.lg-preview .lg-body li {
+  margin-top: 5px;
+}
+
+.lg-preview .lg-body a {
+  color: #36cec2;
+}
+
+.lg-preview .lg-body blockquote {
+  margin: 10px 0 0;
+  padding: 14px 16px;
+  border: 1px solid #303030;
+  border-radius: 14px;
+  background: #1c1c1c;
+  color: #c4c4c4;
+}
+
+.lg-preview .lg-body strong,
+.lg-preview .lg-body b {
+  color: #fff;
+}

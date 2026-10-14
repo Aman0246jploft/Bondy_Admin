@@ -5,6 +5,7 @@ import { AiOutlineSave } from "react-icons/ai";
 import { useTheme } from "../../contexts/theme/hook/useTheme";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
+import LegalPreview from "./LegalPreview";
 
 const PrivacyPolicy = () => {
     const { theme } = useTheme();
@@ -168,6 +169,11 @@ const PrivacyPolicy = () => {
                     />
                 </div>
             </div>
+
+            <LegalPreview
+                title={activeTab === "en" ? "Privacy Policy" : "Нууцлалын бодлого"}
+                html={activeTab === "en" ? content : contentMn}
+            />
 
             <style jsx global>{`
                 .ql-toolbar {
