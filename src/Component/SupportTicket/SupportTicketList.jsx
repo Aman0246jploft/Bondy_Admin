@@ -17,14 +17,10 @@ const SupportTicketList = ({ title }) => {
 
     const fetchCategories = useCallback(async () => {
         try {
-            const response = await authAxiosClient.get("/category/list", {
-                params: {
-                    page: 1,
-                    limit: 1000000000,
-                },
-            });
+            // Ticket types are the FAQ topics (plus "Other"), matching what users submit.
+            const response = await authAxiosClient.get("/faq/admin/topics");
             if (response.data?.status) {
-                setCategories(response.data.data.categories);
+                setCategories(response.data.data.topics || []);
             }
         } catch (error) {
             console.error("Error fetching categories:", error);
@@ -40,6 +36,7 @@ const SupportTicketList = ({ title }) => {
         status: "",
         category: "",
         ticketId: "",
+        referenceNumber: "",
         userId: "",
         search: "",
         startDate: "",
@@ -60,7 +57,7 @@ const SupportTicketList = ({ title }) => {
     const [validationErrors, setValidationErrors] = useState({});
 
     // Status options
-    const statusOptions = ["Pending", "Open", "Resolved", "Cancelled", "Reopen"];
+    const statusOptions = ["Pending", "Open", "Resolved", "Cancelled", "Reopen", "closed"];
 
     // Validate update form
     const validateUpdateForm = () => {
@@ -94,6 +91,7 @@ const SupportTicketList = ({ title }) => {
             if (filters.status) params.status = filters.status;
             if (filters.category) params.category = filters.category;
             if (filters.ticketId) params.ticketId = filters.ticketId;
+            if (filters.referenceNumber) params.referenceNumber = filters.referenceNumber;
             if (filters.userId) params.userId = filters.userId;
             if (filters.search) params.search = filters.search;
             if (filters.startDate) params.startDate = filters.startDate;
@@ -247,6 +245,13 @@ const SupportTicketList = ({ title }) => {
             }
         },
         {
+            key: "referenceNumber",
+            label: "Request / Booking No.",
+            render: (val) => val
+                ? <span className="font-mono text-xs">{val}</span>
+                : <span className="text-gray-400">-</span>
+        },
+        {
             key: "subject",
             label: "Subject",
             render: (val) => <span className="max-w-xs truncate block" title={val}>{val}</span>
@@ -333,6 +338,7 @@ const SupportTicketList = ({ title }) => {
                                 {category.name}
                             </option>
                         ))}
+                        <option value="Other">Other</option>
                     </select>
                 </div>
 
@@ -355,6 +361,17 @@ const SupportTicketList = ({ title }) => {
                         className="w-full border p-2 rounded"
                         value={filters.ticketId}
                         onChange={(e) => handleFilterChange("ticketId", e.target.value)}
+                        style={{ backgroundColor: theme.colors.background, borderColor: theme.colors.border, color: theme.colors.textPrimary }}
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium mb-1">Request / Booking No.</label>
+                    <input
+                        type="text"
+                        placeholder="e.g. BND-284913"
+                        className="w-full border p-2 rounded"
+                        value={filters.referenceNumber}
+                        onChange={(e) => handleFilterChange("referenceNumber", e.target.value)}
                         style={{ backgroundColor: theme.colors.background, borderColor: theme.colors.border, color: theme.colors.textPrimary }}
                     />
                 </div>
@@ -407,6 +424,7 @@ const SupportTicketList = ({ title }) => {
                                 status: "",
                                 category: "",
                                 ticketId: "",
+                                referenceNumber: "",
                                 userId: "",
                                 search: "",
                                 startDate: "",
@@ -483,6 +501,10 @@ const SupportTicketList = ({ title }) => {
                                                 ? selectedTicket.category.name
                                                 : selectedTicket.category || "N/A"}
                                         </p>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-600">Request / Booking No.</label>
+                                        <p className="mt-1 font-mono text-sm">{selectedTicket.referenceNumber || "N/A"}</p>
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-600">Created At</label>
@@ -630,6 +652,12 @@ const SupportTicketList = ({ title }) => {
                                 <div className="bg-gray-50 p-3 rounded text-sm" style={{ backgroundColor: theme.colors.tertiary }}>
                                     <p className="font-medium mb-1">Ticket ID:</p>
                                     <p className="font-mono text-xs">{selectedTicket.ticketId}</p>
+                                    {selectedTicket.referenceNumber && (
+                                        <>
+                                            <p className="font-medium mt-2 mb-1">Request / Booking No.:</p>
+                                            <p className="font-mono text-xs">{selectedTicket.referenceNumber}</p>
+                                        </>
+                                    )}
                                 </div>
 
                                 <div className="flex justify-end gap-2 pt-4">
