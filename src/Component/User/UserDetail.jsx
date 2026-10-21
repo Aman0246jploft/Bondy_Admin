@@ -315,8 +315,7 @@ const UserDetail = () => {
     const licenceDoc = verifications?.idVerification?.drivingLicence || verifications?.drivingLicence;
 
     return (
-        <div className="min-h-screen bg-slate-50/70 pb-16">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
+        <div className="w-full px-[10px] space-y-6 pb-12">
 
                 {/* ── 1. Modern Minimal Header & Actions Bar ── */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
@@ -1290,8 +1289,6 @@ const UserDetail = () => {
                         )}
                     </div>
                 </div>
-
-            </div>
 
             {/* Lightbox / Modal for Document Preview */}
             {imageModal && (
