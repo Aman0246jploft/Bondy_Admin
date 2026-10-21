@@ -38,34 +38,7 @@ const DataTable = ({
 
   const renderTableBody = () => {
     if (loading) {
-      return (
-        <tr>
-          <td
-            colSpan={columns.length}
-            className="py-16 text-center"
-            style={{
-              backgroundColor: theme?.colors?.background || "#ffffff",
-              color: theme?.colors?.textSecondary || "#4b5563",
-            }}
-          >
-            <div className="flex flex-col items-center justify-center gap-3">
-              <div
-                className="w-8 h-8 border-[3px] border-t-transparent rounded-full animate-spin"
-                style={{
-                  borderColor: theme?.colors?.buttonPrimary || "#0f766e",
-                  borderTopColor: "transparent",
-                }}
-              />
-              <span
-                className="text-xs font-medium"
-                style={{ color: theme?.colors?.textMuted || "#9ca3af" }}
-              >
-                Loading data...
-              </span>
-            </div>
-          </td>
-        </tr>
-      );
+      return null;
     }
 
     if (!data || data.length === 0) {
