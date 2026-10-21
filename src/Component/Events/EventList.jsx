@@ -4,6 +4,25 @@ import DataTable from "../Table/DataTable";
 import authAxiosClient from "../../api/authAxiosClient";
 import { format } from "date-fns";
 
+const PosterThumbnail = ({ src, title }) => {
+    const [failed, setFailed] = useState(false);
+    if (!src || failed) {
+        return (
+            <div className="w-14 h-10 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 font-bold text-[10px] uppercase select-none">
+                🎪
+            </div>
+        );
+    }
+    return (
+        <img
+            src={src}
+            alt={title || "Event poster"}
+            className="w-14 h-10 object-cover rounded-lg border border-slate-200/80 shadow-2xs"
+            onError={() => setFailed(true)}
+        />
+    );
+};
+
 const EventList = () => {
     const navigate = useNavigate();
     const [data, setData] = useState([]);
@@ -104,18 +123,12 @@ const EventList = () => {
         {
             key: "posterImage",
             label: "Poster",
-            render: (val) =>
-                val && val.length > 0 ? (
-                    <img
-                        src={val[0]}
-                        alt="poster"
-                        className="w-16 h-10 object-cover rounded"
-                    />
-                ) : (
-                    <div className="w-16 h-10 bg-gray-200 rounded flex items-center justify-center text-xs">
-                        No Img
-                    </div>
-                ),
+            render: (val, row) => (
+                <PosterThumbnail
+                    src={val && val.length > 0 ? val[0] : null}
+                    title={row.eventTitle}
+                />
+            ),
         },
         { key: "eventTitle", label: "Title" },
         {
@@ -246,7 +259,7 @@ const EventList = () => {
     ];
 
     return (
-        <div className="p-4 space-y-4">
+        <div className="w-full px-[10px] space-y-6 pb-12">
             <div className="flex justify-between items-center">
                 <h2 className="text-xl font-bold">Event Management</h2>
                 <div className="flex gap-4">
