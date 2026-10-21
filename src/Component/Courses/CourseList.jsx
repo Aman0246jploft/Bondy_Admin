@@ -173,9 +173,9 @@ const CourseList = () => {
             render: (_val, row) => (
                 <button
                     onClick={() => navigate(`/courses/${row._id}`)}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-900 text-white text-xs font-medium rounded-lg hover:bg-slate-800 transition cursor-pointer whitespace-nowrap shadow-xs"
+                    className="px-3 py-1 bg-teal-600 text-white text-xs rounded hover:bg-teal-700 transition whitespace-nowrap"
                 >
-                    <FiEye className="w-3.5 h-3.5" />
+
                     <span>View Details</span>
                 </button>
             ),
