@@ -285,7 +285,15 @@ const EventList = () => {
                 </div>
             </div>
 
-            <DataTable columns={columns} data={data} />
+            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+                <DataTable
+                    columns={columns}
+                    data={data}
+                    loading={loading}
+                    emptyMessage={search ? `No events match "${search}"` : "No events found"}
+                    emptySubtext={search ? "Check for spelling errors or try clearing your search query." : "There are currently no events scheduled or created."}
+                />
+            </div>
 
             <div className="flex justify-between items-center mt-4">
                 <span>Total: {total}</span>

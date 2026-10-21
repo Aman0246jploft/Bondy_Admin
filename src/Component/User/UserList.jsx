@@ -214,33 +214,54 @@ const UserList = ({ roleId, title }) => {
     ];
 
     return (
-        <div className="p-4 space-y-4">
-            <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold">{title}</h2>
-                <input
-                    type="text"
-                    placeholder="Search by name, email or mobile..."
-                    className="border p-2 rounded w-64"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+        <div className="w-full px-[10px] space-y-6 pb-12">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-200/60 flex items-center justify-center text-teal-700 shadow-xs font-semibold text-lg">
+                        {roleId === 2 ? "🏢" : "👤"}
+                    </div>
+                    <div>
+                        <h1 className="text-xl font-bold text-slate-900 tracking-tight">{title}</h1>
+                        <p className="text-xs text-slate-500 mt-0.5">Manage and view registered {title.toLowerCase()} accounts and statuses.</p>
+                    </div>
+                </div>
+                <div className="relative">
+                    <input
+                        type="text"
+                        placeholder="Search by name, email or mobile..."
+                        className="pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 w-72 shadow-xs transition"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                    <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+                <DataTable
+                    columns={columns}
+                    data={data}
+                    loading={loading}
+                    emptyMessage={search ? `No ${title.toLowerCase()} match "${search}"` : `No ${title.toLowerCase()} found`}
+                    emptySubtext={search ? "Check for spelling errors or try clearing your search query." : `There are currently no registered ${title.toLowerCase()} records.`}
                 />
             </div>
 
-            <DataTable columns={columns} data={data} />
-
-            <div className="flex justify-between items-center mt-4">
-                <span>Total: {total}</span>
-                <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500 pt-2 px-1">
+                <span>Showing {data.length} of {total} {title.toLowerCase()}</span>
+                <div className="flex items-center gap-2">
                     <button
-                        className="px-3 py-1 border rounded disabled:opacity-50"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 border border-slate-200 rounded-lg text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none transition bg-white shadow-xs"
                         disabled={page === 1}
                         onClick={() => setPage(p => p - 1)}
                     >
                         Prev
                     </button>
-                    <span>Page {page} of {Math.ceil(total / limit) || 1}</span>
+                    <span className="font-semibold text-slate-700 px-2">Page {page} of {Math.ceil(total / limit) || 1}</span>
                     <button
-                        className="px-3 py-1 border rounded disabled:opacity-50"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 border border-slate-200 rounded-lg text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none transition bg-white shadow-xs"
                         disabled={page >= Math.ceil(total / limit)}
                         onClick={() => setPage(p => p + 1)}
                     >
@@ -255,7 +276,7 @@ const UserList = ({ roleId, title }) => {
                     onClose={handleCloseStatsModal}
                 />
             )}
-        </div >
+        </div>
     );
 };
 

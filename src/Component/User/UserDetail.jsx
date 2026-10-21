@@ -53,10 +53,32 @@ const fmtDateOnly = (date) => {
 
 const formatLocation = (loc) => {
     if (!loc) return null;
-    if (typeof loc === "string") return loc;
+    if (typeof loc === "string") return loc.trim();
     if (typeof loc === "object") {
-        const parts = [loc.address, loc.city, loc.state, loc.country].filter(Boolean);
-        if (parts.length > 0) return parts.join(", ");
+        const city = loc.city?.trim();
+        const state = loc.state?.trim();
+        const country = loc.country?.trim();
+        const address = loc.address?.trim();
+
+        // 1. Build concise location using city, state, country
+        const cleanParts = [];
+        if (city) cleanParts.push(city);
+        if (state && !cleanParts.some(p => p.toLowerCase().includes(state.toLowerCase()))) cleanParts.push(state);
+        if (country && !cleanParts.some(p => p.toLowerCase().includes(country.toLowerCase()))) cleanParts.push(country);
+
+        if (cleanParts.length > 0) {
+            return cleanParts.join(", ");
+        }
+
+        // 2. Fallback to address (cleanly truncated if long)
+        if (address) {
+            const segments = address.split(",").map(s => s.trim()).filter(Boolean);
+            if (segments.length > 3) {
+                return segments.slice(0, 3).join(", ");
+            }
+            return address;
+        }
+
         if (loc.coordinates && Array.isArray(loc.coordinates) && loc.coordinates.length === 2) {
             return `${loc.coordinates[1].toFixed(2)}, ${loc.coordinates[0].toFixed(2)}`;
         }
@@ -395,12 +417,12 @@ const UserDetail = () => {
 
             {/* ── 2. Modern Profile Header Card ── */}
             <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm">
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
 
                     {/* Avatar & Core Identity */}
-                    <div className="flex items-start gap-4">
+                    <div className="flex items-start gap-4 min-w-0 flex-1">
                         <Avatar src={profileImage} name={fullName} size="w-16 h-16 sm:w-20 sm:h-20" />
-                        <div className="space-y-1">
+                        <div className="space-y-1.5 min-w-0 flex-1">
                             <div className="flex items-center gap-2.5 flex-wrap">
                                 <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
                                     {fullName}
@@ -428,11 +450,11 @@ const UserDetail = () => {
                             </div>
 
                             {/* Primary Contact Chips */}
-                            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-1 text-xs text-slate-500">
+                            <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 pt-1 text-xs text-slate-500">
                                 {email && (
                                     <span className="inline-flex items-center gap-1.5 hover:text-slate-800">
-                                        <FiMail className="w-3.5 h-3.5 text-slate-400" />
-                                        <span>{email}</span>
+                                        <FiMail className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                                        <span className="truncate max-w-[200px]">{email}</span>
                                         <button
                                             onClick={() => handleCopy(email, "Email")}
                                             className="text-slate-400 hover:text-slate-700 transition cursor-pointer"
@@ -444,21 +466,21 @@ const UserDetail = () => {
                                 )}
 
                                 {contactNumber && (
-                                    <span className="inline-flex items-center gap-1.5">
-                                        <FiPhone className="w-3.5 h-3.5 text-slate-400" />
+                                    <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+                                        <FiPhone className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
                                         <span>{countryCode ? `${countryCode} ` : ""}{contactNumber}</span>
                                     </span>
                                 )}
 
                                 {locationString && (
-                                    <span className="inline-flex items-center gap-1.5">
-                                        <FiMapPin className="w-3.5 h-3.5 text-slate-400" />
-                                        <span>{locationString}</span>
+                                    <span className="inline-flex items-center gap-1.5 max-w-xs sm:max-w-sm md:max-w-md" title={locationString}>
+                                        <FiMapPin className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                                        <span className="truncate">{locationString}</span>
                                     </span>
                                 )}
 
-                                <span className="inline-flex items-center gap-1.5">
-                                    <FiCalendar className="w-3.5 h-3.5 text-slate-400" />
+                                <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+                                    <FiCalendar className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
                                     <span>Joined {fmtDateOnly(createdAt)}</span>
                                 </span>
                             </div>
@@ -466,23 +488,23 @@ const UserDetail = () => {
                     </div>
 
                     {/* Quick Attributes / Tags */}
-                    <div className="flex flex-wrap md:flex-col md:items-end gap-2 text-xs text-slate-500 border-t md:border-t-0 pt-4 md:pt-0 w-full md:w-auto">
+                    <div className="flex flex-wrap lg:flex-col lg:items-end gap-2 text-xs text-slate-500 border-t lg:border-t-0 pt-3 lg:pt-0 w-full lg:w-auto flex-shrink-0">
                         <div className="flex items-center gap-2">
                             <span className="text-slate-400">Last Login:</span>
-                            <span className="font-medium text-slate-700">{lastLogin ? fmt(lastLogin) : "Never logged in"}</span>
+                            <span className="font-medium text-slate-700 whitespace-nowrap">{lastLogin ? fmt(lastLogin) : "Never logged in"}</span>
                         </div>
                         <div className="flex items-center gap-2">
                             <span className="text-slate-400">Auth Method:</span>
-                            <span className="font-medium text-slate-700">{authMethodString}</span>
+                            <span className="font-medium text-slate-700 whitespace-nowrap">{authMethodString}</span>
                         </div>
                         <div className="flex items-center gap-2">
                             <span className="text-slate-400">Language:</span>
-                            <span className="font-medium text-slate-700 uppercase">{language || "EN"}</span>
+                            <span className="font-medium text-slate-700 uppercase whitespace-nowrap">{language || "EN"}</span>
                         </div>
                         {dob && (
                             <div className="flex items-center gap-2">
                                 <span className="text-slate-400">DOB:</span>
-                                <span className="font-medium text-slate-700">{fmtDateOnly(dob)} {gender ? `(${gender})` : ""}</span>
+                                <span className="font-medium text-slate-700 whitespace-nowrap">{fmtDateOnly(dob)} {gender ? `(${gender})` : ""}</span>
                             </div>
                         )}
                     </div>
