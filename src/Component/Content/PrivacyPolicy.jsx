@@ -114,7 +114,7 @@ const PrivacyPolicy = () => {
     }
 
     return (
-        <div className="p-6">
+        <div className="p-6 w-full max-w-full overflow-x-hidden">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold" style={{ color: theme.colors.textPrimary }}>
                     Privacy Policy Management
@@ -129,7 +129,7 @@ const PrivacyPolicy = () => {
                 </button>
             </div>
 
-            <div className="bg-white rounded-lg shadow-md p-6" style={{ backgroundColor: theme.colors.cardBg }}>
+            <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-full overflow-hidden" style={{ backgroundColor: theme.colors.cardBg }}>
                 <div className="flex border-b mb-4">
                     <button
                         onClick={() => setActiveTab("en")}
@@ -153,7 +153,7 @@ const PrivacyPolicy = () => {
                 <p className="mb-4 text-sm text-gray-400">
                     Use the editor below to manage the Privacy Policy content in {activeTab === "en" ? "English" : "Mongolian"}.
                 </p>
-                <div className="quill-container">
+                <div className="quill-container w-full max-w-full overflow-hidden">
                     <ReactQuill
                         key={activeTab}
                         theme="snow"
@@ -185,9 +185,15 @@ const PrivacyPolicy = () => {
                     border-bottom-left-radius: 0.5rem;
                     border-bottom-right-radius: 0.5rem;
                     font-size: 1rem;
+                    max-width: 100%;
+                    overflow-wrap: anywhere;
+                    word-break: break-word;
                 }
                 .ql-editor {
                     min-height: 200px;
+                    max-width: 100%;
+                    overflow-wrap: anywhere;
+                    word-break: break-word;
                 }
                 .dark .ql-toolbar {
                     background-color: #1f2937;

@@ -45,7 +45,6 @@
 }
 
 .lg-preview .lg-body {
-  counter-reset: lgsec;
   font-size: 14.5px;
   line-height: 1.7;
   color: #a0a0a0;
@@ -109,20 +108,8 @@
 }
 
 .lg-preview .lg-body h2::before {
-  counter-increment: lgsec;
-  content: counter(lgsec);
-  display: block;
-  margin-bottom: 4px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  color: #8a8a8a;
-}
-
-.lg-preview .lg-body h2:has(.lg-eyebrow)::before {
   content: none;
   display: none;
-  counter-increment: none;
 }
 
 .lg-preview .lg-body .lg-sec {

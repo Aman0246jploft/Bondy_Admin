@@ -102,14 +102,7 @@ const UserDetail = () => {
     }, [userId]);
 
     if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="text-center">
-                    <div className="w-12 h-12 border-4 border-teal-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-                    <p className="text-gray-500">Loading profile details…</p>
-                </div>
-            </div>
-        );
+        return null;
     }
 
     if (error || !userProfile) {
