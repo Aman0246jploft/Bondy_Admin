@@ -5,6 +5,10 @@
   background: #0b0b0b;
   color: #fff;
   font-family: Inter, sans-serif;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .lg-preview-label {
@@ -21,6 +25,9 @@
   font-size: clamp(28px, 3vw, 36px);
   font-weight: 700;
   letter-spacing: -0.02em;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .lg-preview .lg-card {
@@ -30,6 +37,11 @@
   border: 1px solid #303030;
   border-radius: 22px;
   background: #161616;
+  max-width: 100%;
+  width: 100%;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .lg-preview .lg-body {
@@ -37,6 +49,34 @@
   font-size: 14.5px;
   line-height: 1.7;
   color: #a0a0a0;
+  max-width: 100%;
+  width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.lg-preview .lg-body * {
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.lg-preview .lg-body pre,
+.lg-preview .lg-body code {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.lg-preview .lg-body table {
+  width: 100%;
+  display: block;
+  overflow-x: auto;
+}
+
+.lg-preview .lg-body img {
+  max-width: 100%;
+  height: auto;
 }
 
 .lg-preview .lg-body > *:first-child {
@@ -137,9 +177,19 @@
   display: flex;
   flex-direction: column;
   gap: 9px;
+  max-width: 100%;
 }
 
-.lg-preview .lg-body .lg-defs b {
+.lg-preview .lg-body .lg-defs > *,
+.lg-preview .lg-body .lg-def-item {
+  display: block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.lg-preview .lg-body .lg-defs b,
+.lg-preview .lg-body .lg-def-item b {
   color: #fff;
 }
 
