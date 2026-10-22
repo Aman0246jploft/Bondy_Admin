@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { NavLink, useLocation } from "react-router-dom";
 import {
   AiOutlineHome,
@@ -24,9 +25,24 @@ import clsx from "clsx";
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const { theme } = useTheme();
   const location = useLocation();
+  const [hoveredItem, setHoveredItem] = useState(null);
+
+  useEffect(() => {
+    setHoveredItem(null);
+  }, [isOpen, location.pathname]);
+
+  useEffect(() => {
+    const handleDismiss = () => setHoveredItem(null);
+    window.addEventListener("scroll", handleDismiss, true);
+    window.addEventListener("resize", handleDismiss);
+    return () => {
+      window.removeEventListener("scroll", handleDismiss, true);
+      window.removeEventListener("resize", handleDismiss);
+    };
+  }, []);
 
   const menuItems = [
-    { name: "Home", href: "/dashboard", icon: AiOutlineHome },
+    { name: "Dashboard", href: "/dashboard", icon: AiOutlineHome },
     // { name: "Dashboard", href: "/dashboard", icon: AiOutlineDashboard },
     { name: "Customers", href: "/customers", icon: AiOutlineTeam },
     { name: "Organizers", href: "/organizers", icon: AiOutlineTeam },
@@ -138,7 +154,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         </div>
 
         {/* Navigation Menu */}
-        <nav className="flex-1 py-6 overflow-y-auto overflow-x-hidden">
+        <nav
+          className="flex-1 py-6 overflow-y-auto overflow-x-hidden"
+          onScroll={() => setHoveredItem(null)}
+        >
           <ul className="space-y-2 px-3">
             {menuItems.map((item) => {
               const Icon = item.icon;
@@ -158,9 +177,20 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     if (!isActive)
                       e.currentTarget.style.backgroundColor =
                         theme.colors.sidebarHover;
+                    if (!isOpen && typeof window !== "undefined" && window.innerWidth >= 768) {
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      setHoveredItem({
+                        name: item.name,
+                        top: rect.top + rect.height / 2,
+                        left: rect.right + 10,
+                      });
+                    }
                   }}
                   onMouseLeave={(e) => {
                     if (!isActive) e.currentTarget.style.backgroundColor = "";
+                    if (!isOpen) {
+                      setHoveredItem(null);
+                    }
                   }}
                 >
                   <NavLink
@@ -178,7 +208,6 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                         : undefined,
                       color: theme.colors.textPrimary,
                     }}
-                    title={!isOpen ? item.name : ""}
                     onClick={() => {
                       // Close sidebar on mobile when a link is clicked
                       if (window.innerWidth < 768) {
@@ -196,17 +225,6 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     >
                       {item.name}
                     </span>
-
-                    {/* Tooltip for collapsed state - only on desktop */}
-                    {!isOpen && (
-                      <div
-                        className="absolute left-16 bg-gray-900 text-white px-2 py-1 rounded text-sm 
-                          opacity-0 group-hover:opacity-100 transition-opacity duration-200 
-                          pointer-events-none whitespace-nowrap z-50 hidden md:block"
-                      >
-                        {item.name}
-                      </div>
-                    )}
                   </NavLink>
                 </li>
               );
@@ -214,6 +232,41 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           </ul>
         </nav>
       </div>
+
+      {/* Floating Tooltip for Collapsed Sidebar (rendered outside scrollable hierarchy) */}
+      {typeof document !== "undefined" &&
+        !isOpen &&
+        hoveredItem &&
+        createPortal(
+          <div
+            className="fixed pointer-events-none z-[9999] hidden md:flex items-center transition-opacity duration-150"
+            style={{
+              top: `${hoveredItem.top}px`,
+              left: `${hoveredItem.left}px`,
+              transform: "translateY(-50%)",
+            }}
+          >
+            {/* Small arrow */}
+            <div
+              className="w-2 h-2 rotate-45 -mr-1 z-10 border-l border-b border-slate-700/60"
+              style={{
+                backgroundColor: "#0f172a",
+              }}
+            />
+            {/* Tooltip Pill */}
+            <div
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold text-white shadow-2xl whitespace-nowrap border border-slate-700/60"
+              style={{
+                backgroundColor: "#0f172a",
+                boxShadow:
+                  "0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4)",
+              }}
+            >
+              {hoveredItem.name}
+            </div>
+          </div>,
+          document.body
+        )}
     </>
   );
 };

@@ -19,15 +19,21 @@ const UserList = ({ roleId, title }) => {
     const [selectedOrganizer, setSelectedOrganizer] = useState(null);
     const [showStatsModal, setShowStatsModal] = useState(false);
 
+    const handleSearchChange = (e) => {
+        setSearch(e.target.value);
+        setPage(1);
+    };
+
     const fetchUsers = useCallback(async () => {
         setLoading(true);
         try {
+            const trimmedSearch = search.trim();
             const response = await axiosClient.get("/user/userList", {
                 params: {
                     page,
                     limit,
                     roleId,
-                    search,
+                    ...(trimmedSearch ? { search: trimmedSearch } : {}),
                 },
             });
             if (response.data?.status) {
@@ -229,13 +235,23 @@ const UserList = ({ roleId, title }) => {
                     <input
                         type="text"
                         placeholder="Search by name, email or mobile..."
-                        className="pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 w-72 shadow-xs transition"
+                        className="pl-9 pr-8 py-2 text-xs border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 w-72 shadow-xs transition"
                         value={search}
-                        onChange={(e) => setSearch(e.target.value)}
+                        onChange={handleSearchChange}
                     />
                     <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
+                    {search && (
+                        <button
+                            type="button"
+                            onClick={() => { setSearch(""); setPage(1); }}
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs w-4 h-4 flex items-center justify-center rounded-full hover:bg-slate-100"
+                            title="Clear search"
+                        >
+                            ✕
+                        </button>
+                    )}
                 </div>
             </div>
 

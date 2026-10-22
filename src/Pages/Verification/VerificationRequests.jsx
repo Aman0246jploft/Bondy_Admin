@@ -67,6 +67,29 @@ const VerificationRequests = () => {
         fetchCategories();
     }, []);
 
+    const formatTypeLabel = (t) => {
+        switch (t) {
+            case "nationalId":
+                return "National ID";
+            case "drivingLicence":
+                return "Driving Licence";
+            case "bankVerification":
+                return "Bank verification";
+            case "businessVerification":
+                return "Business verification";
+            default: {
+                if (!t) return "Verification";
+                const withSpaces = t.replace(/([A-Z])/g, " $1").trim();
+                return withSpaces.charAt(0).toUpperCase() + withSpaces.slice(1);
+            }
+        }
+    };
+
+    const capitalizeFirstLetter = (str) => {
+        if (!str || typeof str !== "string") return "";
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    };
+
     const handleAudit = async (userId, type, action) => {
         let reason = null;
         let reasonTitle = null;
@@ -91,7 +114,9 @@ const VerificationRequests = () => {
             });
 
             if (response.data?.status) {
-                toast.success(`${type} request ${action}d successfully`);
+                const label = formatTypeLabel(type);
+                const actionPastTense = action === "approve" ? "approved" : "rejected";
+                toast.success(`${label} request ${actionPastTense} successfully`);
 
                 // Update selectedUser state locally so the modal updates immediately
                 setSelectedUser(prevUser => {
@@ -131,7 +156,8 @@ const VerificationRequests = () => {
             }
         } catch (error) {
             console.error("Audit error:", error);
-            toast.error(error.message || `Failed to ${action}`);
+            const rawMsg = error.response?.data?.message || error.message || `Failed to ${action} request`;
+            toast.error(capitalizeFirstLetter(rawMsg));
         }
     };
 

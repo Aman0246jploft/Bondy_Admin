@@ -351,12 +351,12 @@ const UserDetail = () => {
                         <span>{isOrganizer ? "Organizers" : "Customers"}</span>
                     </button>
                     <span className="text-slate-300">/</span>
-                    <div className="flex items-center gap-2">
+                    {/* <div className="flex items-center gap-2">
                         <span className="text-sm font-bold text-slate-900">{fullName}</span>
                         <span className={`px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase ${isOrganizer ? "bg-indigo-50 text-indigo-700 border border-indigo-200/60" : "bg-slate-100 text-slate-700 border border-slate-200"}`}>
                             {role}
                         </span>
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* Quick Status & Actions */}
