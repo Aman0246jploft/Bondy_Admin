@@ -161,11 +161,10 @@ const UserList = ({ roleId, title }) => {
             key: "roleId",
             label: "Role",
             render: (val) => (
-                <span className={`px-2.5 py-0.5 text-xs font-semibold rounded-full ${
-                    val === 2
-                        ? "bg-purple-100 text-purple-800 border border-purple-200"
-                        : "bg-teal-100 text-teal-800 border border-teal-200"
-                }`}>
+                <span className={`px-2.5 py-0.5 text-xs font-semibold rounded-full ${val === 2
+                    ? "bg-purple-100 text-purple-800 border border-purple-200"
+                    : "bg-teal-100 text-teal-800 border border-teal-200"
+                    }`}>
                     {val === 2 ? "Organizer" : val === 3 ? "Customer" : "User"}
                 </span>
             )
