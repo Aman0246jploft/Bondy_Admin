@@ -90,6 +90,15 @@ const VerificationRequests = () => {
         return str.charAt(0).toUpperCase() + str.slice(1);
     };
 
+    const formatContactNumber = (user) => {
+        if (!user || !user.contactNumber) return "N/A";
+        const code = user.countryCode ? user.countryCode.trim() : "";
+        if (code && !user.contactNumber.toString().startsWith(code)) {
+            return `${code} ${user.contactNumber}`;
+        }
+        return user.contactNumber;
+    };
+
     const handleAudit = async (userId, type, action) => {
         let reason = null;
         let reasonTitle = null;
@@ -174,7 +183,11 @@ const VerificationRequests = () => {
             render: (val, row) => `${row.firstName || ''} ${row.lastName || ''}`
         },
         { key: "email", label: "Email" },
-        { key: "contactNumber", label: "Contact" },
+        {
+            key: "contactNumber",
+            label: "Contact",
+            render: (val, row) => formatContactNumber(row)
+        },
         {
             key: "status",
             label: "Statuses (ID / Bank / Profile)",
@@ -306,7 +319,7 @@ const VerificationRequests = () => {
                                     Reviewing: {selectedUser.firstName || ""} {selectedUser.lastName || ""}
                                 </h3>
                                 <p className="text-sm text-gray-500 font-medium mt-1">
-                                    Email: {selectedUser.email || ""} | Contact: {selectedUser.countryCode || ""} {selectedUser.contactNumber || ""}
+                                    Email: {selectedUser.email || "N/A"} | Contact: {formatContactNumber(selectedUser)}
                                 </p>
                             </div>
                             <button

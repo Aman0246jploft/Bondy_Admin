@@ -524,15 +524,15 @@ const FinanceDashboard = () => {
           type="button"
           onClick={() => handleTabChange("transactions")}
           className={`pb-3 px-4 text-sm font-semibold transition border-b-2 cursor-pointer flex items-center gap-2 ${activeTab === "transactions"
-              ? "border-teal-500 text-teal-600"
-              : "border-transparent text-gray-500 hover:text-gray-700"
+            ? "border-teal-500 text-teal-600"
+            : "border-transparent text-gray-500 hover:text-gray-700"
             }`}
         >
           <span>Paid Transactions</span>
           <span
             className={`px-2 py-0.5 rounded-full text-xs font-bold ${activeTab === "transactions"
-                ? "bg-teal-50 text-teal-700 border border-teal-200"
-                : "bg-gray-100 text-gray-600"
+              ? "bg-teal-50 text-teal-700 border border-teal-200"
+              : "bg-gray-100 text-gray-600"
               }`}
           >
             {txnTotal}
@@ -543,8 +543,8 @@ const FinanceDashboard = () => {
           type="button"
           onClick={() => handleTabChange("payouts")}
           className={`pb-3 px-4 text-sm font-semibold transition border-b-2 cursor-pointer flex items-center gap-2 ${activeTab === "payouts"
-              ? "border-teal-500 text-teal-600"
-              : "border-transparent text-gray-500 hover:text-gray-700"
+            ? "border-teal-500 text-teal-600"
+            : "border-transparent text-gray-500 hover:text-gray-700"
             }`}
         >
           <span>Payout Requests</span>
@@ -555,8 +555,8 @@ const FinanceDashboard = () => {
           ) : (
             <span
               className={`px-2 py-0.5 rounded-full text-xs font-bold ${activeTab === "payouts"
-                  ? "bg-teal-50 text-teal-700 border border-teal-200"
-                  : "bg-gray-100 text-gray-600"
+                ? "bg-teal-50 text-teal-700 border border-teal-200"
+                : "bg-gray-100 text-gray-600"
                 }`}
             >
               {total}
