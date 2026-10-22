@@ -244,13 +244,13 @@ const SupportTicketList = ({ title }) => {
                 return val || "N/A";
             }
         },
-        {
-            key: "referenceNumber",
-            label: "Request / Booking No.",
-            render: (val) => val
-                ? <span className="font-mono text-xs">{val}</span>
-                : <span className="text-gray-400">-</span>
-        },
+        // {
+        //     key: "referenceNumber",
+        //     label: "Request / Booking No.",
+        //     render: (val) => val
+        //         ? <span className="font-mono text-xs">{val}</span>
+        //         : <span className="text-gray-400">-</span>
+        // },
         {
             key: "subject",
             label: "Subject",
