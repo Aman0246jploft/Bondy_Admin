@@ -512,9 +512,9 @@ const UserDetail = () => {
 
                 {/* Bio & Categories (if available) */}
                 {(bio || (interestedCategories && interestedCategories.length > 0)) && (
-                    <div className="mt-5 pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                    <div className="mt-5 pt-4 border-t border-slate-100 flex flex-col gap-2.5 text-xs">
                         {bio && (
-                            <p className="text-slate-600 italic line-clamp-2 max-w-2xl">
+                            <p className="text-slate-600 italic">
                                 "{bio}"
                             </p>
                         )}
@@ -522,7 +522,10 @@ const UserDetail = () => {
                             <div className="flex items-center gap-1.5 flex-wrap">
                                 <span className="text-slate-400 font-medium">Interests:</span>
                                 {interestedCategories.map((c, i) => (
-                                    <span key={i} className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-medium text-[11px]">
+                                    <span
+                                        key={i}
+                                        className="px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-700 font-medium text-[11px] border border-slate-200/60"
+                                    >
                                         {typeof c === "object" ? (c.name || c.categoryName || "Category") : c}
                                     </span>
                                 ))}
