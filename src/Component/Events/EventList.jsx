@@ -151,16 +151,16 @@ const EventList = () => {
             label: "Duration",
             render: (val) => val || "N/A",
         },
-        {
-            key: "leftSeats",
-            label: "Seats",
-            render: (_val, row) => (
-                <div className="text-xs">
-                    <div>Total: {row.totalSeats}</div>
-                    <div>Avail: {row.leftSeats}</div>
-                </div>
-            )
-        },
+        // {
+        //     key: "leftSeats",
+        //     label: "Seats",
+        //     render: (_val, row) => (
+        //         <div className="text-xs">
+        //             <div>Total: {row.totalSeats}</div>
+        //             <div>Avail: {row.leftSeats}</div>
+        //         </div>
+        //     )
+        // },
 
         {
             key: "addToSlider",

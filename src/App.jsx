@@ -16,6 +16,7 @@ const Dashboard = lazy(() => import("./Pages/Dashboard/Dashboard"));
 const Home = lazy(() => import("./Pages/Home/Home"));
 const Customers = lazy(() => import("./Pages/User/Customers"));
 const Organizers = lazy(() => import("./Pages/User/Organizers"));
+const Users = lazy(() => import("./Pages/User/Users"));
 const UserDetailPage = lazy(() => import("./Pages/User/UserDetailPage"));
 const VerificationRequests = lazy(() => import("./Pages/Verification/VerificationRequests"));
 const Categories = lazy(() => import("./Pages/Category/Categories"));
@@ -67,6 +68,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/customers" element={<Customers />} />
               <Route path="/organizers" element={<Organizers />} />
+              <Route path="/users" element={<Users />} />
               <Route path="/users/:userId" element={<UserDetailPage />} />
               <Route path="/verification-requests" element={<VerificationRequests />} />
               <Route path="/categories" element={<Categories />} />

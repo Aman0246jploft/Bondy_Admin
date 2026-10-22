@@ -1,6 +1,16 @@
 import React, { useState } from "react";
 import { useTheme } from "../../contexts/theme/hook/useTheme";
 
+const isUrlOrFilePath = (str) => {
+  if (typeof str !== "string") return false;
+  const s = str.trim();
+  // Starts with http, https, data:, blob:, //, or /
+  if (/^(https?:\/\/|\/\/|data:|blob:|\/|uploads\/)/i.test(s)) return true;
+  // Contains common image/document extensions
+  if (/\.(svg|png|jpe?g|webp|gif|ico|bmp|tiff|pdf|avif)(\?.*)?$/i.test(s)) return true;
+  return false;
+};
+
 const DataTable = ({
   columns,
   data,
@@ -17,7 +27,11 @@ const DataTable = ({
   });
 
   const handleMouseEnter = (e, value) => {
+    if (!value) return;
     const text = typeof value === "string" ? value : (value !== undefined && value !== null ? String(value) : "");
+    if (!text || isUrlOrFilePath(text)) {
+      return;
+    }
     if (text.length > 50) {
       const rect = e.target.getBoundingClientRect();
       setTooltip({
@@ -113,13 +127,14 @@ const DataTable = ({
             ? content.slice(0, 50) + "..."
             : content;
 
-          const tooltipContent = isStringContent ? content : value;
+          // Only show tooltip for truncated text content, never for URLs, file paths, or custom React elements
+          const tooltipContent = isStringContent && !isUrlOrFilePath(content) ? content : null;
 
           return (
             <td
               key={col.key}
               className="p-2.5 truncate align-middle"
-              onMouseEnter={(e) => handleMouseEnter(e, tooltipContent)}
+              onMouseEnter={(e) => tooltipContent && handleMouseEnter(e, tooltipContent)}
               onMouseLeave={handleMouseLeave}
             >
               <div className="truncate">{displayContent}</div>

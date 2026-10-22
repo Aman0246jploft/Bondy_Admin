@@ -1,12 +1,26 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../contexts/theme/hook/useTheme";
 import dashboardApi from "../../api/dashboardApi";
 import { AiOutlineCloseCircle } from "react-icons/ai";
+import { FiArrowUpRight } from "react-icons/fi";
 
-const StatCard = ({ title, value, subtitle, theme }) => {
+const StatCard = ({ title, value, subtitle, theme, onClick }) => {
   return (
     <div
-      className="rounded-xl p-6 shadow-sm border-t-4 border transition-all duration-200 hover:shadow-md"
+      onClick={onClick}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={(e) => {
+        if (onClick && (e.key === "Enter" || e.key === " ")) {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      className={`rounded-xl p-6 shadow-sm border-t-4 border transition-all duration-200 select-none ${onClick
+        ? "cursor-pointer hover:shadow-lg hover:-translate-y-1 active:translate-y-0 group"
+        : "hover:shadow-md"
+        }`}
       style={{
         backgroundColor: theme.colors.card,
         borderTopColor: "#098D8A",
@@ -14,12 +28,19 @@ const StatCard = ({ title, value, subtitle, theme }) => {
       }}
     >
       <div className="flex flex-col">
-        <p
-          className="text-xs font-semibold uppercase tracking-wider mb-2"
-          style={{ color: "#098D8A" }}
-        >
-          {title}
-        </p>
+        <div className="flex items-center justify-between mb-2">
+          <p
+            className="text-xs font-semibold uppercase tracking-wider transition-colors duration-150 group-hover:text-teal-700"
+            style={{ color: "#098D8A" }}
+          >
+            {title}
+          </p>
+          {onClick && (
+            <FiArrowUpRight
+              className="w-4 h-4 text-slate-400 group-hover:text-[#098D8A] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200 flex-shrink-0"
+            />
+          )}
+        </div>
         <p
           className="text-3xl font-bold mb-1"
           style={{ color: theme.colors.textPrimary }}
@@ -41,6 +62,7 @@ const StatCard = ({ title, value, subtitle, theme }) => {
 
 export default function Dashboard() {
   const { theme } = useTheme();
+  const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -149,16 +171,19 @@ export default function Dashboard() {
             title="Total Users"
             value={stats?.users?.totalUsers || 0}
             theme={theme}
+          // onClick={() => navigate("/users")}
           />
           <StatCard
             title="Customers"
             value={stats?.users?.totalCustomers || 0}
             theme={theme}
+            onClick={() => navigate("/customers")}
           />
           <StatCard
             title="Organizers"
             value={stats?.users?.totalOrganizers || 0}
             theme={theme}
+            onClick={() => navigate("/organizers")}
           />
         </div>
       </div>
@@ -178,22 +203,26 @@ export default function Dashboard() {
             value={stats?.events?.totalEvents || 0}
             subtitle={`${stats?.events?.upcomingEvents || 0} upcoming, ${stats?.events?.liveEvents || 0} live`}
             theme={theme}
+            onClick={() => navigate("/events")}
           />
           <StatCard
             title="Total Courses"
             value={stats?.courses?.totalCourses || 0}
             subtitle={`${stats?.courses?.featuredCourses || 0} featured`}
             theme={theme}
+            onClick={() => navigate("/courses")}
           />
           <StatCard
             title="Course Enrollments"
             value={stats?.courses?.totalEnrollments || 0}
             theme={theme}
+            onClick={() => navigate("/courses")}
           />
           <StatCard
             title="Tickets Sold"
             value={stats?.finance?.totalTicketsSold || 0}
             theme={theme}
+            onClick={() => navigate("/finance")}
           />
         </div>
       </div>
@@ -212,11 +241,13 @@ export default function Dashboard() {
             title="Total Revenue"
             value={`₮${(stats?.finance?.totalRevenue || 0).toLocaleString()}`}
             theme={theme}
+            onClick={() => navigate("/finance")}
           />
           <StatCard
             title="Total Commission"
             value={`₮${(stats?.finance?.totalCommission || 0).toLocaleString()}`}
             theme={theme}
+            onClick={() => navigate("/finance")}
           />
         </div>
       </div>
@@ -236,23 +267,27 @@ export default function Dashboard() {
             value={stats?.tickets?.totalTickets || 0}
             subtitle={`${stats?.tickets?.resolvedTickets || 0} resolved`}
             theme={theme}
+            onClick={() => navigate("/support-tickets")}
           />
           <StatCard
             title="Pending Tickets"
             value={stats?.tickets?.pendingTickets || 0}
             theme={theme}
+            onClick={() => navigate("/support-tickets")}
           />
           <StatCard
             title="Pending Verifications"
             value={stats?.verifications?.pendingCount || 0}
             subtitle={`${stats?.verifications?.rejectedCount || 0} rejected`}
             theme={theme}
+            onClick={() => navigate("/verification-requests")}
           />
           <StatCard
             title="Pending Payouts"
             value={stats?.payouts?.pendingCount || 0}
             subtitle={`₮${(stats?.payouts?.pendingAmount || 0).toLocaleString()}`}
             theme={theme}
+            onClick={() => navigate("/finance?tab=payouts")}
           />
         </div>
       </div>

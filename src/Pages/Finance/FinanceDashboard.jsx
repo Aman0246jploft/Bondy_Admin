@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import authAxiosClient from "../../api/authAxiosClient";
 import financeApi from "../../api/financeApi";
 import { toast } from "react-toastify";
+import { useSearchParams } from "react-router-dom";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const fmt = (n) => `₮${Number(n || 0).toLocaleString()}`;
@@ -21,7 +22,7 @@ const STATUS_COLORS = {
 };
 
 // ─── Stat Card ────────────────────────────────────────────────────────────────
-const StatCard = ({ label, value, sub, color = "blue" }) => {
+const StatCard = ({ label, value, sub, color = "blue", onClick }) => {
   const border = {
     blue: "border-teal-400",
     green: "border-green-400",
@@ -32,7 +33,11 @@ const StatCard = ({ label, value, sub, color = "blue" }) => {
   }[color] || "border-teal-400";
 
   return (
-    <div className={`bg-white rounded-xl shadow p-5 border-l-4 ${border}`}>
+    <div
+      onClick={onClick}
+      className={`bg-white rounded-xl shadow p-5 border-l-4 ${border} ${onClick ? "cursor-pointer hover:shadow-md transition-shadow" : ""
+        }`}
+    >
       <p className="text-sm text-gray-500 mb-1">{label}</p>
       <p className="text-2xl font-bold text-gray-800">{value}</p>
       {sub && <p className="text-xs text-gray-400 mt-1">{sub}</p>}
@@ -195,6 +200,24 @@ const RejectModal = ({ payout, onClose, onDone }) => {
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 const FinanceDashboard = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentTab = searchParams.get("tab") === "payouts" ? "payouts" : "transactions";
+  const [activeTab, setActiveTab] = useState(currentTab);
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setSearchParams(tab === "payouts" ? { tab: "payouts" } : {});
+  };
+
+  useEffect(() => {
+    const tabFromUrl = searchParams.get("tab");
+    if (tabFromUrl === "payouts") {
+      setActiveTab("payouts");
+    } else {
+      setActiveTab("transactions");
+    }
+  }, [searchParams]);
+
   const [stats, setStats] = useState(null);
   const [statsLoading, setStatsLoading] = useState(true);
 
@@ -469,239 +492,307 @@ const FinanceDashboard = () => {
         </div>
       ) : stats ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          <StatCard label="Total Revenue" value={fmt(stats.totalRevenue)} sub={`${stats.transactionCount} transactions`} color="blue" />
+          <StatCard
+            label="Total Revenue"
+            value={fmt(stats.totalRevenue)}
+            sub={`${stats.transactionCount} transactions`}
+            color="blue"
+            onClick={() => handleTabChange("transactions")}
+          />
           {/* <StatCard label="Platform Commission" value={fmt(stats.totalCommission)} color="indigo" /> */}
           <StatCard label="Organizer Earnings" value={fmt(stats.totalOrganizerEarnings)} color="green" />
-          <StatCard label="Total Payouts Made" value={fmt(stats.totalPayoutsMade)} color="purple" />
-          <StatCard label="Pending Payouts" value={fmt(stats.pendingPayoutsAmount)} sub={`${stats.pendingPayoutCount} requests`} color="yellow" />
+          <StatCard
+            label="Total Payouts Made"
+            value={fmt(stats.totalPayoutsMade)}
+            color="purple"
+            onClick={() => handleTabChange("payouts")}
+          />
+          <StatCard
+            label="Pending Payouts"
+            value={fmt(stats.pendingPayoutsAmount)}
+            sub={`${stats.pendingPayoutCount} requests`}
+            color="yellow"
+            onClick={() => handleTabChange("payouts")}
+          />
           {/* <StatCard label="Refunds" value={fmt(stats.refundTotal)} sub={`${stats.refundCount} cases`} color="red" /> */}
         </div>
       ) : null}
 
-      {/* ── Transactions ── */}
-      <div className="bg-white rounded-xl shadow overflow-hidden">
-        <div className="px-5 py-4 border-b flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <h2 className="font-semibold text-gray-700">Paid Transactions</h2>
-          <div className="flex gap-3 flex-wrap">
-            <input
-              type="text"
-              placeholder="Search ID, name, or course..."
-              className="border rounded-lg px-3 py-2 text-sm w-56 focus:outline-none focus:ring-2 focus:ring-teal-400"
-              value={txnSearch}
-              onChange={(e) => { setTxnSearch(e.target.value); setTxnPage(1); }}
-            />
-          </div>
-        </div>
-        <div className="table-responsive overflow-x-auto">
-          <table className="min-w-full text-sm">
-            <thead className="bg-gray-50">
-              <tr>
-                {["Booking ID", "Customer", "Item", "Type", "Total", "Org. Earning", "Date"].map((h) => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {transactionsLoading ? (
-                <tr>
-                  <td colSpan={8} className="text-center py-10 text-gray-400">
-                    Loading transactions...
-                  </td>
-                </tr>
-              ) : transactions.length === 0 ? (
-                <tr>
-                  <td colSpan={8} className="text-center py-10 text-gray-400">
-                    No transactions found.
-                  </td>
-                </tr>
-              ) : (
-                transactions.map((t) => (
-                  <tr key={t._id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 font-mono text-xs text-gray-500">#{t.bookingId?.slice(-8).toUpperCase() || t._id?.slice(-8).toUpperCase()}</td>
-                    <td className="px-4 py-3">
-                      <span className="font-medium text-gray-800">{t.userId?.firstName} {t.userId?.lastName}</span>
-                      <div className="text-xs text-gray-400">{t.userId?.email}</div>
-                    </td>
-                    <td className="px-4 py-3 text-gray-700 max-w-xs truncate">
-                      {t.eventId?.eventTitle || t.courseId?.courseTitle || "—"}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className="px-2 py-1 rounded-full text-xs bg-teal-100 text-teal-700 font-medium">
-                        {t.bookingType}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 font-semibold text-gray-800">{fmt(t.totalAmount)}</td>
-                    {/* <td className="px-4 py-3 text-teal-600">{fmt(t.commissionAmount)}</td> */}
-                    <td className="px-4 py-3 text-green-600">{fmt(t.organizerEarning)}</td>
-                    <td className="px-4 py-3 text-gray-500">{fmtDate(t.createdAt)}</td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-        {/* Pagination */}
-        <div className="px-5 py-4 border-t flex items-center justify-between">
-          <span className="text-sm text-gray-500">
-            Total: {txnTotal} transaction{txnTotal !== 1 ? "s" : ""}
+      {/* ── Tabs Navigation Bar ── */}
+      <div className="flex items-center gap-2 border-b border-gray-200">
+        <button
+          type="button"
+          onClick={() => handleTabChange("transactions")}
+          className={`pb-3 px-4 text-sm font-semibold transition border-b-2 cursor-pointer flex items-center gap-2 ${activeTab === "transactions"
+              ? "border-teal-500 text-teal-600"
+              : "border-transparent text-gray-500 hover:text-gray-700"
+            }`}
+        >
+          <span>Paid Transactions</span>
+          <span
+            className={`px-2 py-0.5 rounded-full text-xs font-bold ${activeTab === "transactions"
+                ? "bg-teal-50 text-teal-700 border border-teal-200"
+                : "bg-gray-100 text-gray-600"
+              }`}
+          >
+            {txnTotal}
           </span>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setTxnPage((p) => Math.max(1, p - 1))}
-              disabled={txnPage === 1}
-              className="px-3 py-1 border rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50"
-            >
-              ← Prev
-            </button>
-            <span className="px-3 py-1 text-sm text-gray-600">
-              {txnPage} / {txnTotalPages}
+        </button>
+
+        <button
+          type="button"
+          onClick={() => handleTabChange("payouts")}
+          className={`pb-3 px-4 text-sm font-semibold transition border-b-2 cursor-pointer flex items-center gap-2 ${activeTab === "payouts"
+              ? "border-teal-500 text-teal-600"
+              : "border-transparent text-gray-500 hover:text-gray-700"
+            }`}
+        >
+          <span>Payout Requests</span>
+          {stats?.pendingPayoutCount > 0 ? (
+            <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800 border border-yellow-300">
+              {stats.pendingPayoutCount} Pending
             </span>
-            <button
-              onClick={() => setTxnPage((p) => Math.min(txnTotalPages, p + 1))}
-              disabled={txnPage >= txnTotalPages}
-              className="px-3 py-1 border rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50"
+          ) : (
+            <span
+              className={`px-2 py-0.5 rounded-full text-xs font-bold ${activeTab === "payouts"
+                  ? "bg-teal-50 text-teal-700 border border-teal-200"
+                  : "bg-gray-100 text-gray-600"
+                }`}
             >
-              Next →
-            </button>
-          </div>
-        </div>
+              {total}
+            </span>
+          )}
+        </button>
       </div>
 
-      {/* ── Payout Requests ── */}
-      <div className="bg-white rounded-xl shadow overflow-hidden">
-        <div className="px-5 py-4 border-b flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <h2 className="font-semibold text-gray-700">Payout Requests</h2>
-          <div className="flex gap-3 flex-wrap">
-            <select
-              className="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
-              value={statusFilter}
-              onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-            >
-              <option value="ALL">All Statuses</option>
-              <option value="PENDING">Pending</option>
-              <option value="PAID">Paid</option>
-              <option value="CANCELLED">Cancelled / Rejected</option>
-            </select>
-            <input
-              type="text"
-              placeholder="Search by name or email..."
-              className="border rounded-lg px-3 py-2 text-sm w-56 focus:outline-none focus:ring-2 focus:ring-teal-400"
-              value={search}
-              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-            />
+      {/* ── Transactions Tab Content ── */}
+      {activeTab === "transactions" && (
+        <div className="bg-white rounded-xl shadow overflow-hidden">
+          <div className="px-5 py-4 border-b flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <h2 className="font-semibold text-gray-700">Paid Transactions</h2>
+            <div className="flex gap-3 flex-wrap">
+              <input
+                type="text"
+                placeholder="Search ID, name, or course..."
+                className="border rounded-lg px-3 py-2 text-sm w-56 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                value={txnSearch}
+                onChange={(e) => { setTxnSearch(e.target.value); setTxnPage(1); }}
+              />
+            </div>
           </div>
-        </div>
-
-        <div className="table-responsive overflow-x-auto">
-          <table className="min-w-full text-sm">
-            <thead className="bg-gray-50">
-              <tr>
-                {["#", "Organizer", "Amount", "Payment Reference", "Status", "Requested On", "Actions"].map((h) => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {payoutsLoading ? (
+          <div className="table-responsive overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead className="bg-gray-50">
                 <tr>
-                  <td colSpan={7} className="text-center py-10 text-gray-400">
-                    Loading payouts...
-                  </td>
+                  {["Booking ID", "Customer", "Item", "Type", "Total", "Org. Earning", "Date"].map((h) => (
+                    <th key={h} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {h}
+                    </th>
+                  ))}
                 </tr>
-              ) : payouts.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="text-center py-10 text-gray-400">
-                    No payout requests found.
-                  </td>
-                </tr>
-              ) : (
-                payouts.map((p, idx) => (
-                  <tr key={p._id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-gray-400 text-xs">
-                      #{String(p._id).slice(-6).toUpperCase()}
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="font-medium text-gray-800">
-                        {p.organizerId?.firstName} {p.organizerId?.lastName}
-                      </div>
-                      <div className="text-xs text-gray-400">{p.organizerId?.email}</div>
-                    </td>
-                    <td className="px-4 py-3 font-semibold text-gray-800">{fmt(p.amount)}</td>
-                    <td className="px-4 py-3 text-gray-500 text-xs max-w-xs truncate">
-                      {p.paymentReference || "—"}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${STATUS_COLORS[p.status] || "bg-gray-100 text-gray-600"}`}>
-                        {p.status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-gray-500">{fmtDate(p.createdAt)}</td>
-                    <td className="px-4 py-3">
-                      {p.status === "PENDING" ? (
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => setApproveTarget(p)}
-                            className="px-3 py-1 bg-green-500 text-white rounded-lg text-xs hover:bg-green-600 font-medium"
-                          >
-                            ✓ Approve
-                          </button>
-                          <button
-                            onClick={() => setRejectTarget(p)}
-                            className="px-3 py-1 bg-red-500 text-white rounded-lg text-xs hover:bg-red-600 font-medium"
-                          >
-                            ✗ Reject
-                          </button>
-                        </div>
-                      ) : p.status === "PAID" ? (
-                        <div>
-                          <span className="text-xs text-green-600 font-medium">Paid</span>
-                          {p.paidAt && <div className="text-xs text-gray-400">{fmtDate(p.paidAt)}</div>}
-                          {p.adminNote && <div className="text-xs text-gray-400 truncate max-w-xs" title={p.adminNote}>{p.adminNote}</div>}
-                        </div>
-                      ) : (
-                        <div>
-                          <span className="text-xs text-red-500 font-medium">Rejected</span>
-                          {p.adminNote && <div className="text-xs text-gray-400 truncate max-w-xs" title={p.adminNote}>{p.adminNote}</div>}
-                        </div>
-                      )}
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {transactionsLoading ? (
+                  <tr>
+                    <td colSpan={8} className="text-center py-10 text-gray-400">
+                      Loading transactions...
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination */}
-        <div className="px-5 py-4 border-t flex items-center justify-between">
-          <span className="text-sm text-gray-500">
-            Total: {total} request{total !== 1 ? "s" : ""}
-          </span>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={page === 1}
-              className="px-3 py-1 border rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50"
-            >
-              ← Prev
-            </button>
-            <span className="px-3 py-1 text-sm text-gray-600">
-              {page} / {totalPages}
+                ) : transactions.length === 0 ? (
+                  <tr>
+                    <td colSpan={8} className="text-center py-10 text-gray-400">
+                      No transactions found.
+                    </td>
+                  </tr>
+                ) : (
+                  transactions.map((t) => (
+                    <tr key={t._id} className="hover:bg-gray-50">
+                      <td className="px-4 py-3 font-mono text-xs text-gray-500">#{t.bookingId?.slice(-8).toUpperCase() || t._id?.slice(-8).toUpperCase()}</td>
+                      <td className="px-4 py-3">
+                        <span className="font-medium text-gray-800">{t.userId?.firstName} {t.userId?.lastName}</span>
+                        <div className="text-xs text-gray-400">{t.userId?.email}</div>
+                      </td>
+                      <td className="px-4 py-3 text-gray-700 max-w-xs truncate">
+                        {t.eventId?.eventTitle || t.courseId?.courseTitle || "—"}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className="px-2 py-1 rounded-full text-xs bg-teal-100 text-teal-700 font-medium">
+                          {t.bookingType}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 font-semibold text-gray-800">{fmt(t.totalAmount)}</td>
+                      {/* <td className="px-4 py-3 text-teal-600">{fmt(t.commissionAmount)}</td> */}
+                      <td className="px-4 py-3 text-green-600">{fmt(t.organizerEarning)}</td>
+                      <td className="px-4 py-3 text-gray-500">{fmtDate(t.createdAt)}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+          {/* Pagination */}
+          <div className="px-5 py-4 border-t flex items-center justify-between">
+            <span className="text-sm text-gray-500">
+              Total: {txnTotal} transaction{txnTotal !== 1 ? "s" : ""}
             </span>
-            <button
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              disabled={page >= totalPages}
-              className="px-3 py-1 border rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50"
-            >
-              Next →
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setTxnPage((p) => Math.max(1, p - 1))}
+                disabled={txnPage === 1}
+                className="px-3 py-1 border rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50"
+              >
+                ← Prev
+              </button>
+              <span className="px-3 py-1 text-sm text-gray-600">
+                {txnPage} / {txnTotalPages}
+              </span>
+              <button
+                onClick={() => setTxnPage((p) => Math.min(txnTotalPages, p + 1))}
+                disabled={txnPage >= txnTotalPages}
+                className="px-3 py-1 border rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50"
+              >
+                Next →
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
+
+      {/* ── Payout Requests Tab Content ── */}
+      {activeTab === "payouts" && (
+        <div className="bg-white rounded-xl shadow overflow-hidden">
+          <div className="px-5 py-4 border-b flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <h2 className="font-semibold text-gray-700">Payout Requests</h2>
+            <div className="flex gap-3 flex-wrap">
+              <select
+                className="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
+                value={statusFilter}
+                onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+              >
+                <option value="ALL">All Statuses</option>
+                <option value="PENDING">Pending</option>
+                <option value="PAID">Paid</option>
+                <option value="CANCELLED">Cancelled / Rejected</option>
+              </select>
+              <input
+                type="text"
+                placeholder="Search by name or email..."
+                className="border rounded-lg px-3 py-2 text-sm w-56 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                value={search}
+                onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+              />
+            </div>
+          </div>
+
+          <div className="table-responsive overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead className="bg-gray-50">
+                <tr>
+                  {["#", "Organizer", "Amount", "Payment Reference", "Status", "Requested On", "Actions"].map((h) => (
+                    <th key={h} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {payoutsLoading ? (
+                  <tr>
+                    <td colSpan={7} className="text-center py-10 text-gray-400">
+                      Loading payouts...
+                    </td>
+                  </tr>
+                ) : payouts.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="text-center py-10 text-gray-400">
+                      No payout requests found.
+                    </td>
+                  </tr>
+                ) : (
+                  payouts.map((p) => (
+                    <tr key={p._id} className="hover:bg-gray-50">
+                      <td className="px-4 py-3 text-gray-400 text-xs">
+                        #{String(p._id).slice(-6).toUpperCase()}
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="font-medium text-gray-800">
+                          {p.organizerId?.firstName} {p.organizerId?.lastName}
+                        </div>
+                        <div className="text-xs text-gray-400">{p.organizerId?.email}</div>
+                      </td>
+                      <td className="px-4 py-3 font-semibold text-gray-800">{fmt(p.amount)}</td>
+                      <td className="px-4 py-3 text-gray-500 text-xs max-w-xs truncate">
+                        {p.paymentReference || "—"}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${STATUS_COLORS[p.status] || "bg-gray-100 text-gray-600"}`}>
+                          {p.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-gray-500">{fmtDate(p.createdAt)}</td>
+                      <td className="px-4 py-3">
+                        {p.status === "PENDING" ? (
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => setApproveTarget(p)}
+                              className="px-3 py-1 bg-green-500 text-white rounded-lg text-xs hover:bg-green-600 font-medium"
+                            >
+                              ✓ Approve
+                            </button>
+                            <button
+                              onClick={() => setRejectTarget(p)}
+                              className="px-3 py-1 bg-red-500 text-white rounded-lg text-xs hover:bg-red-600 font-medium"
+                            >
+                              ✗ Reject
+                            </button>
+                          </div>
+                        ) : p.status === "PAID" ? (
+                          <div>
+                            <span className="text-xs text-green-600 font-medium">Paid</span>
+                            {p.paidAt && <div className="text-xs text-gray-400">{fmtDate(p.paidAt)}</div>}
+                            {p.adminNote && <div className="text-xs text-gray-400 truncate max-w-xs" title={p.adminNote}>{p.adminNote}</div>}
+                          </div>
+                        ) : (
+                          <div>
+                            <span className="text-xs text-red-500 font-medium">Rejected</span>
+                            {p.adminNote && <div className="text-xs text-gray-400 truncate max-w-xs" title={p.adminNote}>{p.adminNote}</div>}
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="px-5 py-4 border-t flex items-center justify-between">
+            <span className="text-sm text-gray-500">
+              Total: {total} request{total !== 1 ? "s" : ""}
+            </span>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="px-3 py-1 border rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50"
+              >
+                ← Prev
+              </button>
+              <span className="px-3 py-1 text-sm text-gray-600">
+                {page} / {totalPages}
+              </span>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page >= totalPages}
+                className="px-3 py-1 border rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50"
+              >
+                Next →
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Modals ── */}
       {approveTarget && (

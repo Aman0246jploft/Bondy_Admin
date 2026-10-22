@@ -145,7 +145,31 @@ const UserList = ({ roleId, title }) => {
             render: (val, row) => `${row.firstName || ''} ${row.lastName || ''}`.trim() || 'N/A'
         },
         { key: "email", label: "Email" },
-        { key: "contactNumber", label: "Contact" },
+        {
+            key: "contactNumber",
+            label: "Contact",
+            render: (val, row) => {
+                if (!row.contactNumber) return "N/A";
+                const countryCode = row.countryCode ? row.countryCode.trim() : "";
+                if (countryCode && !row.contactNumber.startsWith(countryCode)) {
+                    return `${countryCode} ${row.contactNumber}`;
+                }
+                return row.contactNumber;
+            }
+        },
+        ...(!roleId ? [{
+            key: "roleId",
+            label: "Role",
+            render: (val) => (
+                <span className={`px-2.5 py-0.5 text-xs font-semibold rounded-full ${
+                    val === 2
+                        ? "bg-purple-100 text-purple-800 border border-purple-200"
+                        : "bg-teal-100 text-teal-800 border border-teal-200"
+                }`}>
+                    {val === 2 ? "Organizer" : val === 3 ? "Customer" : "User"}
+                </span>
+            )
+        }] : []),
         ...(roleId === 2 ? [{
             key: "isPromoted",
             label: "Promoted",
@@ -193,26 +217,32 @@ const UserList = ({ roleId, title }) => {
             key: "actions",
             label: "Actions",
             render: (value, row) => (
-                <div className="flex gap-3">
-                    {roleId === 2 && (
-                        <button
-                            onClick={() => handleViewStats(row)}
-                            title="View Stats"
-                        >
-                            <AiOutlineBarChart className="w-4 h-4 text-purple-500 hover:text-purple-700" />
-                        </button>
-                    )}
-                    {/* <button onClick={() => console.log("Edit", row)}>
-                        <FiEdit2 className="w-4 h-4 text-teal-500 hover:text-teal-700" />
-                    </button> */}
+                <div className="flex items-center gap-3">
                     <button
                         onClick={() => navigate(`/users/${row._id}`)}
-                        className="px-3 py-1 bg-teal-600 text-white text-xs rounded hover:bg-teal-700 transition whitespace-nowrap"
+                        className="px-3 py-1 bg-teal-600 text-white text-xs font-medium rounded hover:bg-teal-700 transition whitespace-nowrap shadow-2xs"
                     >
                         View Details
                     </button>
-                    <button onClick={() => handleDelete(row)}>
-                        <BsTrash2 className="w-4 h-4 text-red-500 hover:text-red-700" />
+                    {(roleId === 2 || !roleId) && (
+                        <div className="w-5 h-5 flex items-center justify-center flex-shrink-0">
+                            {row.roleId === 2 ? (
+                                <button
+                                    onClick={() => handleViewStats(row)}
+                                    title="View Stats"
+                                    className="text-purple-500 hover:text-purple-700 transition flex items-center justify-center"
+                                >
+                                    <AiOutlineBarChart className="w-4 h-4" />
+                                </button>
+                            ) : null}
+                        </div>
+                    )}
+                    <button
+                        onClick={() => handleDelete(row)}
+                        title="Delete User"
+                        className="text-red-500 hover:text-red-700 transition flex items-center justify-center flex-shrink-0"
+                    >
+                        <BsTrash2 className="w-4 h-4" />
                     </button>
                 </div>
             ),

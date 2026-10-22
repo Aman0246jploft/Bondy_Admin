@@ -4,6 +4,47 @@ import { FiEdit2, FiPlus } from "react-icons/fi";
 import { BsTrash2 } from "react-icons/bs";
 import authAxiosClient from "../../api/authAxiosClient";
 
+const CategoryAvatar = ({ src, name }) => {
+    const [imgSrc, setImgSrc] = useState(src || "/Profileimage.png");
+    const [hasError, setHasError] = useState(false);
+
+    useEffect(() => {
+        setImgSrc(src || "/Profileimage.png");
+        setHasError(false);
+    }, [src]);
+
+    const handleError = () => {
+        if (!hasError && imgSrc !== "/Profileimage.png") {
+            setImgSrc("/Profileimage.png");
+        } else {
+            setHasError(true);
+        }
+    };
+
+    if (hasError) {
+        return (
+            <div
+                className="w-10 h-10 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 select-none flex-shrink-0"
+                title={name || "Category Avatar"}
+            >
+                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                </svg>
+            </div>
+        );
+    }
+
+    return (
+        <img
+            src={imgSrc}
+            alt={name || "Category Icon"}
+            className="w-10 h-10 object-cover rounded-lg border border-slate-200 bg-white flex-shrink-0"
+            onError={handleError}
+        />
+    );
+};
+
+
 const CategoryList = ({ title }) => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -202,7 +243,9 @@ const CategoryList = ({ title }) => {
         {
             key: "image",
             label: "Icon",
-            render: (val) => val ? <img src={val} alt="icon" className="w-10 h-10 object-cover rounded" /> : <div className="w-10 h-10 bg-gray-200 rounded flex items-center justify-center text-xs">No Icon</div>
+            render: (val, row) => (
+                <CategoryAvatar src={val} name={row?.name || row?.name_thi} />
+            )
         },
         { key: "name", label: "Name (EN)" },
         { key: "name_thi", label: "Name (THI)" },
@@ -359,6 +402,12 @@ const CategoryList = ({ title }) => {
                                 {formData.image && (
                                     <p className="text-xs text-green-600 truncate">Selected: {formData.image}</p>
                                 )}
+                                <div className="mt-2 flex items-center gap-3">
+                                    <CategoryAvatar src={formData.image} name={formData.name} />
+                                    <span className="text-xs text-gray-500">
+                                        {formData.image ? "Current Icon Preview" : "Default Avatar"}
+                                    </span>
+                                </div>
                             </div>
                             {/* {formData.type === "event" && (
                                 <div>
