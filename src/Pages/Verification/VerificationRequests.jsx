@@ -10,7 +10,7 @@ const VerificationRequests = () => {
     const [total, setTotal] = useState(0);
     const [page, setPage] = useState(1);
     const [limit] = useState(10);
-    const [statusFilter, setStatusFilter] = useState("pending");
+    const [statusFilter, setStatusFilter] = useState("all");
     const [search, setSearch] = useState("");
     const [categories, setCategories] = useState([]);
 
@@ -253,55 +253,67 @@ const VerificationRequests = () => {
     return (
         <div className="p-6 space-y-6">
             <div className="flex justify-between items-center">
-                <h2 className="text-3xl font-extrabold text-gray-800">Organizer Verification Portal</h2>
+                <div>
+                    <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Organizer Verification Portal</h2>
+                    <p className="text-xs text-gray-500 mt-0.5">Review and audit organizer profile, ID documents, and bank verification requests.</p>
+                </div>
             </div>
 
-            <div className="flex gap-4 items-center bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                <div className="flex flex-col gap-1">
-                    <label className="text-xs font-bold text-gray-500 uppercase">Filter by Status</label>
-                    <select
-                        value={statusFilter}
-                        onChange={(e) => {
-                            setStatusFilter(e.target.value);
-                            setPage(1);
-                        }}
-                        className="border border-gray-200 p-2 rounded-lg bg-gray-50 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-teal-500"
-                    >
-                        <option value="all">All Requests</option>
-                        <option value="pending">Pending Review</option>
-                        <option value="approved">Approved</option>
-                        <option value="rejected">Rejected</option>
-                        <option value="unverified">Unverified</option>
-                    </select>
-                </div>
-
-                <div className="flex flex-col gap-1 flex-1 max-w-md">
-                    <label className="text-xs font-bold text-gray-500 uppercase">Search Organizers</label>
-                    <div className="relative">
-                        <input
-                            type="text"
-                            placeholder="Search name or email..."
-                            className="w-full border border-gray-200 p-2 pr-8 rounded-lg bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
-                            value={search}
-                            onChange={(e) => {
-                                setSearch(e.target.value);
-                                setPage(1);
-                            }}
-                        />
-                        {search && (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-3.5 rounded-2xl shadow-xs border border-gray-200/80">
+                {/* Status Filter Tabs */}
+                <div className="flex flex-wrap items-center gap-1.5">
+                    {[
+                        { key: "all", label: "All Requests" },
+                        { key: "pending", label: "Pending Review" },
+                        { key: "approved", label: "Approved" },
+                        { key: "rejected", label: "Rejected" },
+                        { key: "unverified", label: "Unverified" },
+                    ].map((tab) => {
+                        const isActive = statusFilter === tab.key;
+                        return (
                             <button
+                                key={tab.key}
                                 type="button"
                                 onClick={() => {
-                                    setSearch("");
+                                    setStatusFilter(tab.key);
                                     setPage(1);
                                 }}
-                                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs w-4 h-4 flex items-center justify-center rounded-full hover:bg-gray-200"
-                                title="Clear search"
+                                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${isActive
+                                        ? "bg-teal-600 text-white shadow-xs"
+                                        : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                                    }`}
                             >
-                                ✕
+                                {tab.label}
                             </button>
-                        )}
-                    </div>
+                        );
+                    })}
+                </div>
+
+                {/* Search Organizers Bar */}
+                <div className="relative w-full sm:w-72">
+                    <input
+                        type="text"
+                        placeholder="Search name or email..."
+                        className="w-full border border-gray-200 py-1.5 pl-3 pr-8 rounded-lg bg-gray-50 text-xs focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500"
+                        value={search}
+                        onChange={(e) => {
+                            setSearch(e.target.value);
+                            setPage(1);
+                        }}
+                    />
+                    {search && (
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setSearch("");
+                                setPage(1);
+                            }}
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs w-4 h-4 flex items-center justify-center rounded-full hover:bg-gray-200"
+                            title="Clear search"
+                        >
+                            ✕
+                        </button>
+                    )}
                 </div>
             </div>
 
