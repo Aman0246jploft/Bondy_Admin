@@ -261,29 +261,62 @@ const VerificationRequests = () => {
                     <label className="text-xs font-bold text-gray-500 uppercase">Filter by Status</label>
                     <select
                         value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
+                        onChange={(e) => {
+                            setStatusFilter(e.target.value);
+                            setPage(1);
+                        }}
                         className="border border-gray-200 p-2 rounded-lg bg-gray-50 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-teal-500"
                     >
+                        <option value="all">All Requests</option>
                         <option value="pending">Pending Review</option>
                         <option value="approved">Approved</option>
                         <option value="rejected">Rejected</option>
+                        <option value="unverified">Unverified</option>
                     </select>
                 </div>
 
                 <div className="flex flex-col gap-1 flex-1 max-w-md">
                     <label className="text-xs font-bold text-gray-500 uppercase">Search Organizers</label>
-                    <input
-                        type="text"
-                        placeholder="Search name or email..."
-                        className="border border-gray-200 p-2 rounded-lg bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
+                    <div className="relative">
+                        <input
+                            type="text"
+                            placeholder="Search name or email..."
+                            className="w-full border border-gray-200 p-2 pr-8 rounded-lg bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+                            value={search}
+                            onChange={(e) => {
+                                setSearch(e.target.value);
+                                setPage(1);
+                            }}
+                        />
+                        {search && (
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setSearch("");
+                                    setPage(1);
+                                }}
+                                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs w-4 h-4 flex items-center justify-center rounded-full hover:bg-gray-200"
+                                title="Clear search"
+                            >
+                                ✕
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <DataTable columns={columns} data={data} loading={loading} />
+                <DataTable
+                    columns={columns}
+                    data={data}
+                    loading={loading}
+                    emptyMessage={search ? `No verification requests match "${search}"` : `No ${statusFilter === 'all' ? '' : statusFilter} requests found`}
+                    emptySubtext={
+                        search && statusFilter !== 'all'
+                            ? `Can't find "${search}" in "${statusFilter}"? Try switching the filter above to "All Requests".`
+                            : "There are currently no verification records matching this filter."
+                    }
+                />
             </div>
 
             {/* Pagination Controls */}

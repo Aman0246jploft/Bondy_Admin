@@ -169,9 +169,28 @@ const UserList = ({ roleId, title }) => {
                 </span>
             )
         }] : []),
-        ...(roleId === 2 ? [{
-            key: "isPromoted",
-            label: "Promoted",
+        ...(roleId === 2 ? [
+            {
+                key: "organizerVerificationStatus",
+                label: "Verification",
+                render: (val, row) => {
+                    const status = row.organizerVerificationStatus || (row.isAllVerified || row.isVerified ? "approved" : "unverified");
+                    const colors = {
+                        approved: "bg-emerald-100 text-emerald-800 border-emerald-200",
+                        pending: "bg-amber-100 text-amber-800 border-amber-200",
+                        rejected: "bg-rose-100 text-rose-800 border-rose-200",
+                        unverified: "bg-slate-100 text-slate-600 border-slate-200",
+                    };
+                    return (
+                        <span className={`px-2.5 py-0.5 text-xs font-semibold rounded-full border capitalize whitespace-nowrap ${colors[status] || colors.unverified}`}>
+                            {status}
+                        </span>
+                    );
+                }
+            },
+            {
+                key: "isPromoted",
+                label: "Promoted",
             render: (value, row, rowIndex) => (
                 <div className="flex items-center gap-2">
                     <label className="inline-flex items-center cursor-pointer" title={value ? "Promoted on Homepage" : "Click to promote on Homepage"}>
