@@ -922,8 +922,8 @@ const FinanceDashboard = () => {
           type="button"
           onClick={() => handleTabChange("transactions")}
           className={`pb-3 px-4 text-sm font-semibold transition border-b-2 cursor-pointer flex items-center gap-2 ${activeTab === "transactions"
-              ? "border-teal-600 text-teal-700"
-              : "border-transparent text-gray-500 hover:text-gray-700"
+            ? "border-teal-600 text-teal-700"
+            : "border-transparent text-gray-500 hover:text-gray-700"
             }`}
         >
           <span>Transactions Ledger</span>
@@ -936,8 +936,8 @@ const FinanceDashboard = () => {
           type="button"
           onClick={() => handleTabChange("payouts")}
           className={`pb-3 px-4 text-sm font-semibold transition border-b-2 cursor-pointer flex items-center gap-2 ${activeTab === "payouts"
-              ? "border-teal-600 text-teal-700"
-              : "border-transparent text-gray-500 hover:text-gray-700"
+            ? "border-teal-600 text-teal-700"
+            : "border-transparent text-gray-500 hover:text-gray-700"
             }`}
         >
           <span>Payout Requests</span>
@@ -970,8 +970,8 @@ const FinanceDashboard = () => {
                       setTxnPage(1);
                     }}
                     className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer border ${isActive
-                        ? "bg-gray-900 text-white border-gray-900 shadow-2xs font-semibold"
-                        : "bg-white text-gray-600 hover:text-gray-900 border-gray-200 hover:bg-gray-50"
+                      ? "bg-gray-900 text-white border-gray-900 shadow-2xs font-semibold"
+                      : "bg-white text-gray-600 hover:text-gray-900 border-gray-200 hover:bg-gray-50"
                       }`}
                   >
                     <span>{tab.label}</span>
