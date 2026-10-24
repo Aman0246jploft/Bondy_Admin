@@ -118,25 +118,53 @@ const Avatar = ({ src, name, size = "w-16 h-16" }) => {
     );
 };
 
-// ─── Minimalist Metric Tile ─────────────────────────────────────────────────
-const MetricTile = ({ label, value, subtext, icon: Icon }) => (
-    <div className="bg-white rounded-xl border border-slate-200/80 p-4 transition-all duration-150 hover:border-slate-300">
-        <div className="flex items-center justify-between gap-2 mb-2">
-            <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider truncate">
-                {label}
-            </span>
-            {Icon && <Icon className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />}
+const getCategoryColor = (catName) => {
+    if (!catName) return "bg-slate-100 text-slate-700 border-slate-200";
+    const name = String(catName).toLowerCase();
+    if (name.includes("coding") || name.includes("software") || name.includes("tech") || name.includes("web")) {
+        return "bg-blue-50 text-blue-700 border-blue-200/70";
+    }
+    if (name.includes("hackathon")) {
+        return "bg-violet-50 text-violet-700 border-violet-200/70";
+    }
+    if (name.includes("design") || name.includes("ux") || name.includes("art")) {
+        return "bg-amber-50 text-amber-700 border-amber-200/70";
+    }
+    if (name.includes("music") || name.includes("party") || name.includes("concert")) {
+        return "bg-purple-50 text-purple-700 border-purple-200/70";
+    }
+    if (name.includes("academic") || name.includes("education") || name.includes("school")) {
+        return "bg-indigo-50 text-indigo-700 border-indigo-200/70";
+    }
+    if (name.includes("community") || name.includes("network") || name.includes("social")) {
+        return "bg-emerald-50 text-emerald-700 border-emerald-200/70";
+    }
+    return "bg-teal-50 text-teal-700 border-teal-200/70";
+};
+
+// ─── Simple Minimalist Metric Tile ──────────────────────────────────────────
+const MetricTile = ({ label, value, subtext, icon: Icon }) => {
+    return (
+        <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs hover:border-slate-300 transition-all duration-150">
+            <div className="flex items-center justify-between text-slate-500 mb-1">
+                <span className="text-[11px] font-medium uppercase tracking-wider truncate text-slate-500">
+                    {label}
+                </span>
+                {Icon && <Icon className="w-4 h-4 text-teal-600 flex-shrink-0" />}
+            </div>
+            <div className="text-xl font-bold text-slate-900 tracking-tight">
+                {value ?? 0}
+            </div>
+            {subtext && (
+                <div className="mt-1">
+                    <span className="text-[11px] text-slate-500 font-medium">
+                        {subtext}
+                    </span>
+                </div>
+            )}
         </div>
-        <div className="text-xl font-bold text-slate-900 tracking-tight">
-            {value ?? 0}
-        </div>
-        {subtext && (
-            <p className="text-[11px] text-slate-400 mt-0.5 truncate font-medium">
-                {subtext}
-            </p>
-        )}
-    </div>
-);
+    );
+};
 
 // ─── Main Component ──────────────────────────────────────────────────────────
 const UserDetail = () => {
@@ -163,6 +191,14 @@ const UserDetail = () => {
                 if (res.data?.status) {
                     const userData = res.data.data.user;
                     setUserProfile(userData);
+
+                    try {
+                        if (userData.role) {
+                            sessionStorage.setItem("last_active_user_role", userData.role);
+                            sessionStorage.setItem(`user_role_${userId}`, userData.role);
+                            window.dispatchEvent(new CustomEvent("user_role_active", { detail: { userId, role: userData.role } }));
+                        }
+                    } catch (e) { }
 
                     const isOrg = userData.role === "ORGANIZER";
                     if (isOrg) {
@@ -318,6 +354,12 @@ const UserDetail = () => {
         netEarningCourses = 0,
         totalEarnings = 0,
         payoutBalance = 0,
+        totalTicketSold,
+        totalTicketsSold,
+        totalEventsHosted,
+        totalUpcomingEvents,
+        totalCoursesAdded,
+        totalUpcomingCourses,
     } = userProfile;
 
     const isCustomer = role === "CUSTOMER";
@@ -580,19 +622,28 @@ const UserDetail = () => {
                     <>
                         <MetricTile
                             label="Events Hosted"
-                            value={(events?.upcoming_events?.length || 0) + (events?.previous_events?.length || 0)}
-                            subtext={`${events?.upcoming_events?.length || 0} active`}
+                            value={totalEventsHosted ?? userProfile?.totalEventsHosted ?? ((events?.upcoming_events?.length || 0) + (events?.previous_events?.length || 0))}
+                            subtext={`${totalUpcomingEvents ?? userProfile?.totalUpcomingEvents ?? (events?.upcoming_events?.length || 0)} active`}
                             icon={FiCalendar}
                         />
                         <MetricTile
                             label="Courses Added"
-                            value={(courses?.upcoming_courses?.length || 0) + (courses?.previous_courses?.length || 0)}
-                            subtext={`${courses?.upcoming_courses?.length || 0} active`}
+                            value={totalCoursesAdded ?? userProfile?.totalCoursesAdded ?? ((courses?.upcoming_courses?.length || 0) + (courses?.previous_courses?.length || 0))}
+                            subtext={`${totalUpcomingCourses ?? userProfile?.totalUpcomingCourses ?? (courses?.upcoming_courses?.length || 0)} active`}
                             icon={FiBookOpen}
                         />
                         <MetricTile
                             label="Tickets Sold"
-                            value={events?.upcoming_events?.reduce((acc, ev) => acc + (ev.ticketSold || 0), 0) || 0}
+                            value={
+                                totalTicketsSold ??
+                                totalTicketSold ??
+                                userProfile?.totalTicketsSold ??
+                                userProfile?.totalTicketSold ??
+                                (
+                                    (events?.upcoming_events || []).reduce((acc, ev) => acc + (ev.ticketsSold || ev.ticketSold || 0), 0) +
+                                    (events?.previous_events || []).reduce((acc, ev) => acc + (ev.ticketsSold || ev.ticketSold || 0), 0)
+                                )
+                            }
                             subtext="Event passes"
                             icon={FiLayers}
                         />
@@ -935,33 +986,57 @@ const UserDetail = () => {
                                 </div>
                                 {events?.upcoming_events && events.upcoming_events.length > 0 ? (
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                        {events.upcoming_events.map((ev) => (
-                                            <div key={ev._id} className="p-4 rounded-xl border border-slate-200 bg-white hover:border-slate-300 transition space-y-3">
-                                                <div className="flex items-center gap-3">
-                                                    <img
-                                                        src={ev.image || "/sidebar-logo.svg"}
-                                                        alt=""
-                                                        className="w-12 h-12 rounded-lg object-cover bg-slate-100 border border-slate-200/60 flex-shrink-0"
-                                                        onError={(e) => { e.target.src = "/sidebar-logo.svg"; }}
-                                                    />
-                                                    <div className="min-w-0 flex-1">
-                                                        <p className="font-semibold text-slate-900 text-xs truncate">{ev.name}</p>
-                                                        <p className="text-[11px] text-slate-400 truncate">{ev.category || "Event"}</p>
-                                                        <p className="text-[11px] text-slate-500 mt-0.5">{fmtDateOnly(ev.date)}</p>
+                                        {events.upcoming_events.map((ev) => {
+                                            const evTitle = ev.eventTitle || ev.name || ev.title || "Untitled Event";
+                                            const evImage = ev.image || (Array.isArray(ev.posterImage) ? ev.posterImage[0] : ev.posterImage) || "/sidebar-logo.svg";
+                                            const evCat = (typeof ev.eventCategory === "object" ? ev.eventCategory?.name : ev.eventCategory) || ev.category || "Event";
+                                            const evDate = ev.startDate || ev.date;
+                                            const evSold = ev.ticketSold ?? ev.ticketsSold ?? 0;
+
+                                            return (
+                                                <div key={ev._id} className="group relative p-4 rounded-xl border border-slate-200/90 bg-white hover:border-teal-400 hover:shadow-lg transition-all duration-200 space-y-3">
+                                                    {/* Top Status & Date */}
+                                                    <div className="flex items-center justify-between gap-2">
+                                                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-2xs">
+                                                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                                            Live / Upcoming
+                                                        </span>
+                                                        <span className="text-[11px] font-medium text-slate-500">{fmtDateOnly(evDate)}</span>
+                                                    </div>
+
+                                                    {/* Poster & Title */}
+                                                    <div className="flex items-center gap-3">
+                                                        <img
+                                                            src={evImage}
+                                                            alt={evTitle}
+                                                            className="w-14 h-14 rounded-xl object-cover bg-slate-100 border border-slate-200/80 shadow-2xs flex-shrink-0 transition-transform duration-200 group-hover:scale-105"
+                                                            onError={(e) => { e.target.src = "/sidebar-logo.svg"; }}
+                                                        />
+                                                        <div className="min-w-0 flex-1">
+                                                            <p className="font-bold text-slate-900 text-xs sm:text-sm truncate group-hover:text-teal-700 transition-colors" title={evTitle}>{evTitle}</p>
+                                                            <span className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide uppercase border mt-1 `}>
+                                                                {evCat}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Bottom Sold & Details */}
+                                                    <div className="flex items-center justify-between text-xs pt-2.5 border-t border-slate-100">
+                                                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200/80">
+                                                            <FiLayers className="w-3.5 h-3.5 text-emerald-600" />
+                                                            <span>Sold: <strong>{evSold}</strong></span>
+                                                        </span>
+                                                        <button
+                                                            onClick={() => navigate(`/events/${ev._id}`)}
+                                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-teal-600 hover:bg-teal-700 text-white shadow-xs transition-all cursor-pointer hover:shadow"
+                                                        >
+                                                            <span>Details</span>
+                                                            <FiExternalLink className="w-3 h-3" />
+                                                        </button>
                                                     </div>
                                                 </div>
-                                                <div className="flex items-center justify-between text-xs pt-2 border-t border-slate-100">
-                                                    <span className="text-slate-500">Sold: <strong className="text-slate-800">{ev.ticketSold || 0}</strong></span>
-                                                    <button
-                                                        onClick={() => navigate(`/events/${ev._id}`)}
-                                                        className="text-slate-600 hover:text-slate-900 font-semibold inline-flex items-center gap-1 cursor-pointer"
-                                                    >
-                                                        <span>Details</span>
-                                                        <FiExternalLink className="w-3 h-3" />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        ))}
+                                            );
+                                        })}
                                     </div>
                                 ) : (
                                     <p className="text-xs text-slate-400 italic py-3">No upcoming events found.</p>
@@ -975,33 +1050,56 @@ const UserDetail = () => {
                                 </h4>
                                 {events?.previous_events && events.previous_events.length > 0 ? (
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                        {events.previous_events.map((ev) => (
-                                            <div key={ev._id} className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3">
-                                                <div className="flex items-center gap-3">
-                                                    <img
-                                                        src={ev.image || "/sidebar-logo.svg"}
-                                                        alt=""
-                                                        className="w-12 h-12 rounded-lg object-cover bg-slate-100 border border-slate-200/60 flex-shrink-0 grayscale"
-                                                        onError={(e) => { e.target.src = "/sidebar-logo.svg"; }}
-                                                    />
-                                                    <div className="min-w-0 flex-1">
-                                                        <p className="font-semibold text-slate-800 text-xs truncate">{ev.name}</p>
-                                                        <p className="text-[11px] text-slate-400 truncate">{ev.category || "Event"}</p>
-                                                        <p className="text-[11px] text-slate-400 mt-0.5">{fmtDateOnly(ev.date)}</p>
+                                        {events.previous_events.map((ev) => {
+                                            const evTitle = ev.eventTitle || ev.name || ev.title || "Untitled Event";
+                                            const evImage = ev.image || (Array.isArray(ev.posterImage) ? ev.posterImage[0] : ev.posterImage) || "/sidebar-logo.svg";
+                                            const evCat = (typeof ev.eventCategory === "object" ? ev.eventCategory?.name : ev.eventCategory) || ev.category || "Event";
+                                            const evDate = ev.startDate || ev.date;
+                                            const evSold = ev.ticketSold ?? ev.ticketsSold ?? 0;
+
+                                            return (
+                                                <div key={ev._id} className="group relative p-4 rounded-xl border border-slate-200/90 bg-white hover:border-slate-300 hover:shadow-md transition-all duration-200 space-y-3">
+                                                    {/* Top Status & Date */}
+                                                    <div className="flex items-center justify-between gap-2">
+                                                        {/* <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-600 border border-slate-200">
+                                                            Past Event
+                                                        </span> */}
+                                                        <span className="text-[11px] font-medium text-slate-400">{fmtDateOnly(evDate)}</span>
+                                                    </div>
+
+                                                    {/* Poster & Title */}
+                                                    <div className="flex items-center gap-3">
+                                                        <img
+                                                            src={evImage}
+                                                            alt={evTitle}
+                                                            className="w-14 h-14 rounded-xl object-cover bg-slate-100 border border-slate-200/80 shadow-2xs flex-shrink-0 transition-transform duration-200 group-hover:scale-105"
+                                                            onError={(e) => { e.target.src = "/sidebar-logo.svg"; }}
+                                                        />
+                                                        <div className="min-w-0 flex-1">
+                                                            <p className="font-bold text-slate-800 text-xs sm:text-sm truncate group-hover:text-slate-900 transition-colors" title={evTitle}>{evTitle}</p>
+                                                            <span className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide uppercase border mt-1 `}>
+                                                                {evCat}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Bottom Sold & Details */}
+                                                    <div className="flex items-center justify-between text-xs pt-2.5 border-t border-slate-100">
+                                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold ${evSold > 0 ? "bg-emerald-50 text-emerald-800 border border-emerald-200/80" : "bg-slate-50 text-slate-600 border border-slate-200"}`}>
+                                                            <FiLayers className={`w-3.5 h-3.5 ${evSold > 0 ? "text-emerald-600" : "text-slate-400"}`} />
+                                                            <span>Sold: <strong>{evSold}</strong></span>
+                                                        </span>
+                                                        <button
+                                                            onClick={() => navigate(`/events/${ev._id}`)}
+                                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-slate-900 border border-slate-200 transition-all cursor-pointer"
+                                                        >
+                                                            <span>Details</span>
+                                                            <FiExternalLink className="w-3 h-3" />
+                                                        </button>
                                                     </div>
                                                 </div>
-                                                <div className="flex items-center justify-between text-xs pt-2 border-t border-slate-200/60">
-                                                    <span className="text-slate-500">Sold: <strong className="text-slate-700">{ev.ticketSold || 0}</strong></span>
-                                                    <button
-                                                        onClick={() => navigate(`/events/${ev._id}`)}
-                                                        className="text-slate-600 hover:text-slate-900 font-semibold inline-flex items-center gap-1 cursor-pointer"
-                                                    >
-                                                        <span>Details</span>
-                                                        <FiExternalLink className="w-3 h-3" />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        ))}
+                                            );
+                                        })}
                                     </div>
                                 ) : (
                                     <p className="text-xs text-slate-400 italic py-3">No past events recorded.</p>
@@ -1019,33 +1117,57 @@ const UserDetail = () => {
                                 </h4>
                                 {courses?.upcoming_courses && courses.upcoming_courses.length > 0 ? (
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                        {courses.upcoming_courses.map((c) => (
-                                            <div key={c._id} className="p-4 rounded-xl border border-slate-200 bg-white hover:border-slate-300 transition space-y-3">
-                                                <div className="flex items-center gap-3">
-                                                    <img
-                                                        src={c.image || "/sidebar-logo.svg"}
-                                                        alt=""
-                                                        className="w-12 h-12 rounded-lg object-cover bg-slate-100 border border-slate-200/60 flex-shrink-0"
-                                                        onError={(e) => { e.target.src = "/sidebar-logo.svg"; }}
-                                                    />
-                                                    <div className="min-w-0 flex-1">
-                                                        <p className="font-semibold text-slate-900 text-xs truncate">{c.name}</p>
-                                                        <p className="text-[11px] text-slate-400 truncate">{c.category || "Course"}</p>
-                                                        <p className="text-[11px] text-slate-500 mt-0.5">{fmtDateOnly(c.date)}</p>
+                                        {courses.upcoming_courses.map((c) => {
+                                            const cTitle = c.courseTitle || c.name || c.title || "Untitled Course";
+                                            const cImage = c.image || (Array.isArray(c.posterImage) ? c.posterImage[0] : c.posterImage) || "/sidebar-logo.svg";
+                                            const cCat = (typeof c.courseCategory === "object" ? c.courseCategory?.name : c.courseCategory) || c.category || "Course";
+                                            const cDate = c.startDate || c.date;
+                                            const cSold = c.ticketSold ?? c.ticketsSold ?? 0;
+
+                                            return (
+                                                <div key={c._id} className="group relative p-4 rounded-xl border border-slate-200/90 bg-white hover:border-teal-400 hover:shadow-lg transition-all duration-200 space-y-3">
+                                                    {/* Top Status & Date */}
+                                                    <div className="flex items-center justify-between gap-2">
+                                                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-teal-50 text-teal-700 border border-teal-200/80 shadow-2xs">
+                                                            <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
+                                                            Active Course
+                                                        </span>
+                                                        <span className="text-[11px] font-medium text-slate-500">{fmtDateOnly(cDate)}</span>
+                                                    </div>
+
+                                                    {/* Poster & Title */}
+                                                    <div className="flex items-center gap-3">
+                                                        <img
+                                                            src={cImage}
+                                                            alt={cTitle}
+                                                            className="w-14 h-14 rounded-xl object-cover bg-slate-100 border border-slate-200/80 shadow-2xs flex-shrink-0 transition-transform duration-200 group-hover:scale-105"
+                                                            onError={(e) => { e.target.src = "/sidebar-logo.svg"; }}
+                                                        />
+                                                        <div className="min-w-0 flex-1">
+                                                            <p className="font-bold text-slate-900 text-xs sm:text-sm truncate group-hover:text-teal-700 transition-colors" title={cTitle}>{cTitle}</p>
+                                                            <span className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide uppercase border mt-1 ${getCategoryColor(cCat)}`}>
+                                                                {cCat}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Bottom Enrolled & Details */}
+                                                    <div className="flex items-center justify-between text-xs pt-2.5 border-t border-slate-100">
+                                                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-teal-50 text-teal-800 border border-teal-200/80">
+                                                            <FiBookOpen className="w-3.5 h-3.5 text-teal-600" />
+                                                            <span>Enrolled: <strong>{cSold}</strong></span>
+                                                        </span>
+                                                        <button
+                                                            onClick={() => navigate(`/courses/${c._id}`)}
+                                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-teal-600 hover:bg-teal-700 text-white shadow-xs transition-all cursor-pointer hover:shadow"
+                                                        >
+                                                            <span>Details</span>
+                                                            <FiExternalLink className="w-3 h-3" />
+                                                        </button>
                                                     </div>
                                                 </div>
-                                                <div className="flex items-center justify-between text-xs pt-2 border-t border-slate-100">
-                                                    <span className="text-slate-500">Enrolled: <strong className="text-slate-800">{c.ticketSold || 0}</strong></span>
-                                                    <button
-                                                        onClick={() => navigate(`/courses/${c._id}`)}
-                                                        className="text-slate-600 hover:text-slate-900 font-semibold inline-flex items-center gap-1 cursor-pointer"
-                                                    >
-                                                        <span>Details</span>
-                                                        <FiExternalLink className="w-3 h-3" />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        ))}
+                                            );
+                                        })}
                                     </div>
                                 ) : (
                                     <p className="text-xs text-slate-400 italic py-3">No active courses found.</p>
@@ -1058,33 +1180,56 @@ const UserDetail = () => {
                                 </h4>
                                 {courses?.previous_courses && courses.previous_courses.length > 0 ? (
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                        {courses.previous_courses.map((c) => (
-                                            <div key={c._id} className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3">
-                                                <div className="flex items-center gap-3">
-                                                    <img
-                                                        src={c.image || "/sidebar-logo.svg"}
-                                                        alt=""
-                                                        className="w-12 h-12 rounded-lg object-cover bg-slate-100 border border-slate-200/60 flex-shrink-0 grayscale"
-                                                        onError={(e) => { e.target.src = "/sidebar-logo.svg"; }}
-                                                    />
-                                                    <div className="min-w-0 flex-1">
-                                                        <p className="font-semibold text-slate-800 text-xs truncate">{c.name}</p>
-                                                        <p className="text-[11px] text-slate-400 truncate">{c.category || "Course"}</p>
-                                                        <p className="text-[11px] text-slate-400 mt-0.5">{fmtDateOnly(c.date)}</p>
+                                        {courses.previous_courses.map((c) => {
+                                            const cTitle = c.courseTitle || c.name || c.title || "Untitled Course";
+                                            const cImage = c.image || (Array.isArray(c.posterImage) ? c.posterImage[0] : c.posterImage) || "/sidebar-logo.svg";
+                                            const cCat = (typeof c.courseCategory === "object" ? c.courseCategory?.name : c.courseCategory) || c.category || "Course";
+                                            const cDate = c.startDate || c.date;
+                                            const cSold = c.ticketSold ?? c.ticketsSold ?? 0;
+
+                                            return (
+                                                <div key={c._id} className="group relative p-4 rounded-xl border border-slate-200/90 bg-white hover:border-slate-300 hover:shadow-md transition-all duration-200 space-y-3">
+                                                    {/* Top Status & Date */}
+                                                    <div className="flex items-center justify-between gap-2">
+                                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-600 border border-slate-200">
+                                                            Past Course
+                                                        </span>
+                                                        <span className="text-[11px] font-medium text-slate-400">{fmtDateOnly(cDate)}</span>
+                                                    </div>
+
+                                                    {/* Poster & Title */}
+                                                    <div className="flex items-center gap-3">
+                                                        <img
+                                                            src={cImage}
+                                                            alt={cTitle}
+                                                            className="w-14 h-14 rounded-xl object-cover bg-slate-100 border border-slate-200/80 shadow-2xs flex-shrink-0 transition-transform duration-200 group-hover:scale-105"
+                                                            onError={(e) => { e.target.src = "/sidebar-logo.svg"; }}
+                                                        />
+                                                        <div className="min-w-0 flex-1">
+                                                            <p className="font-bold text-slate-800 text-xs sm:text-sm truncate group-hover:text-slate-900 transition-colors" title={cTitle}>{cTitle}</p>
+                                                            <span className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide uppercase border mt-1 ${getCategoryColor(cCat)}`}>
+                                                                {cCat}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Bottom Enrolled & Details */}
+                                                    <div className="flex items-center justify-between text-xs pt-2.5 border-t border-slate-100">
+                                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold ${cSold > 0 ? "bg-teal-50 text-teal-800 border border-teal-200/80" : "bg-slate-50 text-slate-600 border border-slate-200"}`}>
+                                                            <FiBookOpen className={`w-3.5 h-3.5 ${cSold > 0 ? "text-teal-600" : "text-slate-400"}`} />
+                                                            <span>Enrolled: <strong>{cSold}</strong></span>
+                                                        </span>
+                                                        <button
+                                                            onClick={() => navigate(`/courses/${c._id}`)}
+                                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-slate-900 border border-slate-200 transition-all cursor-pointer"
+                                                        >
+                                                            <span>Details</span>
+                                                            <FiExternalLink className="w-3 h-3" />
+                                                        </button>
                                                     </div>
                                                 </div>
-                                                <div className="flex items-center justify-between text-xs pt-2 border-t border-slate-200/60">
-                                                    <span className="text-slate-500">Enrolled: <strong className="text-slate-700">{c.ticketSold || 0}</strong></span>
-                                                    <button
-                                                        onClick={() => navigate(`/courses/${c._id}`)}
-                                                        className="text-slate-600 hover:text-slate-900 font-semibold inline-flex items-center gap-1 cursor-pointer"
-                                                    >
-                                                        <span>Details</span>
-                                                        <FiExternalLink className="w-3 h-3" />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        ))}
+                                            );
+                                        })}
                                     </div>
                                 ) : (
                                     <p className="text-xs text-slate-400 italic py-3">No past courses recorded.</p>
@@ -1238,9 +1383,9 @@ const UserDetail = () => {
                                     <p className="text-[11px] font-semibold uppercase text-slate-400">Courses Revenue</p>
                                     <p className="text-xl font-bold text-slate-900 mt-1">₮{(netEarningCourses || 0).toLocaleString()}</p>
                                 </div>
-                                <div className="p-4 rounded-xl border border-slate-200 bg-slate-900 text-white">
+                                <div className="p-4 rounded-xl border border-slate-200 bg-white">
                                     <p className="text-[11px] font-semibold uppercase text-slate-400">Lifetime Revenue</p>
-                                    <p className="text-xl font-bold text-white mt-1">₮{((netEarningEvents || 0) + (netEarningCourses || 0)).toLocaleString()}</p>
+                                    <p className="text-xl font-bold text-slate-900 mt-1">₮{((netEarningEvents || 0) + (netEarningCourses || 0)).toLocaleString()}</p>
                                 </div>
                             </div>
 

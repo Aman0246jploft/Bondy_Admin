@@ -334,7 +334,7 @@ const EventDetail = () => {
                     )}
 
                     {/* Slider Toggle Button */}
-                    <button
+                    {/* <button
                         onClick={handleToggleSlider}
                         disabled={isTogglingSlider}
                         className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border transition cursor-pointer shadow-2xs ${event.addToSlider
@@ -345,7 +345,7 @@ const EventDetail = () => {
                     >
                         <span className={`w-2 h-2 rounded-full ${event.addToSlider ? "bg-teal-600 animate-pulse" : "bg-slate-400"}`} />
                         <span>{event.addToSlider ? "In Slider" : "Add to Slider"}</span>
-                    </button>
+                    </button> */}
 
                     <button
                         onClick={() => handleCopy(event._id, "Event ID")}

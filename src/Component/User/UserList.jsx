@@ -237,7 +237,15 @@ const UserList = ({ roleId, title }) => {
             render: (value, row) => (
                 <div className="flex items-center gap-3">
                     <button
-                        onClick={() => navigate(`/users/${row._id}`)}
+                        onClick={() =>
+                            navigate(`/users/${row._id}`, {
+                                state: {
+                                    from: roleId === 2 ? "/organizers" : "/customers",
+                                    roleId: row.roleId || roleId,
+                                    role: (row.roleId === 2 || roleId === 2) ? "ORGANIZER" : "CUSTOMER",
+                                },
+                            })
+                        }
                         className="px-3 py-1 bg-teal-600 text-white text-xs font-medium rounded hover:bg-teal-700 transition whitespace-nowrap shadow-2xs"
                     >
                         View Details

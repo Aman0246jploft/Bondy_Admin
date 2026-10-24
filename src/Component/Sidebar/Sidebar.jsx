@@ -26,6 +26,61 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   const { theme } = useTheme();
   const location = useLocation();
   const [hoveredItem, setHoveredItem] = useState(null);
+  const [activeUserRole, setActiveUserRole] = useState(() => {
+    try {
+      return sessionStorage.getItem("last_active_user_role") || null;
+    } catch {
+      return null;
+    }
+  });
+
+  useEffect(() => {
+    const handleRoleUpdate = (e) => {
+      if (e?.detail?.role) {
+        setActiveUserRole(e.detail.role);
+      } else {
+        try {
+          setActiveUserRole(sessionStorage.getItem("last_active_user_role") || null);
+        } catch { }
+      }
+    };
+    window.addEventListener("user_role_active", handleRoleUpdate);
+    window.addEventListener("storage", handleRoleUpdate);
+    return () => {
+      window.removeEventListener("user_role_active", handleRoleUpdate);
+      window.removeEventListener("storage", handleRoleUpdate);
+    };
+  }, []);
+
+  const checkIsActive = (item) => {
+    if (item.href === "/dashboard") {
+      return location.pathname === "/dashboard" || location.pathname === "/";
+    }
+
+    if (location.pathname === item.href) return true;
+
+    // Direct subpaths (e.g. /events/123 -> /events, /courses/123 -> /courses)
+    if (location.pathname.startsWith(item.href + "/")) return true;
+
+    // Handle user detail page /users/:userId mapping to Organizers or Customers
+    if (location.pathname.startsWith("/users/")) {
+      const fromPath = location.state?.from;
+      const role = location.state?.role || activeUserRole;
+      const roleId = location.state?.roleId;
+
+      if (item.href === "/organizers") {
+        if (fromPath === "/organizers" || role === "ORGANIZER" || roleId === 2) {
+          return true;
+        }
+      } else if (item.href === "/customers") {
+        if (fromPath === "/customers" || role === "CUSTOMER" || roleId === 1) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  };
 
   useEffect(() => {
     setHoveredItem(null);
@@ -161,7 +216,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           <ul className="space-y-2 px-3">
             {menuItems.map((item) => {
               const Icon = item.icon;
-              const isActive = location.pathname === item.href;
+              const isActive = checkIsActive(item);
 
               return (
                 <li
