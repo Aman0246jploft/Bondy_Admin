@@ -334,8 +334,20 @@ const FinanceDashboard = () => {
   }, [txnPage, txnSearch]);
 
   useEffect(() => { fetchStats(); fetchGlobalSettings(); }, [fetchStats, fetchGlobalSettings]);
-  useEffect(() => { fetchPayouts(); }, [fetchPayouts]);
-  useEffect(() => { fetchTransactions(); }, [fetchTransactions]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchPayouts();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [fetchPayouts]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchTransactions();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [fetchTransactions]);
 
   const handleCommissionSave = async () => {
     const val = Number(commissionVal);
