@@ -29,52 +29,44 @@ const fmtDateTime = (d) =>
     : "—";
 
 const STATUS_COLORS = {
-  PENDING: "bg-yellow-100 text-yellow-800 border-yellow-200",
-  PAID: "bg-green-100 text-green-800 border-green-200",
-  COMPLETED: "bg-green-100 text-green-800 border-green-200",
-  REFUNDED: "bg-purple-100 text-purple-800 border-purple-200",
-  CANCELLED: "bg-red-100 text-red-800 border-red-200",
-  FAILED: "bg-red-100 text-red-800 border-red-200",
+  PENDING: "bg-amber-50 text-amber-800 border-amber-200",
+  PAID: "bg-emerald-50 text-emerald-800 border-emerald-200",
+  COMPLETED: "bg-emerald-50 text-emerald-800 border-emerald-200",
+  REFUNDED: "bg-gray-100 text-gray-700 border-gray-200",
+  CANCELLED: "bg-rose-50 text-rose-800 border-rose-200",
+  FAILED: "bg-rose-50 text-rose-800 border-rose-200",
 };
 
 const CATEGORY_CONFIG = {
   PURCHASE: {
     label: "User Purchase",
-    badge: "bg-teal-50 text-teal-700 border-teal-200",
+    badge: "bg-gray-100 text-gray-700 border-gray-200",
   },
   WALLET_DEPOSIT: {
     label: "Organizer Deposit",
-    badge: "bg-blue-50 text-blue-700 border-blue-200",
+    badge: "bg-gray-100 text-gray-700 border-gray-200",
   },
   WITHDRAWAL: {
     label: "Withdrawal",
-    badge: "bg-amber-50 text-amber-800 border-amber-200",
+    badge: "bg-gray-100 text-gray-700 border-gray-200",
   },
   REFUND: {
     label: "Refund",
-    badge: "bg-rose-50 text-rose-700 border-rose-200",
+    badge: "bg-gray-100 text-gray-700 border-gray-200",
   },
 };
 
 // ─── Stat Card ────────────────────────────────────────────────────────────────
-const StatCard = ({ label, value, sub, color = "blue", onClick }) => {
-  const border = {
-    blue: "border-teal-400",
-    green: "border-green-400",
-    yellow: "border-yellow-400",
-    red: "border-red-400",
-    purple: "border-purple-400",
-    indigo: "border-teal-400",
-  }[color] || "border-teal-400";
-
+const StatCard = ({ label, value, sub, onClick }) => {
   return (
     <div
       onClick={onClick}
-      className={`bg-white rounded-xl shadow p-5 border-l-4 ${border} ${onClick ? "cursor-pointer hover:shadow-md transition-shadow" : ""
+      role={onClick ? "button" : undefined}
+      className={`bg-white rounded-xl p-5 border border-gray-200 shadow-2xs transition-all ${onClick ? "cursor-pointer hover:shadow-md hover:border-gray-300" : ""
         }`}
     >
-      <p className="text-sm text-gray-500 mb-1">{label}</p>
-      <p className="text-2xl font-bold text-gray-800">{value}</p>
+      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{label}</p>
+      <p className="text-2xl font-bold text-gray-900 tracking-tight">{value}</p>
       {sub && <p className="text-xs text-gray-400 mt-1">{sub}</p>}
     </div>
   );
@@ -278,11 +270,7 @@ const TransactionDetailModal = ({ transaction, onClose, onApprove, onReject }) =
                 {isRefund ? "Refund Amount" : isOutflow ? "Withdrawal Amount" : "Transaction Amount"}
               </span>
               <div
-                className={`text-2xl font-black ${isCredit
-                  ? "text-emerald-600"
-                  : isRefund
-                    ? "text-rose-600"
-                    : "text-amber-700"
+                className={`text-2xl font-bold ${isRefund || isOutflow ? "text-rose-600" : "text-gray-900"
                   }`}
               >
                 {isRefund || isOutflow ? `-${fmt(transaction.totalAmount)}` : `+${fmt(transaction.totalAmount)}`}
@@ -315,7 +303,7 @@ const TransactionDetailModal = ({ transaction, onClose, onApprove, onReject }) =
           {transaction.refundReason && (
             <div className="bg-rose-50 border border-rose-200 rounded-xl p-3.5 text-rose-800 text-xs">
               <div className="font-semibold mb-0.5 flex items-center gap-1.5">
-                <span>⚠️ Refund Reason</span>
+                <span>Refund Reason</span>
               </div>
               <div className="text-rose-700">{transaction.refundReason}</div>
             </div>
@@ -330,7 +318,7 @@ const TransactionDetailModal = ({ transaction, onClose, onApprove, onReject }) =
               {/* Customer Card */}
               <div className="bg-gray-50/80 border border-gray-200 rounded-xl p-3.5">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-gray-100 text-gray-700 border border-gray-200">
                     Customer / Buyer
                   </span>
                 </div>
@@ -352,7 +340,7 @@ const TransactionDetailModal = ({ transaction, onClose, onApprove, onReject }) =
               {/* Organizer Card */}
               <div className="bg-gray-50/80 border border-gray-200 rounded-xl p-3.5">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-gray-100 text-gray-700 border border-gray-200">
                     Organizer / Requester
                   </span>
                 </div>
@@ -741,8 +729,36 @@ const FinanceDashboard = () => {
   const onActionDone = () => {
     setApproveTarget(null);
     setRejectTarget(null);
+    setSelectedTxn(null);
     fetchStats();
     fetchPayouts();
+    fetchTransactions();
+  };
+
+  const openPayoutDetail = (p) => {
+    setSelectedTxn({
+      _id: p._id,
+      displayId: `#PO-${String(p._id).slice(-6).toUpperCase()}`,
+      bookingId: p.paymentReference || `PO-${String(p._id).slice(-6)}`,
+      type: "WITHDRAWAL",
+      typeLabel: "Organizer Withdrawal",
+      flow: "OUTFLOW",
+      bookingType: "PAYOUT",
+      itemTitle: p.paymentReference ? `Payout: ${p.paymentReference}` : "Organizer Payout Request",
+      description: p.adminNote || (p.paymentReference ? `Ref: ${p.paymentReference}` : "Withdrawal to bank account"),
+      userId: null,
+      organizer: p.organizerId,
+      bankDetails: p.bankDetails || p.organizerId?.bankDetails || null,
+      totalAmount: p.amount || 0,
+      organizerEarning: -(p.amount || 0),
+      commissionAmount: 0,
+      status: p.status || "PENDING",
+      paymentMethod: "BANK_TRANSFER",
+      paymentReference: p.paymentReference,
+      adminNote: p.adminNote,
+      createdAt: p.createdAt,
+      paidAt: p.paidAt,
+    });
   };
 
   return (
@@ -859,7 +875,6 @@ const FinanceDashboard = () => {
             label="Total Revenue"
             value={fmt(stats.totalRevenue)}
             sub={`${stats.transactionCount} transactions`}
-            color="blue"
             onClick={() => {
               handleTabChange("transactions");
               setTxnCategory("PURCHASE");
@@ -870,7 +885,6 @@ const FinanceDashboard = () => {
             label="Organizer Earnings"
             value={fmt(stats.totalOrganizerEarnings)}
             sub="Wallet credited from sales"
-            color="green"
             onClick={() => {
               handleTabChange("transactions");
               setTxnCategory("WALLET_DEPOSIT");
@@ -881,21 +895,18 @@ const FinanceDashboard = () => {
             label="Total Payouts Made"
             value={fmt(stats.totalPayoutsMade)}
             sub="Completed bank transfers"
-            color="purple"
             onClick={() => handleTabChange("payouts")}
           />
           <StatCard
             label="Pending Payouts"
             value={fmt(stats.pendingPayoutsAmount)}
             sub={`${stats.pendingPayoutCount} requests`}
-            color="yellow"
             onClick={() => handleTabChange("payouts")}
           />
           <StatCard
             label="Total Refunds"
             value={fmt(stats.refundTotal)}
             sub={`${stats.refundCount} cases`}
-            color="red"
             onClick={() => {
               handleTabChange("transactions");
               setTxnCategory("REFUND");
@@ -911,17 +922,12 @@ const FinanceDashboard = () => {
           type="button"
           onClick={() => handleTabChange("transactions")}
           className={`pb-3 px-4 text-sm font-semibold transition border-b-2 cursor-pointer flex items-center gap-2 ${activeTab === "transactions"
-            ? "border-teal-500 text-teal-600"
-            : "border-transparent text-gray-500 hover:text-gray-700"
+              ? "border-teal-600 text-teal-700"
+              : "border-transparent text-gray-500 hover:text-gray-700"
             }`}
         >
           <span>Transactions Ledger</span>
-          <span
-            className={`px-2 py-0.5 rounded-full text-xs font-bold ${activeTab === "transactions"
-              ? "bg-teal-50 text-teal-700 border border-teal-200"
-              : "bg-gray-100 text-gray-600"
-              }`}
-          >
+          <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-200">
             {txnTotal}
           </span>
         </button>
@@ -930,25 +936,14 @@ const FinanceDashboard = () => {
           type="button"
           onClick={() => handleTabChange("payouts")}
           className={`pb-3 px-4 text-sm font-semibold transition border-b-2 cursor-pointer flex items-center gap-2 ${activeTab === "payouts"
-            ? "border-teal-500 text-teal-600"
-            : "border-transparent text-gray-500 hover:text-gray-700"
+              ? "border-teal-600 text-teal-700"
+              : "border-transparent text-gray-500 hover:text-gray-700"
             }`}
         >
           <span>Payout Requests</span>
-          {stats?.pendingPayoutCount > 0 ? (
-            <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800 border border-yellow-300">
-              {stats.pendingPayoutCount} Pending
-            </span>
-          ) : (
-            <span
-              className={`px-2 py-0.5 rounded-full text-xs font-bold ${activeTab === "payouts"
-                ? "bg-teal-50 text-teal-700 border border-teal-200"
-                : "bg-gray-100 text-gray-600"
-                }`}
-            >
-              {total}
-            </span>
-          )}
+          <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-200">
+            {stats?.pendingPayoutCount > 0 ? `${stats.pendingPayoutCount} Pending` : total}
+          </span>
         </button>
       </div>
 
@@ -974,14 +969,14 @@ const FinanceDashboard = () => {
                       setTxnCategory(tab.id);
                       setTxnPage(1);
                     }}
-                    className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer border ${isActive
-                      ? "bg-teal-600 text-white border-teal-600 shadow-xs"
-                      : "bg-white text-gray-600 hover:text-gray-900 border-gray-200 hover:bg-gray-50"
+                    className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer border ${isActive
+                        ? "bg-gray-900 text-white border-gray-900 shadow-2xs font-semibold"
+                        : "bg-white text-gray-600 hover:text-gray-900 border-gray-200 hover:bg-gray-50"
                       }`}
                   >
                     <span>{tab.label}</span>
                     <span
-                      className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${isActive ? "bg-white/25 text-white" : "bg-gray-100 text-gray-500"
+                      className={`px-1.5 py-0.2 rounded-full text-[10px] font-semibold ${isActive ? "bg-white/20 text-white" : "bg-gray-100 text-gray-500"
                         }`}
                     >
                       {tab.count ?? 0}
@@ -1132,7 +1127,7 @@ const FinanceDashboard = () => {
                             {/* Customer */}
                             {t.userId ? (
                               <div className="flex items-start gap-1.5">
-                                <span className="shrink-0 mt-0.5 px-1.5 py-0.2 rounded text-[9px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                <span className="shrink-0 mt-0.5 px-1.5 py-0.2 rounded text-[9px] font-medium bg-gray-100 text-gray-700 border border-gray-200">
                                   User
                                 </span>
                                 <div className="truncate">
@@ -1149,7 +1144,7 @@ const FinanceDashboard = () => {
                             {/* Organizer */}
                             {t.organizer ? (
                               <div className="flex items-start gap-1.5">
-                                <span className="shrink-0 mt-0.5 px-1.5 py-0.2 rounded text-[9px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                                <span className="shrink-0 mt-0.5 px-1.5 py-0.2 rounded text-[9px] font-medium bg-gray-100 text-gray-700 border border-gray-200">
                                   Org
                                 </span>
                                 <div className="truncate">
@@ -1188,9 +1183,9 @@ const FinanceDashboard = () => {
 
                         {/* Amount */}
                         <td className="px-4 py-3 whitespace-nowrap">
-                          <div className={`font-bold ${isCredit ? "text-emerald-600" : isRefund ? "text-rose-600" : isOutflow ? "text-amber-700" : "text-gray-800"
+                          <div className={`font-semibold ${isRefund || isOutflow ? "text-rose-600" : "text-gray-900"
                             }`}>
-                            {isRefund ? `-${fmt(t.totalAmount)}` : isOutflow ? `-${fmt(t.totalAmount)}` : `+${fmt(t.totalAmount)}`}
+                            {isRefund || isOutflow ? `-${fmt(t.totalAmount)}` : `+${fmt(t.totalAmount)}`}
                           </div>
                           {t.type === "PURCHASE" && t.organizerEarning !== undefined && (
                             <div className="text-[10px] text-gray-400">
@@ -1341,54 +1336,83 @@ const FinanceDashboard = () => {
                   </tr>
                 ) : (
                   payouts.map((p) => (
-                    <tr key={p._id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 text-gray-400 text-xs">
-                        #{String(p._id).slice(-6).toUpperCase()}
+                    <tr key={p._id} className="hover:bg-gray-50/80 transition-colors">
+                      {/* ID / Ref (Clickable) */}
+                      <td className="px-4 py-3 font-mono">
+                        <button
+                          type="button"
+                          onClick={() => openPayoutDetail(p)}
+                          className="font-semibold text-gray-800 hover:text-teal-600 hover:underline text-left cursor-pointer transition block"
+                          title="Click to view full payout details"
+                        >
+                          #{String(p._id).slice(-6).toUpperCase()}
+                        </button>
                       </td>
+
+                      {/* Organizer */}
                       <td className="px-4 py-3">
-                        <div className="font-medium text-gray-800">
+                        <div className="font-medium text-gray-900">
                           {p.organizerId?.firstName} {p.organizerId?.lastName}
                         </div>
                         <div className="text-xs text-gray-400">{p.organizerId?.email}</div>
                       </td>
-                      <td className="px-4 py-3 font-semibold text-gray-800">{fmt(p.amount)}</td>
-                      <td className="px-4 py-3 text-gray-500 text-xs max-w-xs truncate">
+
+                      {/* Amount */}
+                      <td className="px-4 py-3 font-semibold text-gray-900 whitespace-nowrap">
+                        {fmt(p.amount)}
+                      </td>
+
+                      {/* Payment Reference */}
+                      <td className="px-4 py-3 text-gray-500 text-xs max-w-xs truncate font-mono">
                         {p.paymentReference || "—"}
                       </td>
+
+                      {/* Status */}
                       <td className="px-4 py-3">
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${STATUS_COLORS[p.status] || "bg-gray-100 text-gray-600"}`}>
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${STATUS_COLORS[p.status] || "bg-gray-100 text-gray-700 border-gray-200"}`}>
                           {p.status}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-gray-500">{fmtDate(p.createdAt)}</td>
-                      <td className="px-4 py-3">
-                        {p.status === "PENDING" ? (
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => setApproveTarget(p)}
-                              className="px-3 py-1 bg-green-500 text-white rounded-lg text-xs hover:bg-green-600 font-medium"
-                            >
-                              ✓ Approve
-                            </button>
-                            <button
-                              onClick={() => setRejectTarget(p)}
-                              className="px-3 py-1 bg-red-500 text-white rounded-lg text-xs hover:bg-red-600 font-medium"
-                            >
-                              ✗ Reject
-                            </button>
-                          </div>
-                        ) : p.status === "PAID" ? (
-                          <div>
-                            <span className="text-xs text-green-600 font-medium">Paid</span>
-                            {p.paidAt && <div className="text-xs text-gray-400">{fmtDate(p.paidAt)}</div>}
-                            {p.adminNote && <div className="text-xs text-gray-400 truncate max-w-xs" title={p.adminNote}>{p.adminNote}</div>}
-                          </div>
-                        ) : (
-                          <div>
-                            <span className="text-xs text-red-500 font-medium">Rejected</span>
-                            {p.adminNote && <div className="text-xs text-gray-400 truncate max-w-xs" title={p.adminNote}>{p.adminNote}</div>}
-                          </div>
-                        )}
+
+                      {/* Requested Date */}
+                      <td className="px-4 py-3 text-gray-500 text-xs whitespace-nowrap">
+                        {fmtDateTime(p.createdAt)}
+                      </td>
+
+                      {/* Actions */}
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => openPayoutDetail(p)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-gray-100 hover:bg-teal-50 hover:text-teal-700 text-gray-700 rounded-md text-xs font-medium transition cursor-pointer border border-gray-200 hover:border-teal-200"
+                            title="View complete payout details"
+                          >
+                            <FiEye className="w-3.5 h-3.5 text-gray-500" />
+                            <span>Details</span>
+                          </button>
+
+                          {p.status === "PENDING" && (
+                            <>
+                              <button
+                                type="button"
+                                onClick={() => setApproveTarget(p)}
+                                className="px-2.5 py-1 bg-green-500 text-white rounded-md text-xs font-medium hover:bg-green-600 transition cursor-pointer"
+                                title="Approve Payout"
+                              >
+                                Approve
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setRejectTarget(p)}
+                                className="px-2.5 py-1 bg-red-500 text-white rounded-md text-xs font-medium hover:bg-red-600 transition cursor-pointer"
+                                title="Reject Payout"
+                              >
+                                Reject
+                              </button>
+                            </>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))
