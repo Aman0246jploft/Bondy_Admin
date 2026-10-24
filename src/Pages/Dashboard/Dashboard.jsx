@@ -86,25 +86,7 @@ export default function Dashboard() {
   };
 
   if (loading) {
-    return (
-      <div
-        className="min-h-screen flex items-center justify-center"
-        style={{ backgroundColor: theme.colors.background }}
-      >
-        <div className="text-center">
-          <div
-            className="inline-block animate-spin rounded-full h-12 w-12 border-b-2"
-            style={{ borderColor: "#098D8A" }}
-          ></div>
-          <p
-            className="mt-4 text-lg"
-            style={{ color: theme.colors.textSecondary }}
-          >
-            Loading dashboard...
-          </p>
-        </div>
-      </div>
-    );
+    return null; // Global LoadingOverlay handles the loading state
   }
 
   if (error) {

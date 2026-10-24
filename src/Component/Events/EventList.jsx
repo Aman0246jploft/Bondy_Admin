@@ -146,11 +146,11 @@ const EventList = () => {
             label: "Date",
             render: (val) => (val ? format(new Date(val), "dd HH:mm yyyy") : "N/A"), // Check date string validity
         },
-        {
-            key: "duration",
-            label: "Duration",
-            render: (val) => val || "N/A",
-        },
+        // {
+        //     key: "duration",
+        //     label: "Duration",
+        //     render: (val) => val || "N/A",
+        // },
         // {
         //     key: "leftSeats",
         //     label: "Seats",
