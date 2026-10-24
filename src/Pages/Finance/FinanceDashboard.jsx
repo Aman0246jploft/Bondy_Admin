@@ -3,6 +3,8 @@ import authAxiosClient from "../../api/authAxiosClient";
 import financeApi from "../../api/financeApi";
 import { toast } from "react-toastify";
 import { useSearchParams } from "react-router-dom";
+import { FiEye } from "react-icons/fi";
+import { AiOutlineClose } from "react-icons/ai";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const fmt = (n) => `₮${Number(n || 0).toLocaleString()}`;
@@ -15,10 +17,43 @@ const fmtDate = (d) =>
     })
     : "—";
 
+const fmtDateTime = (d) =>
+  d
+    ? new Date(d).toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+    : "—";
+
 const STATUS_COLORS = {
-  PENDING: "bg-yellow-100 text-yellow-800",
-  PAID: "bg-green-100 text-green-800",
-  CANCELLED: "bg-red-100 text-red-800",
+  PENDING: "bg-yellow-100 text-yellow-800 border-yellow-200",
+  PAID: "bg-green-100 text-green-800 border-green-200",
+  COMPLETED: "bg-green-100 text-green-800 border-green-200",
+  REFUNDED: "bg-purple-100 text-purple-800 border-purple-200",
+  CANCELLED: "bg-red-100 text-red-800 border-red-200",
+  FAILED: "bg-red-100 text-red-800 border-red-200",
+};
+
+const CATEGORY_CONFIG = {
+  PURCHASE: {
+    label: "User Purchase",
+    badge: "bg-teal-50 text-teal-700 border-teal-200",
+  },
+  WALLET_DEPOSIT: {
+    label: "Organizer Deposit",
+    badge: "bg-blue-50 text-blue-700 border-blue-200",
+  },
+  WITHDRAWAL: {
+    label: "Withdrawal",
+    badge: "bg-amber-50 text-amber-800 border-amber-200",
+  },
+  REFUND: {
+    label: "Refund",
+    badge: "bg-rose-50 text-rose-700 border-rose-200",
+  },
 };
 
 // ─── Stat Card ────────────────────────────────────────────────────────────────
@@ -198,6 +233,263 @@ const RejectModal = ({ payout, onClose, onDone }) => {
   );
 };
 
+// ─── Transaction Detail Modal ────────────────────────────────────────────────
+const TransactionDetailModal = ({ transaction, onClose, onApprove, onReject }) => {
+  if (!transaction) return null;
+
+  const categoryInfo = CATEGORY_CONFIG[transaction.type] || CATEGORY_CONFIG.PURCHASE;
+  const statusClass = STATUS_COLORS[transaction.status] || "bg-gray-100 text-gray-700 border-gray-200";
+
+  const isOutflow = transaction.type === "WITHDRAWAL";
+  const isRefund = transaction.type === "REFUND";
+  const isCredit = transaction.type === "PURCHASE" || transaction.type === "WALLET_DEPOSIT";
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4 animate-in fade-in">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden">
+        {/* Header */}
+        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/70">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <span className="font-mono text-base font-bold text-gray-900">
+              {transaction.displayId || `#${(transaction.bookingId?.slice(-8) || transaction._id?.slice(-8)).toUpperCase()}`}
+            </span>
+            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${categoryInfo.badge}`}>
+              {transaction.typeLabel || categoryInfo.label}
+            </span>
+            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${statusClass}`}>
+              {transaction.status || "PAID"}
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition cursor-pointer"
+          >
+            <AiOutlineClose className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Scrollable Content */}
+        <div className="p-6 overflow-y-auto space-y-5 text-sm">
+          {/* Highlight Amount Banner */}
+          <div className="bg-gradient-to-br from-gray-50 to-gray-100/70 rounded-xl p-4 border border-gray-200/80 flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <span className="text-xs font-medium text-gray-500 uppercase tracking-wider block mb-0.5">
+                {isRefund ? "Refund Amount" : isOutflow ? "Withdrawal Amount" : "Transaction Amount"}
+              </span>
+              <div
+                className={`text-2xl font-black ${isCredit
+                  ? "text-emerald-600"
+                  : isRefund
+                    ? "text-rose-600"
+                    : "text-amber-700"
+                  }`}
+              >
+                {isRefund || isOutflow ? `-${fmt(transaction.totalAmount)}` : `+${fmt(transaction.totalAmount)}`}
+              </div>
+            </div>
+
+            <div className="flex gap-2.5 flex-wrap text-xs">
+              {transaction.type === "PURCHASE" && (
+                <>
+                  <div className="bg-white px-3 py-2 rounded-lg border border-gray-200 shadow-2xs">
+                    <span className="text-gray-400 block text-[10px]">Organizer Earning</span>
+                    <span className="font-bold text-gray-800">{fmt(transaction.organizerEarning)}</span>
+                  </div>
+                  <div className="bg-white px-3 py-2 rounded-lg border border-gray-200 shadow-2xs">
+                    <span className="text-gray-400 block text-[10px]">Bondy Commission</span>
+                    <span className="font-bold text-gray-800">{fmt(transaction.commissionAmount)}</span>
+                  </div>
+                </>
+              )}
+              {transaction.balanceAfter !== undefined && (
+                <div className="bg-white px-3 py-2 rounded-lg border border-gray-200 shadow-2xs">
+                  <span className="text-gray-400 block text-[10px]">Wallet Balance After</span>
+                  <span className="font-bold text-gray-800">{fmt(transaction.balanceAfter)}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Refund Notice (if present) */}
+          {transaction.refundReason && (
+            <div className="bg-rose-50 border border-rose-200 rounded-xl p-3.5 text-rose-800 text-xs">
+              <div className="font-semibold mb-0.5 flex items-center gap-1.5">
+                <span>⚠️ Refund Reason</span>
+              </div>
+              <div className="text-rose-700">{transaction.refundReason}</div>
+            </div>
+          )}
+
+          {/* Involved Parties / Users */}
+          <div>
+            <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2.5">
+              Involved Parties / Users
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Customer Card */}
+              <div className="bg-gray-50/80 border border-gray-200 rounded-xl p-3.5">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    Customer / Buyer
+                  </span>
+                </div>
+                {transaction.userId ? (
+                  <div>
+                    <div className="font-semibold text-gray-900">
+                      {transaction.userId.firstName} {transaction.userId.lastName}
+                    </div>
+                    <div className="text-xs text-gray-500 mt-0.5">{transaction.userId.email}</div>
+                    {transaction.userId.phone && (
+                      <div className="text-xs text-gray-500 mt-0.5">Phone: {transaction.userId.phone}</div>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-xs text-gray-400 italic">No buyer attached (Direct organizer or wallet action)</p>
+                )}
+              </div>
+
+              {/* Organizer Card */}
+              <div className="bg-gray-50/80 border border-gray-200 rounded-xl p-3.5">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                    Organizer / Requester
+                  </span>
+                </div>
+                {transaction.organizer ? (
+                  <div>
+                    <div className="font-semibold text-gray-900">
+                      {transaction.organizer.firstName} {transaction.organizer.lastName}
+                    </div>
+                    <div className="text-xs text-gray-500 mt-0.5">{transaction.organizer.email}</div>
+                    {transaction.organizer.phone && (
+                      <div className="text-xs text-gray-500 mt-0.5">Phone: {transaction.organizer.phone}</div>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-xs text-gray-400 italic">Bondy Platform / Internal</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Service & Booking Details */}
+          <div>
+            <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2.5">
+              Transaction Details & Metadata
+            </h4>
+            <div className="bg-gray-50/70 border border-gray-200 rounded-xl p-3.5 space-y-2 text-xs">
+              <div className="flex justify-between items-center py-1 border-b border-gray-200/60">
+                <span className="text-gray-500">Service / Title</span>
+                <span className="font-medium text-gray-900 text-right">{transaction.itemTitle || "—"}</span>
+              </div>
+              <div className="flex justify-between items-center py-1 border-b border-gray-200/60">
+                <span className="text-gray-500">Activity Type</span>
+                <span className="font-medium text-gray-900">{transaction.bookingType || "—"}</span>
+              </div>
+              <div className="flex justify-between items-center py-1 border-b border-gray-200/60">
+                <span className="text-gray-500">Booking / Internal Reference</span>
+                <span className="font-mono text-gray-800">{transaction.bookingId || "—"}</span>
+              </div>
+              <div className="flex justify-between items-center py-1 border-b border-gray-200/60">
+                <span className="text-gray-500">Payment Channel</span>
+                <span className="px-2 py-0.5 rounded font-mono text-[10px] font-medium bg-gray-100 text-gray-800 border border-gray-200">
+                  {transaction.paymentMethod || "QPAY"}
+                </span>
+              </div>
+              {transaction.paymentReference && (
+                <div className="flex justify-between items-center py-1 border-b border-gray-200/60">
+                  <span className="text-gray-500">Payment Reference / Txn No.</span>
+                  <span className="font-mono text-gray-800">{transaction.paymentReference}</span>
+                </div>
+              )}
+              {transaction.adminNote && (
+                <div className="flex justify-between items-center py-1 border-b border-gray-200/60">
+                  <span className="text-gray-500">Admin Note</span>
+                  <span className="text-gray-700">{transaction.adminNote}</span>
+                </div>
+              )}
+              <div className="flex justify-between items-center py-1 border-b border-gray-200/60">
+                <span className="text-gray-500">Created Date & Time</span>
+                <span className="text-gray-700">{fmtDateTime(transaction.createdAt)}</span>
+              </div>
+              {transaction.paidAt && (
+                <div className="flex justify-between items-center py-1">
+                  <span className="text-gray-500">Settled / Paid Date</span>
+                  <span className="text-gray-700">{fmtDateTime(transaction.paidAt)}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Bank Details (if Withdrawal) */}
+          {transaction.bankDetails && (
+            <div>
+              <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2.5">
+                Payout Bank Account Details
+              </h4>
+              <div className="bg-amber-50/50 border border-amber-200/70 rounded-xl p-3.5 space-y-1.5 text-xs text-amber-950">
+                <div className="flex justify-between">
+                  <span className="text-amber-800">Bank Name</span>
+                  <span className="font-semibold">{transaction.bankDetails.bankName || "—"}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-amber-800">Account Number</span>
+                  <span className="font-mono font-bold">{transaction.bankDetails.accountNumber || "—"}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-amber-800">Account Holder</span>
+                  <span className="font-semibold">{transaction.bankDetails.accountName || "—"}</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Modal Footer */}
+        <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/70">
+          <div className="text-xs text-gray-400">
+            Internal ID: <span className="font-mono">{transaction._id}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            {transaction.type === "WITHDRAWAL" && transaction.status === "PENDING" && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    onApprove(transaction);
+                  }}
+                  className="px-4 py-2 bg-green-500 text-white rounded-lg text-xs font-semibold hover:bg-green-600 transition cursor-pointer"
+                >
+                  Approve Payout
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    onReject(transaction);
+                  }}
+                  className="px-4 py-2 bg-red-500 text-white rounded-lg text-xs font-semibold hover:bg-red-600 transition cursor-pointer"
+                >
+                  Reject Payout
+                </button>
+              </>
+            )}
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-xs font-semibold hover:bg-gray-300 transition cursor-pointer"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 const FinanceDashboard = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -237,8 +529,24 @@ const FinanceDashboard = () => {
   const [txnTotalPages, setTxnTotalPages] = useState(1);
   const [txnTotal, setTxnTotal] = useState(0);
 
+  // Advanced Ledger Filters
+  const [txnCategory, setTxnCategory] = useState("ALL"); // ALL | PURCHASE | WALLET_DEPOSIT | WITHDRAWAL | REFUND
+  const [txnStatus, setTxnStatus] = useState("ALL"); // ALL | PAID | PENDING | REFUNDED | CANCELLED
+  const [txnPaymentMethod, setTxnPaymentMethod] = useState("ALL");
+  const [txnStartDate, setTxnStartDate] = useState("");
+  const [txnEndDate, setTxnEndDate] = useState("");
+  const [txnDateError, setTxnDateError] = useState("");
+  const [txnCounts, setTxnCounts] = useState({
+    all: 0,
+    purchases: 0,
+    walletDeposits: 0,
+    withdrawals: 0,
+    refunds: 0,
+  });
+
   const [approveTarget, setApproveTarget] = useState(null);
   const [rejectTarget, setRejectTarget] = useState(null);
+  const [selectedTxn, setSelectedTxn] = useState(null);
 
   // Commission setting
   const [commission, setCommission] = useState(null);
@@ -312,26 +620,69 @@ const FinanceDashboard = () => {
     } catch (_) { }
   }, []);
 
-  // ── Fetch Transactions ──
+  // ── Fetch Transactions (Unified Ledger) ──
   const fetchTransactions = useCallback(async () => {
+    if (txnStartDate && txnEndDate && txnEndDate < txnStartDate) {
+      return;
+    }
+
     setTransactionsLoading(true);
     try {
       const res = await financeApi.getAllTransactions({
         page: txnPage,
         limit: LIMIT,
+        type: txnCategory === "ALL" ? undefined : txnCategory,
+        status: txnStatus === "ALL" ? undefined : txnStatus,
+        paymentMethod: txnPaymentMethod === "ALL" ? undefined : txnPaymentMethod,
+        startDate: txnStartDate || undefined,
+        endDate: txnEndDate || undefined,
         search: txnSearch || undefined,
       });
       if (res?.status) {
         setTransactions(res.data.transactions || []);
         setTxnTotalPages(res.data.totalPages || 1);
         setTxnTotal(res.data.total || 0);
+        if (res.data.counts) {
+          setTxnCounts(res.data.counts);
+        }
       }
     } catch (err) {
       toast.error("Failed to load transactions.");
     } finally {
       setTransactionsLoading(false);
     }
-  }, [txnPage, txnSearch]);
+  }, [txnPage, txnCategory, txnStatus, txnPaymentMethod, txnStartDate, txnEndDate, txnSearch]);
+
+  const handleStartDateChange = (val) => {
+    setTxnStartDate(val);
+    setTxnPage(1);
+    if (val && txnEndDate && txnEndDate < val) {
+      setTxnDateError("End date must be later than start date");
+    } else {
+      setTxnDateError("");
+    }
+  };
+
+  const handleEndDateChange = (val) => {
+    setTxnEndDate(val);
+    setTxnPage(1);
+    if (val && txnStartDate && val < txnStartDate) {
+      setTxnDateError("End date must be later than start date");
+    } else {
+      setTxnDateError("");
+    }
+  };
+
+  const handleClearTxnFilters = () => {
+    setTxnCategory("ALL");
+    setTxnStatus("ALL");
+    setTxnPaymentMethod("ALL");
+    setTxnStartDate("");
+    setTxnEndDate("");
+    setTxnDateError("");
+    setTxnSearch("");
+    setTxnPage(1);
+  };
 
   useEffect(() => { fetchStats(); fetchGlobalSettings(); }, [fetchStats, fetchGlobalSettings]);
 
@@ -497,25 +848,39 @@ const FinanceDashboard = () => {
 
       {/* ── Stat Cards ── */}
       {statsLoading ? (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {Array.from({ length: 6 }).map((_, i) => (
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+          {Array.from({ length: 5 }).map((_, i) => (
             <div key={i} className="bg-white rounded-xl shadow p-5 animate-pulse h-24" />
           ))}
         </div>
       ) : stats ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           <StatCard
             label="Total Revenue"
             value={fmt(stats.totalRevenue)}
             sub={`${stats.transactionCount} transactions`}
             color="blue"
-            onClick={() => handleTabChange("transactions")}
+            onClick={() => {
+              handleTabChange("transactions");
+              setTxnCategory("PURCHASE");
+              setTxnPage(1);
+            }}
           />
-          {/* <StatCard label="Platform Commission" value={fmt(stats.totalCommission)} color="indigo" /> */}
-          <StatCard label="Organizer Earnings" value={fmt(stats.totalOrganizerEarnings)} color="green" />
+          <StatCard
+            label="Organizer Earnings"
+            value={fmt(stats.totalOrganizerEarnings)}
+            sub="Wallet credited from sales"
+            color="green"
+            onClick={() => {
+              handleTabChange("transactions");
+              setTxnCategory("WALLET_DEPOSIT");
+              setTxnPage(1);
+            }}
+          />
           <StatCard
             label="Total Payouts Made"
             value={fmt(stats.totalPayoutsMade)}
+            sub="Completed bank transfers"
             color="purple"
             onClick={() => handleTabChange("payouts")}
           />
@@ -526,7 +891,17 @@ const FinanceDashboard = () => {
             color="yellow"
             onClick={() => handleTabChange("payouts")}
           />
-          {/* <StatCard label="Refunds" value={fmt(stats.refundTotal)} sub={`${stats.refundCount} cases`} color="red" /> */}
+          <StatCard
+            label="Total Refunds"
+            value={fmt(stats.refundTotal)}
+            sub={`${stats.refundCount} cases`}
+            color="red"
+            onClick={() => {
+              handleTabChange("transactions");
+              setTxnCategory("REFUND");
+              setTxnPage(1);
+            }}
+          />
         </div>
       ) : null}
 
@@ -540,7 +915,7 @@ const FinanceDashboard = () => {
             : "border-transparent text-gray-500 hover:text-gray-700"
             }`}
         >
-          <span>Paid Transactions</span>
+          <span>Transactions Ledger</span>
           <span
             className={`px-2 py-0.5 rounded-full text-xs font-bold ${activeTab === "transactions"
               ? "bg-teal-50 text-teal-700 border border-teal-200"
@@ -579,89 +954,333 @@ const FinanceDashboard = () => {
 
       {/* ── Transactions Tab Content ── */}
       {activeTab === "transactions" && (
-        <div className="bg-white rounded-xl shadow overflow-hidden">
-          <div className="px-5 py-4 border-b flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <h2 className="font-semibold text-gray-700">Paid Transactions</h2>
-            <div className="flex gap-3 flex-wrap">
+        <div className="bg-white rounded-xl shadow overflow-hidden space-y-4">
+          {/* Category Tabs Header */}
+          <div className="p-4 border-b bg-gray-50/60 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-2">
+              {[
+                { id: "ALL", label: "All Transactions", count: txnCounts.all || txnTotal },
+                { id: "PURCHASE", label: "User Purchases", count: txnCounts.purchases },
+                { id: "WALLET_DEPOSIT", label: "Organizer Deposits", count: txnCounts.walletDeposits },
+                { id: "WITHDRAWAL", label: "Withdrawals", count: txnCounts.withdrawals },
+                { id: "REFUND", label: "Refunds & Deductions", count: txnCounts.refunds },
+              ].map((tab) => {
+                const isActive = txnCategory === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => {
+                      setTxnCategory(tab.id);
+                      setTxnPage(1);
+                    }}
+                    className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer border ${isActive
+                      ? "bg-teal-600 text-white border-teal-600 shadow-xs"
+                      : "bg-white text-gray-600 hover:text-gray-900 border-gray-200 hover:bg-gray-50"
+                      }`}
+                  >
+                    <span>{tab.label}</span>
+                    <span
+                      className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${isActive ? "bg-white/25 text-white" : "bg-gray-100 text-gray-500"
+                        }`}
+                    >
+                      {tab.count ?? 0}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="w-full sm:w-auto">
               <input
                 type="text"
-                placeholder="Search ID, name, or course..."
-                className="border rounded-lg px-3 py-2 text-sm w-56 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                placeholder="Search ID, customer, organizer, item..."
+                className="w-full sm:w-72 border rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-teal-400 bg-white"
                 value={txnSearch}
                 onChange={(e) => { setTxnSearch(e.target.value); setTxnPage(1); }}
               />
             </div>
           </div>
-          <div className="table-responsive overflow-x-auto">
+
+          {/* Secondary Controls Bar: Multi-dimensional Filters */}
+          <div className="px-4 pb-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 items-end">
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1">Status</label>
+              <select
+                className="w-full border rounded-lg px-2.5 py-1.5 text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-400 bg-white"
+                value={txnStatus}
+                onChange={(e) => {
+                  setTxnStatus(e.target.value);
+                  setTxnPage(1);
+                }}
+              >
+                <option value="ALL">All Statuses</option>
+                <option value="PAID">Paid / Completed</option>
+                <option value="PENDING">Pending</option>
+                <option value="REFUNDED">Refunded</option>
+                <option value="CANCELLED">Cancelled / Failed</option>
+              </select>
+            </div>
+
+
+
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1">Start Date</label>
+              <input
+                type="date"
+                max={txnEndDate || undefined}
+                className={`w-full border rounded-lg px-2.5 py-1.5 text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-400 bg-white ${txnDateError ? "border-red-500" : ""
+                  }`}
+                value={txnStartDate}
+                onChange={(e) => handleStartDateChange(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1">End Date</label>
+              <input
+                type="date"
+                min={txnStartDate || undefined}
+                className={`w-full border rounded-lg px-2.5 py-1.5 text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-400 bg-white ${txnDateError ? "border-red-500" : ""
+                  }`}
+                value={txnEndDate}
+                onChange={(e) => handleEndDateChange(e.target.value)}
+              />
+              {txnDateError && (
+                <p className="text-red-500 text-[10px] mt-0.5 font-medium">{txnDateError}</p>
+              )}
+            </div>
+
+            <div>
+              <button
+                type="button"
+                onClick={handleClearTxnFilters}
+                className="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100/70 transition"
+              >
+                Clear Filters
+              </button>
+            </div>
+          </div>
+
+          {/* Master Transactions Ledger Table */}
+          <div className="table-responsive overflow-x-auto border-t">
             <table className="min-w-full text-sm">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider">
                 <tr>
-                  {["Booking ID", "Customer", "Item", "Type", "Total", "Org. Earning", "Date"].map((h) => (
-                    <th key={h} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {h}
-                    </th>
-                  ))}
+                  <th className="px-4 py-3 text-left">Ref / ID</th>
+                  <th className="px-4 py-3 text-left">Type & Flow</th>
+                  <th className="px-4 py-3 text-left">User</th>
+                  <th className="px-4 py-3 text-left">Item / Details</th>
+                  <th className="px-4 py-3 text-left">Amount</th>
+                  <th className="px-4 py-3 text-left">Channel</th>
+                  <th className="px-4 py-3 text-left">Status</th>
+                  <th className="px-4 py-3 text-left">Date & Time</th>
+                  <th className="px-4 py-3 text-center">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-gray-100 text-xs">
                 {transactionsLoading ? (
                   <tr>
-                    <td colSpan={8} className="text-center py-10 text-gray-400">
-                      Loading transactions...
+                    <td colSpan={9} className="text-center py-10 text-gray-400">
+                      Loading financial ledger...
                     </td>
                   </tr>
                 ) : transactions.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="text-center py-10 text-gray-400">
-                      No transactions found.
+                    <td colSpan={9} className="text-center py-10 text-gray-400">
+                      No matching financial transactions found. Try adjusting your filters.
                     </td>
                   </tr>
                 ) : (
-                  transactions.map((t) => (
-                    <tr key={t._id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 font-mono text-xs text-gray-500">#{t.bookingId?.slice(-8).toUpperCase() || t._id?.slice(-8).toUpperCase()}</td>
-                      <td className="px-4 py-3">
-                        <span className="font-medium text-gray-800">{t.userId?.firstName} {t.userId?.lastName}</span>
-                        <div className="text-xs text-gray-400">{t.userId?.email}</div>
-                      </td>
-                      <td className="px-4 py-3 text-gray-700 max-w-xs truncate">
-                        {t.eventId?.eventTitle || t.courseId?.courseTitle || "—"}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className="px-2 py-1 rounded-full text-xs bg-teal-100 text-teal-700 font-medium">
-                          {t.bookingType}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 font-semibold text-gray-800">{fmt(t.totalAmount)}</td>
-                      {/* <td className="px-4 py-3 text-teal-600">{fmt(t.commissionAmount)}</td> */}
-                      <td className="px-4 py-3 text-green-600">{fmt(t.organizerEarning)}</td>
-                      <td className="px-4 py-3 text-gray-500">{fmtDate(t.createdAt)}</td>
-                    </tr>
-                  ))
+                  transactions.map((t) => {
+                    const categoryInfo = CATEGORY_CONFIG[t.type] || CATEGORY_CONFIG.PURCHASE;
+                    const statusClass = STATUS_COLORS[t.status] || "bg-gray-100 text-gray-700 border-gray-200";
+
+                    const isOutflow = t.type === "WITHDRAWAL";
+                    const isRefund = t.type === "REFUND";
+                    const isCredit = t.type === "PURCHASE" || t.type === "WALLET_DEPOSIT";
+
+                    return (
+                      <tr key={t._id} className="hover:bg-gray-50/80 transition-colors">
+                        {/* ID / Ref (Clickable to open Detail Modal) */}
+                        <td className="px-4 py-3 font-mono">
+                          <button
+                            type="button"
+                            onClick={() => setSelectedTxn(t)}
+                            className="font-semibold text-gray-800 hover:text-teal-600 hover:underline text-left cursor-pointer transition block"
+                            title="Click to view full transaction details"
+                          >
+                            {t.displayId || `#${(t.bookingId?.slice(-8) || t._id?.slice(-8)).toUpperCase()}`}
+                          </button>
+                          {t.bookingId && t.bookingId !== t.displayId && (
+                            <div className="text-[10px] text-gray-400 truncate max-w-[120px]" title={t.bookingId}>
+                              {t.bookingId}
+                            </div>
+                          )}
+                        </td>
+
+                        {/* Type & Flow */}
+                        <td className="px-4 py-3">
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold border ${categoryInfo.badge}`}>
+                            {t.typeLabel || categoryInfo.label}
+                          </span>
+                        </td>
+
+                        {/* Customer & Organizer (Merged Single Column) */}
+                        <td className="px-4 py-3">
+                          <div className="flex flex-col gap-1.5 min-w-[190px] max-w-[240px]">
+                            {/* Customer */}
+                            {t.userId ? (
+                              <div className="flex items-start gap-1.5">
+                                <span className="shrink-0 mt-0.5 px-1.5 py-0.2 rounded text-[9px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                  User
+                                </span>
+                                <div className="truncate">
+                                  <div className="font-medium text-gray-900 truncate" title={`${t.userId.firstName || ""} ${t.userId.lastName || ""}`}>
+                                    {t.userId.firstName} {t.userId.lastName}
+                                  </div>
+                                  <div className="text-[10px] text-gray-400 truncate" title={t.userId.email}>
+                                    {t.userId.email}
+                                  </div>
+                                </div>
+                              </div>
+                            ) : null}
+
+                            {/* Organizer */}
+                            {t.organizer ? (
+                              <div className="flex items-start gap-1.5">
+                                <span className="shrink-0 mt-0.5 px-1.5 py-0.2 rounded text-[9px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                                  Org
+                                </span>
+                                <div className="truncate">
+                                  <div className="font-medium text-gray-800 truncate" title={`${t.organizer.firstName || ""} ${t.organizer.lastName || ""}`}>
+                                    {t.organizer.firstName} {t.organizer.lastName}
+                                  </div>
+                                  <div className="text-[10px] text-gray-400 truncate" title={t.organizer.email}>
+                                    {t.organizer.email}
+                                  </div>
+                                </div>
+                              </div>
+                            ) : null}
+
+                            {!t.userId && !t.organizer && (
+                              <span className="text-gray-400">—</span>
+                            )}
+                          </div>
+                        </td>
+
+                        {/* Item / Description */}
+                        <td className="px-4 py-3 max-w-xs">
+                          <div className="font-medium text-gray-800 truncate" title={t.itemTitle || t.description}>
+                            {t.itemTitle || t.description || "—"}
+                          </div>
+                          {t.refundReason && (
+                            <div className="text-[10px] text-rose-500 truncate" title={t.refundReason}>
+                              Reason: {t.refundReason}
+                            </div>
+                          )}
+                          {t.balanceAfter !== undefined && (
+                            <div className="text-[10px] text-gray-400">
+                              Bal after: {fmt(t.balanceAfter)}
+                            </div>
+                          )}
+                        </td>
+
+                        {/* Amount */}
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <div className={`font-bold ${isCredit ? "text-emerald-600" : isRefund ? "text-rose-600" : isOutflow ? "text-amber-700" : "text-gray-800"
+                            }`}>
+                            {isRefund ? `-${fmt(t.totalAmount)}` : isOutflow ? `-${fmt(t.totalAmount)}` : `+${fmt(t.totalAmount)}`}
+                          </div>
+                          {t.type === "PURCHASE" && t.organizerEarning !== undefined && (
+                            <div className="text-[10px] text-gray-400">
+                              Org: {fmt(t.organizerEarning)}
+                            </div>
+                          )}
+                        </td>
+
+                        {/* Channel */}
+                        <td className="px-4 py-3">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-700 border border-gray-200">
+                            {t.paymentMethod || "QPAY"}
+                          </span>
+                        </td>
+
+                        {/* Status */}
+                        <td className="px-4 py-3">
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${statusClass}`}>
+                            {t.status || "PAID"}
+                          </span>
+                        </td>
+
+                        {/* Date */}
+                        <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
+                          {fmtDateTime(t.createdAt)}
+                        </td>
+
+                        {/* Actions */}
+                        <td className="px-4 py-3 text-center whitespace-nowrap">
+                          <div className="flex items-center justify-center gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => setSelectedTxn(t)}
+                              className="inline-flex items-center gap-1 px-2.5 py-1 bg-gray-100 hover:bg-teal-50 hover:text-teal-700 text-gray-700 rounded-md text-xs font-medium transition cursor-pointer border border-gray-200 hover:border-teal-200"
+                              title="View complete transaction breakdown"
+                            >
+                              <FiEye className="w-3.5 h-3.5 text-gray-500" />
+                              <span>Details</span>
+                            </button>
+
+                            {t.type === "WITHDRAWAL" && t.status === "PENDING" && (
+                              <>
+                                <button
+                                  type="button"
+                                  onClick={() => setApproveTarget({ ...t, organizerId: t.organizer, amount: t.totalAmount })}
+                                  className="px-2 py-1 bg-green-500 text-white rounded text-[10px] font-medium hover:bg-green-600 transition cursor-pointer"
+                                  title="Approve Payout"
+                                >
+                                  Approve
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setRejectTarget({ ...t, organizerId: t.organizer, amount: t.totalAmount })}
+                                  className="px-2 py-1 bg-red-500 text-white rounded text-[10px] font-medium hover:bg-red-600 transition cursor-pointer"
+                                  title="Reject Payout"
+                                >
+                                  Reject
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
                 )}
               </tbody>
             </table>
           </div>
+
           {/* Pagination */}
-          <div className="px-5 py-4 border-t flex items-center justify-between">
-            <span className="text-sm text-gray-500">
-              Total: {txnTotal} transaction{txnTotal !== 1 ? "s" : ""}
+          <div className="px-5 py-4 border-t flex flex-col sm:flex-row items-center justify-between gap-3">
+            <span className="text-xs text-gray-500">
+              Showing {transactions.length > 0 ? (txnPage - 1) * LIMIT + 1 : 0} – {Math.min(txnPage * LIMIT, txnTotal)} of {txnTotal} record{txnTotal !== 1 ? "s" : ""}
             </span>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
               <button
                 onClick={() => setTxnPage((p) => Math.max(1, p - 1))}
                 disabled={txnPage === 1}
-                className="px-3 py-1 border rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50"
+                className="px-3 py-1 border border-gray-300 rounded-lg text-xs font-medium disabled:opacity-40 hover:bg-gray-50 transition"
               >
                 ← Prev
               </button>
-              <span className="px-3 py-1 text-sm text-gray-600">
-                {txnPage} / {txnTotalPages}
+              <span className="px-3 py-1 text-xs text-gray-600 font-medium">
+                Page {txnPage} of {txnTotalPages || 1}
               </span>
               <button
                 onClick={() => setTxnPage((p) => Math.min(txnTotalPages, p + 1))}
                 disabled={txnPage >= txnTotalPages}
-                className="px-3 py-1 border rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50"
+                className="px-3 py-1 border border-gray-300 rounded-lg text-xs font-medium disabled:opacity-40 hover:bg-gray-50 transition"
               >
                 Next →
               </button>
@@ -819,6 +1438,14 @@ const FinanceDashboard = () => {
           payout={rejectTarget}
           onClose={() => setRejectTarget(null)}
           onDone={onActionDone}
+        />
+      )}
+      {selectedTxn && (
+        <TransactionDetailModal
+          transaction={selectedTxn}
+          onClose={() => setSelectedTxn(null)}
+          onApprove={(t) => setApproveTarget({ ...t, organizerId: t.organizer, amount: t.totalAmount })}
+          onReject={(t) => setRejectTarget({ ...t, organizerId: t.organizer, amount: t.totalAmount })}
         />
       )}
     </div>
