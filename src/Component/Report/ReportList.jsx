@@ -297,6 +297,7 @@ const ReportList = ({ title }) => {
                     <label className="block text-sm font-medium mb-1">Start Date</label>
                     <input
                         type="date"
+                        max={filters.endDate || undefined}
                         className="w-full border p-2 rounded"
                         value={filters.startDate}
                         onChange={(e) => handleFilterChange("startDate", e.target.value)}
@@ -307,6 +308,7 @@ const ReportList = ({ title }) => {
                     <label className="block text-sm font-medium mb-1">End Date</label>
                     <input
                         type="date"
+                        min={filters.startDate || undefined}
                         className="w-full border p-2 rounded"
                         value={filters.endDate}
                         onChange={(e) => handleFilterChange("endDate", e.target.value)}

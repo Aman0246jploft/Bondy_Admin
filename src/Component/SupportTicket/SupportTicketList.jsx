@@ -42,6 +42,7 @@ const SupportTicketList = ({ title }) => {
         startDate: "",
         endDate: "",
     });
+    const [dateError, setDateError] = useState("");
 
     // Modal states
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
@@ -80,6 +81,10 @@ const SupportTicketList = ({ title }) => {
     };
 
     const fetchTickets = useCallback(async () => {
+        if (filters.startDate && filters.endDate && filters.endDate < filters.startDate) {
+            return;
+        }
+
         setLoading(true);
         try {
             const params = {
@@ -119,10 +124,28 @@ const SupportTicketList = ({ title }) => {
     }, [fetchTickets]);
 
     const handleFilterChange = (key, value) => {
-        setFilters(prev => ({
-            ...prev,
+        const newFilters = {
+            ...filters,
             [key]: value,
-        }));
+        };
+
+        if (key === "startDate") {
+            if (value && newFilters.endDate && newFilters.endDate < value) {
+                setDateError("The end date must be later than the start date.");
+                toast.error("The end date must be later than the start date.");
+            } else {
+                setDateError("");
+            }
+        } else if (key === "endDate") {
+            if (value && newFilters.startDate && value < newFilters.startDate) {
+                setDateError("The end date must be later than the start date.");
+                toast.error("The end date must be later than the start date.");
+            } else {
+                setDateError("");
+            }
+        }
+
+        setFilters(newFilters);
         setPage(1); // Reset to first page when filters change
     };
 
@@ -401,25 +424,43 @@ const SupportTicketList = ({ title }) => {
                     <label className="block text-sm font-medium mb-1">Start Date</label>
                     <input
                         type="date"
-                        className="w-full border p-2 rounded"
+                        max={filters.endDate || undefined}
+                        className={`w-full border p-2 rounded transition-colors ${
+                            dateError ? "border-red-500" : ""
+                        }`}
                         value={filters.startDate}
                         onChange={(e) => handleFilterChange("startDate", e.target.value)}
-                        style={{ backgroundColor: theme.colors.background, borderColor: theme.colors.border, color: theme.colors.textPrimary }}
+                        style={{
+                            backgroundColor: theme.colors.background,
+                            borderColor: dateError ? "#ef4444" : theme.colors.border,
+                            color: theme.colors.textPrimary,
+                        }}
                     />
                 </div>
                 <div>
                     <label className="block text-sm font-medium mb-1">End Date</label>
                     <input
                         type="date"
-                        className="w-full border p-2 rounded"
+                        min={filters.startDate || undefined}
+                        className={`w-full border p-2 rounded transition-colors ${
+                            dateError ? "border-red-500" : ""
+                        }`}
                         value={filters.endDate}
                         onChange={(e) => handleFilterChange("endDate", e.target.value)}
-                        style={{ backgroundColor: theme.colors.background, borderColor: theme.colors.border, color: theme.colors.textPrimary }}
+                        style={{
+                            backgroundColor: theme.colors.background,
+                            borderColor: dateError ? "#ef4444" : theme.colors.border,
+                            color: theme.colors.textPrimary,
+                        }}
                     />
+                    {dateError && (
+                        <p className="text-red-500 text-xs mt-1 font-medium">{dateError}</p>
+                    )}
                 </div>
                 <div className="flex items-end">
                     <button
                         onClick={() => {
+                            setDateError("");
                             setFilters({
                                 status: "",
                                 category: "",
