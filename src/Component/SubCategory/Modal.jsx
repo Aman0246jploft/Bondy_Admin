@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useTheme } from "../../contexts/theme/hook/useTheme";
 
 export default function Modal({ isOpen, onClose, children }) {
@@ -23,10 +24,9 @@ export default function Modal({ isOpen, onClose, children }) {
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex justify-center items-center"
-      style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+      className="fixed inset-0 z-[9999] flex justify-center items-center bg-black/60 backdrop-blur-xs"
     >
       <div
         ref={modalRef}
@@ -43,6 +43,7 @@ export default function Modal({ isOpen, onClose, children }) {
           {children}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

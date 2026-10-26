@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import DataTable from "../../Component/Table/DataTable";
 import axiosClient from "../../api/authAxiosClient";
 import { toast } from "react-toastify";
@@ -354,8 +355,8 @@ const VerificationRequests = () => {
             </div>
 
             {/* Premium Verification Audit Modal */}
-            {selectedUser && (
-                <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm transition-all">
+            {selectedUser && createPortal(
+                <div className="fixed inset-0 bg-black/60 z-[9999] flex items-center justify-center p-4 backdrop-blur-sm transition-all">
                     <div className="bg-white rounded-2xl max-w-6xl w-full max-h-[92vh] flex flex-col shadow-2xl relative border border-gray-100 overflow-hidden animate-fade-in">
                         {/* Header */}
                         <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
@@ -569,7 +570,8 @@ const VerificationRequests = () => {
 
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import DataTable from "../Table/DataTable";
 import { FiEye, FiTrash2, FiCheckCircle, FiXCircle } from "react-icons/fi";
 import authAxiosClient from "../../api/authAxiosClient";
@@ -388,8 +389,8 @@ const ReportList = ({ title }) => {
             </div>
 
             {/* Detail Modal */}
-            {isDetailModalOpen && selectedReport && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            {isDetailModalOpen && selectedReport && createPortal(
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-[9999] p-4">
                     <div className="bg-white rounded-lg w-full max-w-lg p-6" style={{ backgroundColor: theme.colors.background, color: theme.colors.textPrimary }}>
                         <h3 className="text-xl font-bold mb-4">Report Details</h3>
                         <div className="space-y-4 text-sm">
@@ -413,12 +414,13 @@ const ReportList = ({ title }) => {
                             <button onClick={() => setIsDetailModalOpen(false)} className="px-4 py-2 border rounded">Close</button>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
 
             {/* Resolve Modal */}
-            {isResolveModalOpen && selectedReport && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            {isResolveModalOpen && selectedReport && createPortal(
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-[9999] p-4">
                     <div className="bg-white rounded-lg w-full max-w-md p-6" style={{ backgroundColor: theme.colors.background, color: theme.colors.textPrimary }}>
                         <h3 className="text-xl font-bold mb-4">Update Report Status</h3>
                         <form onSubmit={handleResolveReport} className="space-y-4">
@@ -466,7 +468,8 @@ const ReportList = ({ title }) => {
                             </div>
                         </form>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );

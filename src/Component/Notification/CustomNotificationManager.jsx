@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import {
   AiOutlineBell,
   AiOutlineTeam,
@@ -628,9 +629,10 @@ const CustomNotificationManager = () => {
       {/* ─────────────────────────────────────────────────────────────────────────────
           CONFIRMATION MODAL (REQUIRED BEFORE SENDING)
       ───────────────────────────────────────────────────────────────────────────── */}
-      {showConfirmModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl shadow-2xl border w-full max-w-lg overflow-hidden transform transition-all">
+      {showConfirmModal &&
+        createPortal(
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-white rounded-2xl shadow-2xl border w-full max-w-lg overflow-hidden transform transition-all">
             {/* Modal Header */}
             <div className="p-6 bg-gradient-to-r from-teal-700 to-teal-800 text-white flex items-start gap-4">
               <div className="p-3 bg-white/10 rounded-xl backdrop-blur">
@@ -741,15 +743,17 @@ const CustomNotificationManager = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* ─────────────────────────────────────────────────────────────────────────────
           VIEW DETAIL MODAL
       ───────────────────────────────────────────────────────────────────────────── */}
-      {viewDetailModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-xl border w-full max-w-md overflow-hidden">
+      {viewDetailModal &&
+        createPortal(
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl shadow-xl border w-full max-w-md overflow-hidden">
             <div className="p-4 border-b flex items-center justify-between" style={{ borderColor: theme.colors.border }}>
               <h3 className="font-bold text-gray-800 flex items-center gap-2">
                 <AiOutlineBell className="w-5 h-5 text-teal-600" />
@@ -813,7 +817,8 @@ const CustomNotificationManager = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

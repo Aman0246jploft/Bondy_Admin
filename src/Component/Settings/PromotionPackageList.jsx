@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import DataTable from "../Table/DataTable";
 import { FiEdit2, FiPlus } from "react-icons/fi";
 import { BsTrash2 } from "react-icons/bs";
@@ -214,8 +215,8 @@ const PromotionPackageList = ({ title }) => {
                 </div>
             </div>
 
-            {isModalOpen && (
-                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-fadeIn">
+            {isModalOpen && createPortal(
+                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-[9999] p-4 animate-fadeIn">
                     <div className="bg-white p-6 sm:p-7 rounded-2xl w-full max-w-lg shadow-2xl border border-slate-100 animate-scaleUp">
                         <div className="flex justify-between items-center mb-5 pb-3 border-b border-slate-100">
                             <h3 className="text-lg font-bold text-slate-900">{editingPackage ? "Edit Promotion Package" : "Add Promotion Package"}</h3>
@@ -336,7 +337,8 @@ const PromotionPackageList = ({ title }) => {
                             </div>
                         </form>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );

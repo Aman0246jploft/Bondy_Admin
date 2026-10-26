@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 
 const conditions = {
   brand_new: 'Brand New',
@@ -63,8 +64,8 @@ export default function ProductModal({ onClose, onSubmit }) {
     }
   };
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center">
+  return createPortal(
+    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-[9999] flex items-center justify-center p-4">
       <div className="bg-white rounded-lg p-4 w-full max-w-sm overflow-y-auto h-[90%] relative">
         <button
           className="absolute right-3 top-2 text-gray-600 text-xl"
@@ -224,6 +225,7 @@ export default function ProductModal({ onClose, onSubmit }) {
           </button>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

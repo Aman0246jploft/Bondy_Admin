@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import authAxiosClient from "../../api/authAxiosClient";
 import financeApi from "../../api/financeApi";
 import { toast } from "react-toastify";
@@ -96,8 +97,8 @@ const ApproveModal = ({ payout, onClose, onDone }) => {
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
         <h3 className="text-lg font-bold text-gray-800 mb-1">Approve Payout</h3>
         <p className="text-sm text-gray-500 mb-4">
@@ -151,7 +152,8 @@ const ApproveModal = ({ payout, onClose, onDone }) => {
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
@@ -178,8 +180,8 @@ const RejectModal = ({ payout, onClose, onDone }) => {
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
         <h3 className="text-lg font-bold text-gray-800 mb-1">Reject Payout</h3>
         <p className="text-sm text-gray-500 mb-4">
@@ -221,7 +223,8 @@ const RejectModal = ({ payout, onClose, onDone }) => {
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
@@ -236,8 +239,8 @@ const TransactionDetailModal = ({ transaction, onClose, onApprove, onReject }) =
   const isRefund = transaction.type === "REFUND";
   const isCredit = transaction.type === "PURCHASE" || transaction.type === "WALLET_DEPOSIT";
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4 animate-in fade-in">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in">
       <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden">
         {/* Header */}
         <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/70">
@@ -474,7 +477,8 @@ const TransactionDetailModal = ({ transaction, onClose, onApprove, onReject }) =
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

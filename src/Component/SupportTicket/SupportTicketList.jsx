@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import DataTable from "../Table/DataTable";
 import { FiEye } from "react-icons/fi";
 import authAxiosClient from "../../api/authAxiosClient";
@@ -504,8 +505,8 @@ const SupportTicketList = ({ title }) => {
             </div>
 
             {/* Ticket Detail Modal */}
-            {isDetailModalOpen && selectedTicket && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            {isDetailModalOpen && selectedTicket && createPortal(
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-[9999] p-4">
                     <div className="bg-white rounded-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto" style={{ backgroundColor: theme.colors.background, color: theme.colors.textPrimary }}>
                         <div className="p-6">
                             <div className="flex justify-between items-start mb-4">
@@ -628,12 +629,13 @@ const SupportTicketList = ({ title }) => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
 
             {/* Update Status Modal */}
-            {isUpdateModalOpen && selectedTicket && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            {isUpdateModalOpen && selectedTicket && createPortal(
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-[9999] p-4">
                     <div className="bg-white rounded-lg w-full max-w-md" style={{ backgroundColor: theme.colors.background, color: theme.colors.textPrimary }}>
                         <div className="p-6">
                             <div className="flex justify-between items-start mb-4">
@@ -726,7 +728,8 @@ const SupportTicketList = ({ title }) => {
                             </form>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );

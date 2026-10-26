@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { FiAlertTriangle, FiTrash2, FiInfo, FiCheckCircle, FiX } from "react-icons/fi";
 
 const ConfirmationModal = ({
@@ -79,7 +80,7 @@ const ConfirmationModal = ({
       "bg-[#23ada4] hover:bg-[#1ca398] text-white shadow-md shadow-teal-500/25",
   };
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-200"
       onClick={onClose}
@@ -149,7 +150,8 @@ const ConfirmationModal = ({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

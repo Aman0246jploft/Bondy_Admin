@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { AiOutlineClose } from "react-icons/ai";
 import organizerStatsApi from "../../api/organizerStatsApi";
 
@@ -628,8 +629,8 @@ const OrganizerStatsModal = ({ organizer, onClose }) => {
         );
     };
 
-    return (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+    return createPortal(
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-[9999] p-4">
             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col border border-slate-200">
                 {/* Header */}
                 <div className="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
@@ -685,7 +686,8 @@ const OrganizerStatsModal = ({ organizer, onClose }) => {
                     )}
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };
 

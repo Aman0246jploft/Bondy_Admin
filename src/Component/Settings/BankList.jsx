@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import DataTable from "../Table/DataTable";
 import { FiEdit2, FiPlus } from "react-icons/fi";
 import { BsTrash2 } from "react-icons/bs";
@@ -148,8 +149,8 @@ const BankList = ({ title }) => {
                 onLimitChange={() => { }}
             />
 
-            {isModalOpen && (
-                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex justify-center items-center z-50 p-4 animate-fadeIn">
+            {isModalOpen && createPortal(
+                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex justify-center items-center z-[9999] p-4 animate-fadeIn">
                     <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-100 animate-scaleUp">
                         <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-100 flex justify-between items-center">
                             <h3 className="text-lg font-bold text-gray-800">
@@ -214,7 +215,8 @@ const BankList = ({ title }) => {
                             </div>
                         </form>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );

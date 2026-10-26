@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import DataTable from "../Table/DataTable";
 import { FiEdit2, FiPlus } from "react-icons/fi";
 import { BsTrash2 } from "react-icons/bs";
@@ -366,98 +367,100 @@ const CategoryList = ({ title }) => {
             </div>
 
             {/* Modal for Create/Update */}
-            {isModalOpen && (
-                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-fadeIn">
-                    <div className="bg-white p-6 sm:p-7 rounded-2xl w-full max-w-md shadow-2xl border border-slate-100 animate-scaleUp">
-                        <div className="flex justify-between items-center mb-5 pb-3 border-b border-slate-100">
-                            <h3 className="text-lg font-bold text-slate-900">{editingCategory ? "Edit Category" : "Add Category"}</h3>
-                            <button
-                                type="button"
-                                onClick={() => setIsModalOpen(false)}
-                                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
-                            >
-                                ✕
-                            </button>
-                        </div>
-                        <form onSubmit={handleSave} className="space-y-4">
-                            <div>
-                                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Name</label>
-                                <input
-                                    type="text"
-                                    required
-                                    className="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm focus:border-[#23ada4] focus:ring-2 focus:ring-teal-500/20 outline-none transition"
-                                    value={formData.name}
-                                    onChange={(e) => {
-                                        const val = e.target.value;
-                                        setFormData(prev => ({ ...prev, name: val }));
-                                    }}
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Name in Mongolian</label>
-                                <input
-                                    type="text"
-                                    className="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm focus:border-[#23ada4] focus:ring-2 focus:ring-teal-500/20 outline-none transition"
-                                    value={formData.name_thi}
-                                    onChange={(e) => {
-                                        const val = e.target.value;
-                                        setFormData(prev => ({ ...prev, name_thi: val }));
-                                    }}
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Type</label>
-                                <select
-                                    className="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm focus:border-[#23ada4] focus:ring-2 focus:ring-teal-500/20 outline-none transition bg-white"
-                                    value={formData.type}
-                                    onChange={(e) => {
-                                        const val = e.target.value;
-                                        setFormData(prev => ({ ...prev, type: val }));
-                                    }}
-                                >
-                                    <option value="event">Event</option>
-                                    <option value="course">Course</option>
-                                    <option value="support_ticket">Support Ticket</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Image</label>
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    className="w-full border border-slate-200 p-2 rounded-xl text-sm"
-                                    onChange={handleFileUpload}
-                                />
-                                {uploading && <p className="text-xs text-teal-600 mt-1">Uploading...</p>}
-                                {formData.image && (
-                                    <p className="text-xs text-green-600 truncate mt-1">Selected: {formData.image}</p>
-                                )}
-                                <div className="mt-2.5 flex items-center gap-3">
-                                    <CategoryAvatar src={formData.image} name={formData.name} />
-                                    <span className="text-xs text-slate-500">
-                                        {formData.image ? "Current Icon Preview" : "Default Avatar"}
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+            {isModalOpen &&
+                createPortal(
+                    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-[9999] p-4 animate-fadeIn">
+                        <div className="bg-white p-6 sm:p-7 rounded-2xl w-full max-w-md shadow-2xl border border-slate-100 animate-scaleUp">
+                            <div className="flex justify-between items-center mb-5 pb-3 border-b border-slate-100">
+                                <h3 className="text-lg font-bold text-slate-900">{editingCategory ? "Edit Category" : "Add Category"}</h3>
                                 <button
                                     type="button"
                                     onClick={() => setIsModalOpen(false)}
-                                    className="px-4 py-2.5 border border-slate-200 text-slate-700 font-semibold rounded-xl text-sm hover:bg-slate-50 transition cursor-pointer"
+                                    className="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
                                 >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="px-5 py-2.5 bg-[#23ada4] hover:bg-[#1ca398] text-white font-semibold rounded-xl text-sm shadow-xs transition cursor-pointer"
-                                >
-                                    Save
+                                    ✕
                                 </button>
                             </div>
-                        </form>
-                    </div>
-                </div>
-            )}
+                            <form onSubmit={handleSave} className="space-y-4">
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Name</label>
+                                    <input
+                                        type="text"
+                                        required
+                                        className="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm focus:border-[#23ada4] focus:ring-2 focus:ring-teal-500/20 outline-none transition"
+                                        value={formData.name}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            setFormData(prev => ({ ...prev, name: val }));
+                                        }}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Name in Mongolian</label>
+                                    <input
+                                        type="text"
+                                        className="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm focus:border-[#23ada4] focus:ring-2 focus:ring-teal-500/20 outline-none transition"
+                                        value={formData.name_thi}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            setFormData(prev => ({ ...prev, name_thi: val }));
+                                        }}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Type</label>
+                                    <select
+                                        className="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm focus:border-[#23ada4] focus:ring-2 focus:ring-teal-500/20 outline-none transition bg-white"
+                                        value={formData.type}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            setFormData(prev => ({ ...prev, type: val }));
+                                        }}
+                                    >
+                                        <option value="event">Event</option>
+                                        <option value="course">Course</option>
+                                        <option value="support_ticket">Support Ticket</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Image</label>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        className="w-full border border-slate-200 p-2 rounded-xl text-sm"
+                                        onChange={handleFileUpload}
+                                    />
+                                    {uploading && <p className="text-xs text-teal-600 mt-1">Uploading...</p>}
+                                    {formData.image && (
+                                        <p className="text-xs text-green-600 truncate mt-1">Selected: {formData.image}</p>
+                                    )}
+                                    <div className="mt-2.5 flex items-center gap-3">
+                                        <CategoryAvatar src={formData.image} name={formData.name} />
+                                        <span className="text-xs text-slate-500">
+                                            {formData.image ? "Current Icon Preview" : "Default Avatar"}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsModalOpen(false)}
+                                        className="px-4 py-2.5 border border-slate-200 text-slate-700 font-semibold rounded-xl text-sm hover:bg-slate-50 transition cursor-pointer"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="px-5 py-2.5 bg-[#23ada4] hover:bg-[#1ca398] text-white font-semibold rounded-xl text-sm shadow-xs transition cursor-pointer"
+                                    >
+                                        Save
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>,
+                    document.body
+                )}
         </div>
     );
 };
