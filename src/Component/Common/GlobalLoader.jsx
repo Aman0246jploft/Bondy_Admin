@@ -10,8 +10,10 @@ export default function GlobalLoader({ fullScreen = true, message = "" }) {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        background: "#0c0c0e",
-        color: "#ffffff",
+        background: "rgba(255, 255, 255, 0.4)",
+        backdropFilter: "blur(2px)",
+        WebkitBackdropFilter: "blur(2px)",
+        pointerEvents: "none",
       }
     : {
         width: "100%",
@@ -21,7 +23,6 @@ export default function GlobalLoader({ fullScreen = true, message = "" }) {
         alignItems: "center",
         justifyContent: "center",
         background: "transparent",
-        color: "#ffffff",
         padding: "40px 20px",
       };
 
@@ -42,32 +43,7 @@ export default function GlobalLoader({ fullScreen = true, message = "" }) {
             height: 48,
             width: "auto",
             animation: "bondyPulse 1.8s ease-in-out infinite",
-            filter: "drop-shadow(0 0 16px rgba(35, 173, 164, 0.45))",
-          }}
-        />
-      </div>
-
-      <div
-        style={{
-          marginTop: 26,
-          width: 140,
-          height: 3,
-          background: "rgba(255, 255, 255, 0.08)",
-          borderRadius: 999,
-          overflow: "hidden",
-          position: "relative",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "45%",
-            height: "100%",
-            background: "linear-gradient(90deg, #14b8a6, #2ad1c6)",
-            borderRadius: 999,
-            animation: "bondyLoaderBar 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite",
+            filter: "drop-shadow(0 4px 16px rgba(15, 118, 110, 0.35))",
           }}
         />
       </div>
@@ -77,7 +53,7 @@ export default function GlobalLoader({ fullScreen = true, message = "" }) {
           style={{
             marginTop: 16,
             fontSize: 14,
-            color: "#9ca3af",
+            color: "#6b7280",
             fontWeight: 500,
           }}
         >
