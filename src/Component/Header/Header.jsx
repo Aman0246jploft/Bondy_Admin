@@ -24,20 +24,28 @@ const Header = ({ toggleSidebar }) => {
   const themeDropdownRef = useRef(null);
 
   // Fetch user profile
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const response = await userApi.getSelfProfile();
+  const fetchUserProfile = async () => {
+    try {
+      const response = await userApi.getSelfProfile();
 
-        if (response.data && response.data.data) {
-          setUserData(response.data.data.user);
-        }
-      } catch (error) {
-        console.error("Error fetching user profile:", error);
+      if (response.data && response.data.data) {
+        setUserData(response.data.data.user);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchUserProfile();
+
+    const handleProfileUpdate = () => {
+      fetchUserProfile();
+    };
+    window.addEventListener("admin_profile_updated", handleProfileUpdate);
+    return () => {
+      window.removeEventListener("admin_profile_updated", handleProfileUpdate);
+    };
   }, []);
 
 
@@ -131,30 +139,14 @@ const Header = ({ toggleSidebar }) => {
   };
 
   const profileMenuItems = [
-    // {
-    //   icon: AiOutlineProfile,
-    //   label: "View Profile",
-    //   onClick: () => {
-    //     console.log("View Profile clicked");
-    //     setShowProfileDropdown(false);
-    //   },
-    // },
-    // {
-    //   icon: AiOutlineSetting,
-    //   label: "Settings",
-    //   onClick: () => {
-    //     console.log("Settings clicked");
-    //     setShowProfileDropdown(false);
-    //   },
-    // },
-    // {
-    //   icon: AiOutlineQuestionCircle,
-    //   label: "Help & Support",
-    //   onClick: () => {
-    //     console.log("Help & Support clicked");
-    //     setShowProfileDropdown(false);
-    //   },
-    // },
+    {
+      icon: AiOutlineProfile,
+      label: "My Profile",
+      onClick: () => {
+        setShowProfileDropdown(false);
+        navigate("/profile");
+      },
+    },
     {
       icon: AiOutlineLogout,
       label: "Sign Out",
@@ -337,12 +329,13 @@ const Header = ({ toggleSidebar }) => {
               }}
             >
               <Image
-                src={'/sidebar-logo.svg'}
+                src={userData?.profileImage || '/sidebar-logo.svg'}
+                fallback={'/sidebar-logo.svg'}
                 alt="Profile"
                 width={32}
                 height={32}
                 rounded={true}
-                className="w-8 h-8"
+                className="w-8 h-8 object-cover"
               />
               <div className="hidden md:flex flex-col items-start">
                 <span className="text-sm font-medium">

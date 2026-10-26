@@ -18,6 +18,7 @@ import {
   AiOutlineDollar,
   AiOutlineBug,
   AiOutlineLayout,
+  AiOutlineUser,
 } from "react-icons/ai";
 import { useTheme } from "../../contexts/theme/hook/useTheme";
 import clsx from "clsx";
@@ -123,6 +124,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     //footer-management
     { name: "Footer Management", href: "/footer-management", icon: AiOutlineLayout },
     { name: "Notifications", href: "/notifications", icon: AiOutlineBell },
+    { name: "Admin Profile", href: "/profile", icon: AiOutlineUser },
   ];
 
   return (

@@ -41,6 +41,7 @@ const FinanceDashboard = lazy(() => import("./Pages/Finance/FinanceDashboard"));
 const Reports = lazy(() => import("./Pages/Report/Reports"));
 const Bugs = lazy(() => import("./Pages/Bugs/Bugs"));
 const NotificationsPage = lazy(() => import("./Pages/Notification/NotificationsPage"));
+const Profile = lazy(() => import("./Pages/Profile/Profile"));
 
 function App() {
   const [globalLoading, setGlobalLoading] = useState(false);
@@ -94,6 +95,7 @@ function App() {
               <Route path="/reports" element={<Reports />} />
               <Route path="/bugs" element={<Bugs />} />
               <Route path="/notifications" element={<NotificationsPage />} />
+              <Route path="/profile" element={<Profile />} />
               {/* <Route path="/sellProduct" element={<SellProduct />} /> */}
 
             </Route>

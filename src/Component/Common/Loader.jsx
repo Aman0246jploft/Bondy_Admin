@@ -1,12 +1,9 @@
 // src/Component/Common/Loader.jsx
 import React from "react";
+import GlobalLoader from "./GlobalLoader";
 
 const Loader = () => {
-  return (
-    <div className="flex items-center justify-center h-screen">
-      <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-teal-500 border-solid"></div>
-    </div>
-  );
+  return <GlobalLoader fullScreen={true} />;
 };
 
 export default Loader;

@@ -36,7 +36,7 @@ const MainLayout = ({ children }) => {
 
   return (
     <div
-      className="h-screen"
+      className="min-h-screen flex flex-col"
       style={{ backgroundColor: theme.colors.background }}
     >
       {/* Sidebar */}
@@ -44,13 +44,13 @@ const MainLayout = ({ children }) => {
 
       {/* Main Content Area */}
       <div
-        className={`flex-1 flex flex-col transition-all duration-300 ${
-          // On desktop: apply margin based on sidebar state
+        className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ${
+          // On desktop: apply margin matching Sidebar (md:w-60 -> ml-60, md:w-16 -> ml-16)
           // On mobile: no margin (sidebar overlays)
           isMobile
-            ? ""
+            ? "ml-0"
             : isSidebarOpen
-              ? "ml-52"
+              ? "ml-60"
               : "ml-16"
           }`}
       >
@@ -65,7 +65,9 @@ const MainLayout = ({ children }) => {
             color: theme.colors.textPrimary,
           }}
         >
-          {children}
+          <div className="max-w-7xl mx-auto w-full">
+            {children}
+          </div>
         </main>
       </div>
     </div>
