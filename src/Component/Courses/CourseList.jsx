@@ -184,7 +184,7 @@ const CourseList = () => {
     const totalPages = Math.ceil(total / limit) || 1;
 
     return (
-        <div className="w-full px-[10px] space-y-6 pb-12">
+        <div className="w-full space-y-4 pb-12">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
                 <div className="flex items-center gap-3">

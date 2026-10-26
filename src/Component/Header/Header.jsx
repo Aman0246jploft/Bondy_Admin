@@ -157,7 +157,7 @@ const Header = ({ toggleSidebar }) => {
 
   return (
     <header
-      className="shadow-sm border-b px-4 md:px-6 py-2 relative"
+      className="shadow-2xs border-b px-4 md:px-6 py-1.5 relative"
       style={{
         backgroundColor: theme.colors.headerBg,
         borderColor: theme.colors.headerBorder,
@@ -166,12 +166,12 @@ const Header = ({ toggleSidebar }) => {
     >
       <div className="flex items-center justify-between">
         {/* Left section */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2 md:space-x-3">
           {/* Mobile Menu Button */}
           {isMobile && (
             <button
               onClick={toggleSidebar}
-              className="p-2 rounded-lg transition-colors duration-200 md:hidden"
+              className="p-1.5 rounded-lg transition-colors duration-200 md:hidden"
               style={{
                 backgroundColor: theme.colors.buttonSecondary,
                 color: theme.colors.buttonTextOnSecondary,
@@ -192,7 +192,7 @@ const Header = ({ toggleSidebar }) => {
           {/* Title */}
           <div>
             <h1
-              className="text-lg md:text-xl ml-4 font-bold"
+              className="text-base md:text-lg font-bold"
               style={{ color: theme.colors.textPrimary }}
             >
               Welcome back!

@@ -296,7 +296,7 @@ const EventDetail = () => {
     ];
 
     return (
-        <div className="w-full px-[10px] space-y-6 pb-12">
+        <div className="w-full space-y-4 pb-12">
 
             {/* ── 1. Modern Minimal Header & Actions Bar ── */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
@@ -798,8 +798,8 @@ const EventDetail = () => {
                             ) : (
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left border-collapse text-xs">
-                                        <thead>
-                                            <tr className="border-b border-slate-200 bg-slate-50/80 text-slate-500 text-[11px] uppercase font-bold tracking-wider">
+                                        <thead className="bg-slate-100 border-b border-slate-200">
+                                            <tr className="text-slate-800 text-[11px] uppercase font-bold tracking-wider">
                                                 <th className="py-3 px-4">Attendee</th>
                                                 <th className="py-3 px-4">Contact</th>
                                                 <th className="py-3 px-4">Pass Breakdown</th>

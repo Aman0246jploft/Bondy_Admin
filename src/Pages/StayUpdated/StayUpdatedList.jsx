@@ -70,13 +70,13 @@ const StayUpdatedList = () => {
                 <>
                     <div className="table-responsive overflow-x-auto rounded-lg shadow" style={{ backgroundColor: theme.colors.cardBg }}>
                         <table className="min-w-full divide-y divide-gray-200">
-                            <thead style={{ backgroundColor: theme.colors.background }}>
+                            <thead className="bg-slate-100 border-b border-slate-200" style={{ backgroundColor: theme.colors.tableHeaderBg || "#f1f5f9" }}>
                                 <tr>
                                     {["#", "Email", "Signup Date", "Actions"].map((header) => (
                                         <th
                                             key={header}
-                                            className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                                            style={{ color: theme.colors.textSecondary }}
+                                            className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-800"
+                                            style={{ color: theme.colors.tableHeaderText || "#1e293b" }}
                                         >
                                             {header}
                                         </th>

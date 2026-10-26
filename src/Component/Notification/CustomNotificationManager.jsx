@@ -516,7 +516,7 @@ const CustomNotificationManager = () => {
         {/* History Table */}
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="bg-gray-50 border-b text-xs font-semibold uppercase text-gray-500" style={{ borderColor: theme.colors.border }}>
+            <thead className="bg-slate-100 border-b text-xs font-bold uppercase text-slate-800" style={{ borderColor: theme.colors.border }}>
               <tr>
                 <th className="py-3.5 px-5">Date & Time</th>
                 <th className="py-3.5 px-5">Target Audience</th>

@@ -1060,7 +1060,7 @@ const FinanceDashboard = () => {
           {/* Master Transactions Ledger Table */}
           <div className="table-responsive overflow-x-auto border-t">
             <table className="min-w-full text-sm">
-              <thead className="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider">
+              <thead className="bg-slate-100 border-b border-slate-200 text-slate-800 text-xs font-bold uppercase tracking-wider">
                 <tr>
                   <th className="px-4 py-3 text-left">Ref / ID</th>
                   <th className="px-4 py-3 text-left">Type & Flow</th>
@@ -1312,10 +1312,10 @@ const FinanceDashboard = () => {
 
           <div className="table-responsive overflow-x-auto">
             <table className="min-w-full text-sm">
-              <thead className="bg-gray-50">
+              <thead className="bg-slate-100 border-b border-slate-200">
                 <tr>
                   {["Request ID", "Organizer", "Amount", "Payment Reference", "Status", "Requested On", "Actions"].map((h) => (
-                    <th key={h} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th key={h} className="px-4 py-3 text-left text-xs font-bold text-slate-800 uppercase tracking-wider">
                       {h}
                     </th>
                   ))}

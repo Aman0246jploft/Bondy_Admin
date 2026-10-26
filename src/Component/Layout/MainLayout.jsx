@@ -59,7 +59,7 @@ const MainLayout = ({ children }) => {
 
         {/* Page Content */}
         <main
-          className="flex-1 p-6 overflow-y-auto"
+          className="flex-1 px-4 md:px-6 pt-3 pb-8 overflow-y-auto"
           style={{
             backgroundColor: theme.colors.background,
             color: theme.colors.textPrimary,

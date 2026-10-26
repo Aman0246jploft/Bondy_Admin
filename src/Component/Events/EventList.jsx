@@ -271,7 +271,7 @@ const EventList = () => {
     ];
 
     return (
-        <div className="w-full px-[10px] space-y-6 pb-12">
+        <div className="w-full space-y-4 pb-12">
             <div className="flex justify-between items-center">
                 <h2 className="text-xl font-bold">Event Management</h2>
                 <div className="flex gap-4">

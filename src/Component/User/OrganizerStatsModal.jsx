@@ -321,7 +321,7 @@ const OrganizerStatsModal = ({ organizer, onClose }) => {
                 {/* Transactions Table */}
                 <div className="table-responsive overflow-x-auto">
                     <table className="min-w-full bg-white border">
-                        <thead className="bg-gray-100">
+                        <thead className="bg-slate-100 border-b border-slate-200 text-slate-800">
                             <tr>
                                 <th className="px-4 py-2 border text-left text-sm font-semibold">Booking ID</th>
                                 <th className="px-4 py-2 border text-left text-sm font-semibold">Type</th>
@@ -452,7 +452,7 @@ const OrganizerStatsModal = ({ organizer, onClose }) => {
                 {/* Wallet History Table */}
                 <div className="table-responsive overflow-x-auto">
                     <table className="min-w-full bg-white border">
-                        <thead className="bg-gray-100">
+                        <thead className="bg-slate-100 border-b border-slate-200 text-slate-800">
                             <tr>
                                 <th className="px-4 py-2 border text-left text-sm font-semibold">Type</th>
                                 <th className="px-4 py-2 border text-right text-sm font-semibold">Amount</th>
@@ -555,7 +555,7 @@ const OrganizerStatsModal = ({ organizer, onClose }) => {
                 {/* Payouts Table */}
                 <div className="table-responsive overflow-x-auto">
                     <table className="min-w-full bg-white border">
-                        <thead className="bg-gray-100">
+                        <thead className="bg-slate-100 border-b border-slate-200 text-slate-800">
                             <tr>
                                 <th className="px-4 py-2 border text-left text-sm font-semibold">Amount</th>
                                 <th className="px-4 py-2 border text-left text-sm font-semibold">Status</th>

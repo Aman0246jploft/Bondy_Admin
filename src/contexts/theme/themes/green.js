@@ -20,6 +20,11 @@ export const greenTheme = {
     headerText: "#166534",       // dark green text for header
     headerBorder: "#bbf7d0",     // light green border for header
 
+    // Table Header
+    tableHeaderBg: "#dcfce7",
+    tableHeaderText: "#14532d",
+    tableHeaderBorder: "#bbf7d0",
+
     // Text
     textPrimary: "#14532d",      // very dark green for main text
     textSecondary: "#166534",    // dark green for secondary text

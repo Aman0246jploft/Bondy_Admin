@@ -20,6 +20,11 @@ export const redTheme = {
     headerText: "#7f1d1d",       // dark red text for header
     headerBorder: "#fecaca",     // light red border for header
 
+    // Table Header
+    tableHeaderBg: "#fee2e2",
+    tableHeaderText: "#450a0a",
+    tableHeaderBorder: "#fecaca",
+
     // Text
     textPrimary: "#450a0a",      // very dark red for main text
     textSecondary: "#7f1d1d",    // dark red for secondary text

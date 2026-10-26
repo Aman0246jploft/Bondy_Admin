@@ -152,15 +152,22 @@ const DataTable = ({
           className="min-w-full text-sm text-left table-fixed border"
           style={{ borderColor: theme?.colors?.border || "#e5e7eb" }}
         >
-          <thead style={{ backgroundColor: theme?.colors?.tertiary || "#f5f5f5" }}>
+          <thead
+            className="border-b"
+            style={{
+              backgroundColor: theme?.colors?.tableHeaderBg || "#f1f5f9",
+              borderColor: theme?.colors?.tableHeaderBorder || "#cbd5e1",
+            }}
+          >
             <tr>
               {columns.map((col) => (
                 <th
                   key={col.key}
-                  className="p-2.5 font-semibold text-xs border-b uppercase tracking-wider"
+                  className="py-3 px-3.5 font-bold text-xs border-b uppercase tracking-wider"
                   style={{
-                    color: theme?.colors?.textSecondary || "#64748b",
-                    borderColor: theme?.colors?.borderLight || "#f1f5f9",
+                    backgroundColor: theme?.colors?.tableHeaderBg || "#f1f5f9",
+                    color: theme?.colors?.tableHeaderText || "#1e293b",
+                    borderColor: theme?.colors?.tableHeaderBorder || "#cbd5e1",
                     width: col.width || "auto",
                   }}
                 >

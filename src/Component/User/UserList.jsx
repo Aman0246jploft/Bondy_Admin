@@ -304,7 +304,7 @@ const UserList = ({ roleId, title }) => {
     ];
 
     return (
-        <div className="w-full px-[10px] space-y-6 pb-12">
+        <div className="w-full space-y-4 pb-12">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-200/60 flex items-center justify-center text-teal-700 shadow-xs font-semibold text-lg">

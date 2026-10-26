@@ -21,6 +21,11 @@ export const lightTheme = {
     headerText: "#0f172a",
     headerBorder: "#e2e8f0",
 
+    // Table Header
+    tableHeaderBg: "#f1f5f9",
+    tableHeaderText: "#1e293b",
+    tableHeaderBorder: "#cbd5e1",
+
     // Text
     textPrimary: "#0f172a",
     textSecondary: "#475569",

@@ -406,7 +406,7 @@ const UserDetail = () => {
     const licenceDoc = verifications?.idVerification?.drivingLicence || verifications?.drivingLicence;
 
     return (
-        <div className="w-full px-[10px] space-y-6 pb-12">
+        <div className="w-full space-y-4 pb-12">
 
             {/* ── 1. Modern Minimal Header & Actions Bar ── */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
@@ -805,7 +805,7 @@ const UserDetail = () => {
                 </div>
 
                 {/* Tab Panes */}
-                <div className="p-6">
+                <div className="p-4 sm:p-5">
 
                     {/* ── CUSTOMER: ORDERS & BOOKINGS ── */}
                     {isCustomer && activeTab === "bookings" && (
@@ -834,8 +834,8 @@ const UserDetail = () => {
                             {filteredBookings.length > 0 ? (
                                 <div className="overflow-x-auto rounded-xl border border-slate-200">
                                     <table className="w-full text-left text-xs">
-                                        <thead>
-                                            <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider text-[11px]">
+                                        <thead className="bg-slate-100 border-b border-slate-200">
+                                            <tr className="text-slate-800 font-bold uppercase tracking-wider text-[11px]">
                                                 <th className="py-3 px-4">Order ID</th>
                                                 <th className="py-3 px-4">Item / Event</th>
                                                 <th className="py-3 px-4">Type</th>

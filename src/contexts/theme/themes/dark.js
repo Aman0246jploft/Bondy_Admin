@@ -20,6 +20,11 @@ export const darkTheme = {
     headerText: "#f3f4f6",       // light gray text for header
     headerBorder: "#374151",     // dark border for header
 
+    // Table Header
+    tableHeaderBg: "#1e293b",
+    tableHeaderText: "#f3f4f6",
+    tableHeaderBorder: "#374151",
+
     // Text
     textPrimary: "#f3f4f6",      // light gray for main text
     textSecondary: "#d1d5db",    // medium light gray for secondary text
