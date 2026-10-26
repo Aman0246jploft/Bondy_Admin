@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../Sidebar/Sidebar";
+import Header from "../Header/Header";
 import { useTheme } from "../../contexts/theme/hook/useTheme";
-import { AiOutlineMenu } from "react-icons/ai";
 
 const MainLayout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -54,23 +54,12 @@ const MainLayout = ({ children }) => {
               : "ml-16"
           }`}
       >
-        {/* Mobile Hamburger (only visible on mobile when sidebar is closed) */}
-        {isMobile && !isSidebarOpen && (
-          <div className="p-3 md:hidden flex items-center justify-between">
-            <button
-              onClick={toggleSidebar}
-              className="p-2 rounded-xl bg-white border border-slate-200 shadow-xs text-slate-700 hover:bg-slate-50 transition cursor-pointer"
-              aria-label="Open sidebar"
-            >
-              <AiOutlineMenu className="w-5 h-5" />
-            </button>
-            <span className="font-bold text-sm text-slate-800">Bondy Admin</span>
-          </div>
-        )}
+        {/* Header */}
+        <Header toggleSidebar={toggleSidebar} />
 
         {/* Page Content */}
         <main
-          className="flex-1 px-4 md:px-6 pt-4 pb-8 overflow-y-auto"
+          className="flex-1 px-4 md:px-6 pt-3 pb-8 overflow-y-auto"
           style={{
             backgroundColor: theme.colors.background,
             color: theme.colors.textPrimary,
