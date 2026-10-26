@@ -1314,7 +1314,7 @@ const FinanceDashboard = () => {
             <table className="min-w-full text-sm">
               <thead className="bg-gray-50">
                 <tr>
-                  {["#", "Organizer", "Amount", "Payment Reference", "Status", "Requested On", "Actions"].map((h) => (
+                  {["Request ID", "Organizer", "Amount", "Payment Reference", "Status", "Requested On", "Actions"].map((h) => (
                     <th key={h} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       {h}
                     </th>
