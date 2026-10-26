@@ -231,13 +231,13 @@ const Profile = () => {
         }
     };
 
-    if (loadingProfile) {
-        return (
-            <div className="flex items-center justify-center min-h-[400px]">
-                <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
-            </div>
-        );
-    }
+    // if (loadingProfile) {
+    //     return (
+    //         <div className="flex items-center justify-center min-h-[400px]">
+    //             <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
+    //         </div>
+    //     );
+    // }
 
     return (
         <div className="max-w-4xl mx-auto space-y-8 pb-12">
