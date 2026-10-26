@@ -30,7 +30,9 @@ import {
     FiAward,
     FiTrendingUp,
     FiLayers,
-    FiAlertCircle
+    FiAlertCircle,
+    FiEye,
+    FiX
 } from "react-icons/fi";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -184,6 +186,7 @@ const UserDetail = () => {
     const [isPromoting, setIsPromoting] = useState(false);
     const [copiedField, setCopiedField] = useState(null);
     const [imageModal, setImageModal] = useState(null);
+    const [selectedBooking, setSelectedBooking] = useState(null);
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -845,85 +848,107 @@ const UserDetail = () => {
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-slate-100">
-                                            {filteredBookings.map((bk) => (
-                                                <tr key={bk._id} className="hover:bg-slate-50/60 transition">
-                                                    <td className="py-3 px-4 font-mono font-medium text-slate-700">
-                                                        {bk.bookingId}
-                                                    </td>
-                                                    <td className="py-3 px-4">
-                                                        <div className="flex items-center gap-3">
-                                                            <img
-                                                                src={bk.posterImage || "/sidebar-logo.svg"}
-                                                                alt=""
-                                                                className="w-8 h-8 rounded-lg object-cover bg-slate-100 flex-shrink-0 border border-slate-200/60"
-                                                                onError={(e) => {
-                                                                    e.target.src = "/sidebar-logo.svg";
-                                                                }}
-                                                            />
-                                                            <div className="min-w-0">
-                                                                <p className="font-semibold text-slate-900 truncate max-w-xs">{bk.title}</p>
-                                                                {bk.venue && (
-                                                                    <p className="text-[11px] text-slate-400 truncate max-w-xs">
-                                                                        {typeof bk.venue === "object" ? (bk.venue.name || bk.venue.address || "Venue") : bk.venue}
-                                                                    </p>
+                                            {filteredBookings.map((bk) => {
+                                                const targetId = (typeof bk.eventId === "object" ? bk.eventId?._id : bk.eventId) ||
+                                                    (typeof bk.courseId === "object" ? bk.courseId?._id : bk.courseId) ||
+                                                    (typeof bk.itemId === "object" ? bk.itemId?._id : bk.itemId);
+                                                const isCourse = bk.bookingType === "COURSE" || Boolean(bk.courseId);
+
+                                                return (
+                                                    <tr key={bk._id} className="hover:bg-slate-50/60 transition">
+                                                        <td className="py-3 px-4 font-mono font-medium text-slate-700">
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => setSelectedBooking(bk)}
+                                                                className="hover:text-teal-600 hover:underline cursor-pointer transition text-left"
+                                                                title="Click to view full booking details"
+                                                            >
+                                                                {bk.bookingId}
+                                                            </button>
+                                                        </td>
+                                                        <td className="py-3 px-4">
+                                                            <div
+                                                                className="flex items-center gap-3 cursor-pointer group"
+                                                                onClick={() => setSelectedBooking(bk)}
+                                                                title="Click to view details"
+                                                            >
+                                                                <img
+                                                                    src={bk.posterImage || "/sidebar-logo.svg"}
+                                                                    alt=""
+                                                                    className="w-8 h-8 rounded-lg object-cover bg-slate-100 flex-shrink-0 border border-slate-200/60 group-hover:ring-2 group-hover:ring-teal-500/40 transition"
+                                                                    onError={(e) => {
+                                                                        e.target.src = "/sidebar-logo.svg";
+                                                                    }}
+                                                                />
+                                                                <div className="min-w-0">
+                                                                    <p className="font-semibold text-slate-900 group-hover:text-teal-700 transition truncate max-w-xs">{bk.title}</p>
+                                                                    {bk.venue && (
+                                                                        <p className="text-[11px] text-slate-400 truncate max-w-xs">
+                                                                            {typeof bk.venue === "object" ? (bk.venue.name || bk.venue.address || "Venue") : bk.venue}
+                                                                        </p>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="py-3 px-4">
+                                                            <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-700">
+                                                                {bk.bookingType}
+                                                            </span>
+                                                        </td>
+                                                        <td className="py-3 px-4 font-medium text-slate-700">
+                                                            {bk.qty || bk.quantity || 1}
+                                                        </td>
+                                                        <td className="py-3 px-4 font-semibold text-slate-900">
+                                                            ₮{(bk.totalAmount || 0).toLocaleString()}
+                                                        </td>
+                                                        <td className="py-3 px-4">
+                                                            <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${(bk.status || bk.paymentStatus) === "PAID"
+                                                                ? "bg-emerald-50 text-emerald-700 border border-emerald-200/60"
+                                                                : (bk.status || bk.paymentStatus) === "PENDING"
+                                                                    ? "bg-amber-50 text-amber-700 border border-amber-200/60"
+                                                                    : "bg-rose-50 text-rose-700 border border-rose-200/60"
+                                                                }`}>
+                                                                {bk.status || bk.paymentStatus || "PAID"}
+                                                            </span>
+                                                        </td>
+                                                        <td className="py-3 px-4">
+                                                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium ${(bk.checkedInQty > 0 || bk.checkInStatus || bk.tickets?.some((t) => t.isCheckedIn))
+                                                                ? "bg-teal-50 text-teal-700"
+                                                                : "bg-slate-100 text-slate-500"
+                                                                }`}>
+                                                                {(bk.checkedInQty > 0 || bk.checkInStatus || bk.tickets?.some((t) => t.isCheckedIn)) ? "Checked In" : "Not Checked In"}
+                                                            </span>
+                                                        </td>
+                                                        <td className="py-3 px-4 text-slate-500 text-[11px] whitespace-nowrap">
+                                                            {fmtDateOnly(bk.createdAt || bk.date || bk.bookingDate)}
+                                                        </td>
+                                                        <td className="py-3 px-4 text-right whitespace-nowrap">
+                                                            <div className="inline-flex items-center justify-end gap-1.5">
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => setSelectedBooking(bk)}
+                                                                    className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition-all inline-flex items-center gap-1 cursor-pointer"
+                                                                    title="View full booking & ticket details"
+                                                                >
+                                                                    <FiEye className="w-3.5 h-3.5 text-slate-500" />
+                                                                    <span>Details</span>
+                                                                </button>
+                                                                {Boolean(targetId) && (
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => navigate(isCourse ? `/courses/${targetId}` : `/events/${targetId}`)}
+                                                                        className="px-2.5 py-1 bg-[#23ada4] hover:bg-[#1ca398] text-white text-xs font-semibold rounded-lg transition-all inline-flex items-center gap-1 shadow-2xs hover:shadow-xs cursor-pointer whitespace-nowrap"
+                                                                        title={isCourse ? "View Course Details" : "View Event Details"}
+                                                                    >
+                                                                        <span>{isCourse ? "Course" : "Event"}</span>
+                                                                        <FiExternalLink className="w-3 h-3" />
+                                                                    </button>
                                                                 )}
                                                             </div>
-                                                        </div>
-                                                    </td>
-                                                    <td className="py-3 px-4">
-                                                        <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-700">
-                                                            {bk.bookingType}
-                                                        </span>
-                                                    </td>
-                                                    <td className="py-3 px-4 font-medium text-slate-700">
-                                                        {bk.qty || bk.quantity || 1}
-                                                    </td>
-                                                    <td className="py-3 px-4 font-semibold text-slate-900">
-                                                        ₮{(bk.totalAmount || 0).toLocaleString()}
-                                                    </td>
-                                                    <td className="py-3 px-4">
-                                                        <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${(bk.status || bk.paymentStatus) === "PAID"
-                                                            ? "bg-emerald-50 text-emerald-700 border border-emerald-200/60"
-                                                            : (bk.status || bk.paymentStatus) === "PENDING"
-                                                                ? "bg-amber-50 text-amber-700 border border-amber-200/60"
-                                                                : "bg-rose-50 text-rose-700 border border-rose-200/60"
-                                                            }`}>
-                                                            {bk.status || bk.paymentStatus || "PAID"}
-                                                        </span>
-                                                    </td>
-                                                    <td className="py-3 px-4">
-                                                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium ${(bk.checkedInQty > 0 || bk.checkInStatus || bk.tickets?.some((t) => t.isCheckedIn))
-                                                            ? "bg-teal-50 text-teal-700"
-                                                            : "bg-slate-100 text-slate-500"
-                                                            }`}>
-                                                            {(bk.checkedInQty > 0 || bk.checkInStatus || bk.tickets?.some((t) => t.isCheckedIn)) ? "Checked In" : "Not Checked In"}
-                                                        </span>
-                                                    </td>
-                                                    <td className="py-3 px-4 text-slate-500 text-[11px] whitespace-nowrap">
-                                                        {fmtDateOnly(bk.createdAt || bk.date || bk.bookingDate)}
-                                                    </td>
-                                                    <td className="py-3 px-4 text-right">
-                                                        {bk.eventId && (
-                                                            <button
-                                                                onClick={() => navigate(`/events/${bk.eventId}`)}
-                                                                className="text-slate-600 hover:text-slate-900 text-xs font-semibold hover:underline inline-flex items-center gap-1 cursor-pointer"
-                                                            >
-                                                                <span>View</span>
-                                                                <FiExternalLink className="w-3 h-3" />
-                                                            </button>
-                                                        )}
-                                                        {bk.courseId && (
-                                                            <button
-                                                                onClick={() => navigate(`/courses/${bk.courseId}`)}
-                                                                className="text-slate-600 hover:text-slate-900 text-xs font-semibold hover:underline inline-flex items-center gap-1 cursor-pointer"
-                                                            >
-                                                                <span>View</span>
-                                                                <FiExternalLink className="w-3 h-3" />
-                                                            </button>
-                                                        )}
-                                                    </td>
-                                                </tr>
-                                            ))}
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
                                         </tbody>
                                     </table>
                                 </div>
@@ -1498,6 +1523,197 @@ const UserDetail = () => {
                         />
                         <div className="text-center py-2 text-xs text-slate-500">
                             Click anywhere to close
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* ── Order / Booking Details Modal ── */}
+            {selectedBooking && (
+                <div
+                    onClick={() => setSelectedBooking(null)}
+                    className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-200"
+                >
+                    <div
+                        onClick={(e) => e.stopPropagation()}
+                        className="bg-white rounded-2xl w-full max-w-xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh]"
+                    >
+                        {/* Modal Header */}
+                        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+                            <div>
+                                <div className="flex items-center gap-2">
+                                    <h3 className="text-base font-bold text-slate-900">Booking Details</h3>
+                                    <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-200/80 text-slate-700">
+                                        {selectedBooking.bookingType || "BOOKING"}
+                                    </span>
+                                </div>
+                                <p className="text-xs text-slate-500 font-mono mt-0.5">
+                                    {selectedBooking.bookingId}
+                                </p>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setSelectedBooking(null)}
+                                className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition cursor-pointer"
+                            >
+                                <FiX className="w-4 h-4" />
+                            </button>
+                        </div>
+
+                        {/* Modal Body */}
+                        <div className="p-6 space-y-5 overflow-y-auto">
+                            {/* Item Banner Card */}
+                            <div className="flex items-center gap-4 p-3.5 bg-slate-50 rounded-xl border border-slate-100">
+                                <img
+                                    src={selectedBooking.posterImage || "/sidebar-logo.svg"}
+                                    alt=""
+                                    className="w-14 h-14 rounded-lg object-cover bg-white flex-shrink-0 border border-slate-200/70"
+                                    onError={(e) => {
+                                        e.target.src = "/sidebar-logo.svg";
+                                    }}
+                                />
+                                <div className="min-w-0 flex-1">
+                                    <h4 className="font-semibold text-slate-900 text-sm truncate">
+                                        {selectedBooking.title}
+                                    </h4>
+                                    {selectedBooking.venue && (
+                                        <p className="text-xs text-slate-500 flex items-center gap-1 mt-1 truncate">
+                                            <FiMapPin className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                                            <span>
+                                                {typeof selectedBooking.venue === "object"
+                                                    ? (selectedBooking.venue.name || selectedBooking.venue.address || "Venue")
+                                                    : selectedBooking.venue}
+                                            </span>
+                                        </p>
+                                    )}
+                                    <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
+                                        <FiCalendar className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                                        <span>{fmtDateOnly(selectedBooking.date || selectedBooking.createdAt)}</span>
+                                    </p>
+                                </div>
+                                {Boolean(selectedBooking.itemId || selectedBooking.eventId || selectedBooking.courseId) && (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const targetId = (typeof selectedBooking.eventId === "object" ? selectedBooking.eventId?._id : selectedBooking.eventId) ||
+                                                (typeof selectedBooking.courseId === "object" ? selectedBooking.courseId?._id : selectedBooking.courseId) ||
+                                                (typeof selectedBooking.itemId === "object" ? selectedBooking.itemId?._id : selectedBooking.itemId);
+                                            const isCourse = selectedBooking.bookingType === "COURSE" || Boolean(selectedBooking.courseId);
+                                            setSelectedBooking(null);
+                                            if (targetId) {
+                                                navigate(isCourse ? `/courses/${targetId}` : `/events/${targetId}`);
+                                            }
+                                        }}
+                                        className="px-3 py-1.5 bg-[#23ada4] hover:bg-[#1ca398] text-white text-xs font-semibold rounded-lg transition inline-flex items-center gap-1 shadow-2xs cursor-pointer flex-shrink-0"
+                                    >
+                                        <span>View {selectedBooking.bookingType === "COURSE" ? "Course" : "Event"}</span>
+                                        <FiExternalLink className="w-3 h-3" />
+                                    </button>
+                                )}
+                            </div>
+
+                            {/* Summary Metrics */}
+                            <div className="grid grid-cols-3 gap-3">
+                                <div className="p-3 bg-slate-50/80 rounded-xl border border-slate-100">
+                                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Payment</span>
+                                    <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider mt-1 ${(selectedBooking.status || selectedBooking.paymentStatus) === "PAID"
+                                        ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                        : (selectedBooking.status || selectedBooking.paymentStatus) === "PENDING"
+                                            ? "bg-amber-50 text-amber-700 border border-amber-200"
+                                            : "bg-rose-50 text-rose-700 border border-rose-200"
+                                        }`}>
+                                        {selectedBooking.status || selectedBooking.paymentStatus || "PAID"}
+                                    </span>
+                                </div>
+                                <div className="p-3 bg-slate-50/80 rounded-xl border border-slate-100">
+                                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Passes / Qty</span>
+                                    <span className="text-sm font-bold text-slate-800 mt-1 block">
+                                        {selectedBooking.qty || selectedBooking.quantity || 1}
+                                    </span>
+                                </div>
+                                <div className="p-3 bg-slate-50/80 rounded-xl border border-slate-100">
+                                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Total Amount</span>
+                                    <span className="text-sm font-bold text-slate-900 mt-1 block">
+                                        ₮{(selectedBooking.totalAmount || 0).toLocaleString()}
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* Ticket Breakdown */}
+                            <div className="border border-slate-200/80 rounded-xl overflow-hidden">
+                                <div className="px-4 py-2.5 bg-slate-50 border-b border-slate-200/80 flex items-center justify-between">
+                                    <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">Tickets / Passes Breakdown</span>
+                                    <span className="text-[11px] font-medium text-slate-500">
+                                        {(selectedBooking.tickets?.length || 0)} ticket type{(selectedBooking.tickets?.length || 0) === 1 ? "" : "s"}
+                                    </span>
+                                </div>
+                                {selectedBooking.tickets && selectedBooking.tickets.length > 0 ? (
+                                    <div className="divide-y divide-slate-100">
+                                        {selectedBooking.tickets.map((t, idx) => (
+                                            <div key={t.ticketId || idx} className="p-3.5 flex items-center justify-between text-xs hover:bg-slate-50/50 transition">
+                                                <div>
+                                                    <p className="font-semibold text-slate-800">{t.ticketName || selectedBooking.ticketName || "Standard Pass"}</p>
+                                                    <p className="text-[11px] text-slate-400 mt-0.5">
+                                                        Qty: <span className="font-medium text-slate-600">{t.qty || 1}</span>
+                                                    </p>
+                                                </div>
+                                                <div className="text-right">
+                                                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium ${t.isCheckedIn
+                                                        ? "bg-teal-50 text-teal-700 border border-teal-200/60"
+                                                        : "bg-slate-100 text-slate-500"
+                                                        }`}>
+                                                        {t.isCheckedIn ? "Checked In" : "Not Checked In"}
+                                                    </span>
+                                                    {t.checkedInAt && (
+                                                        <p className="text-[10px] text-slate-400 mt-0.5">
+                                                            {fmt(t.checkedInAt)}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="p-4 text-center text-xs text-slate-500">
+                                        Single pass booking ({selectedBooking.qty || 1} qty)
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Additional metadata */}
+                            <div className="grid grid-cols-2 gap-3 text-xs bg-slate-50/60 p-3.5 rounded-xl border border-slate-100">
+                                <div>
+                                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Booked On</span>
+                                    <span className="text-slate-700 font-medium mt-0.5 block">
+                                        {fmt(selectedBooking.createdAt)}
+                                    </span>
+                                </div>
+                                <div>
+                                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Order Reference</span>
+                                    <div className="flex items-center gap-1.5 mt-0.5">
+                                        <span className="font-mono text-slate-700 font-medium">{selectedBooking.bookingId}</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleCopy(selectedBooking.bookingId, "Booking ID")}
+                                            className="text-slate-400 hover:text-slate-700 transition cursor-pointer"
+                                            title="Copy ID"
+                                        >
+                                            <FiCopy className="w-3 h-3" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Modal Footer */}
+                        <div className="px-6 py-3 border-t border-slate-100 bg-slate-50/60 flex items-center justify-end">
+                            <button
+                                type="button"
+                                onClick={() => setSelectedBooking(null)}
+                                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition cursor-pointer"
+                            >
+                                Close
+                            </button>
                         </div>
                     </div>
                 </div>
