@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   AiOutlineHome,
   AiOutlineDashboard,
@@ -19,14 +19,48 @@ import {
   AiOutlineBug,
   AiOutlineLayout,
   AiOutlineUser,
+  AiOutlineLogout,
 } from "react-icons/ai";
 import { useTheme } from "../../contexts/theme/hook/useTheme";
+import userApi from "../../api/userApi";
 import clsx from "clsx";
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const { theme } = useTheme();
   const location = useLocation();
+  const navigate = useNavigate();
   const [hoveredItem, setHoveredItem] = useState(null);
+  const [userData, setUserData] = useState(() => {
+    try {
+      const saved = localStorage.getItem("kadSunInfo");
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await userApi.getSelfProfile();
+        if (response.data && response.data.data) {
+          setUserData(response.data.data.user);
+        }
+      } catch (error) { }
+    };
+    fetchUserProfile();
+
+    const handleProfileUpdate = () => fetchUserProfile();
+    window.addEventListener("admin_profile_updated", handleProfileUpdate);
+    return () => window.removeEventListener("admin_profile_updated", handleProfileUpdate);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("kadSunInfo");
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
   const [activeUserRole, setActiveUserRole] = useState(() => {
     try {
       return sessionStorage.getItem("last_active_user_role") || null;
@@ -281,6 +315,45 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             })}
           </ul>
         </nav>
+
+        {/* User Profile & Sign Out Footer */}
+        <div
+          className={clsx(
+            "p-3 border-t flex items-center justify-between gap-2 flex-shrink-0 bg-white/50",
+            !isOpen && "md:justify-center md:px-2"
+          )}
+          style={{ borderColor: theme.colors.border }}
+        >
+          <NavLink
+            to="/profile"
+            className={clsx(
+              "flex items-center gap-2.5 min-w-0 flex-1 hover:opacity-85 transition",
+              !isOpen && "md:hidden"
+            )}
+            title="View Profile"
+          >
+            <div className="w-8 h-8 rounded-full bg-teal-100 text-teal-800 font-bold flex items-center justify-center text-xs flex-shrink-0">
+              {userData?.firstName ? userData.firstName[0].toUpperCase() : "A"}
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs font-semibold truncate" style={{ color: theme.colors.textPrimary }}>
+                {userData?.firstName ? `${userData.firstName} ${userData.lastName || ""}` : "Bondy Admin"}
+              </p>
+              <p className="text-[10px] text-slate-400 truncate">
+                {userData?.email || "admin@bondy.com"}
+              </p>
+            </div>
+          </NavLink>
+
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer flex-shrink-0"
+            title="Sign Out"
+          >
+            <AiOutlineLogout className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* Floating Tooltip for Collapsed Sidebar (rendered outside scrollable hierarchy) */}
