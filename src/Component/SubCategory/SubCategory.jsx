@@ -21,6 +21,14 @@ export default function SubCategory() {
   );
   let { data = [], total = 0 } = categoryList || {};
 
+  const handleEdit = (row) => {
+    console.log("Edit category", row);
+  };
+
+  const handleDelete = (row) => {
+    console.log("Delete category", row);
+  };
+
   useEffect(() => {
     dispatch(mainCategory(pagination))
       .then((result) => {

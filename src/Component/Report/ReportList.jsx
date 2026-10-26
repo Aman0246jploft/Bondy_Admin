@@ -4,9 +4,11 @@ import { FiEye, FiTrash2, FiCheckCircle, FiXCircle } from "react-icons/fi";
 import authAxiosClient from "../../api/authAxiosClient";
 import { toast } from "react-toastify";
 import { useTheme } from "../../contexts/theme/hook/useTheme";
+import { useConfirm } from "../../contexts/confirm/ConfirmContext";
 
 const ReportList = ({ title }) => {
     const { theme } = useTheme();
+    const confirm = useConfirm();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [total, setTotal] = useState(0);
@@ -104,7 +106,13 @@ const ReportList = ({ title }) => {
     };
 
     const handleDeleteReport = async (id) => {
-        if (!window.confirm("Are you sure you want to delete this report record?")) return;
+        const confirmed = await confirm({
+            title: "Delete Report",
+            message: "Are you sure you want to delete this report record? This action cannot be undone.",
+            confirmText: "Delete",
+            variant: "danger",
+        });
+        if (!confirmed) return;
 
         try {
             const response = await authAxiosClient.delete(`/report/delete/${id}`);
@@ -132,7 +140,13 @@ const ReportList = ({ title }) => {
 
     const handleActivateUser = async (user) => {
         if (!user) return;
-        if (!window.confirm(`Are you sure you want to activate ${user.firstName || 'this user'}?`)) {
+        const confirmed = await confirm({
+            title: "Activate User",
+            message: `Are you sure you want to activate ${user.firstName || 'this user'}?`,
+            confirmText: "Activate",
+            variant: "primary",
+        });
+        if (!confirmed) {
             return;
         }
 
@@ -158,7 +172,13 @@ const ReportList = ({ title }) => {
             return;
         }
 
-        if (!window.confirm(`Are you sure you want to deactivate ${user.firstName || 'this user'}?`)) {
+        const confirmed = await confirm({
+            title: "Deactivate User",
+            message: `Are you sure you want to deactivate ${user.firstName || 'this user'}?`,
+            confirmText: "Deactivate",
+            variant: "warning",
+        });
+        if (!confirmed) {
             return;
         }
 

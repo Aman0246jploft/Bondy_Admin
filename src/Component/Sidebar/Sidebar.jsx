@@ -224,16 +224,9 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                 <li
                   key={item.name}
                   style={{
-                    backgroundColor: isActive
-                      ? theme.colors.sidebarActive
-                      : undefined,
-                    color: theme.colors.textPrimary,
                     borderRadius: theme.borderRadius.lg,
                   }}
                   onMouseEnter={(e) => {
-                    if (!isActive)
-                      e.currentTarget.style.backgroundColor =
-                        theme.colors.sidebarHover;
                     if (!isOpen && typeof window !== "undefined" && window.innerWidth >= 768) {
                       const rect = e.currentTarget.getBoundingClientRect();
                       setHoveredItem({
@@ -243,8 +236,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                       });
                     }
                   }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) e.currentTarget.style.backgroundColor = "";
+                  onMouseLeave={() => {
                     if (!isOpen) {
                       setHoveredItem(null);
                     }
@@ -253,30 +245,31 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                   <NavLink
                     to={item.href}
                     className={clsx(
-                      "group flex items-center px-3 py-3 rounded-xl transition-all duration-200",
+                      "group flex items-center px-3.5 py-3 rounded-xl transition-all duration-200 font-medium",
                       isActive
-                        ? `bg-${theme.colors.sidebarActive} text-${theme.colors.textPrimary} shadow-lg`
-                        : `text-${theme.colors.textPrimary} `,
+                        ? "shadow-md"
+                        : "hover:bg-teal-50/70 hover:text-[#178c82]",
                       !isOpen && "md:justify-center md:px-2"
                     )}
                     style={{
-                      backgroundColor: isActive
-                        ? theme.colors.sidebarActive
-                        : undefined,
-                      color: theme.colors.textPrimary,
+                      background: isActive
+                        ? "linear-gradient(135deg, #23ada4 0%, #178c82 100%)"
+                        : "transparent",
+                      color: isActive ? "#ffffff" : theme.colors.sidebarText || "#64748b",
+                      boxShadow: isActive ? "0 4px 14px rgba(35, 173, 164, 0.35)" : undefined,
                     }}
                     onClick={() => {
-                      // Close sidebar on mobile when a link is clicked
                       if (window.innerWidth < 768) {
                         toggleSidebar();
                       }
                     }}
                   >
-                    <Icon className="w-6 h-6 flex-shrink-0" />
+                    <Icon className={clsx("w-5 h-5 flex-shrink-0 transition-transform duration-200 group-hover:scale-110", isActive ? "text-white" : "text-current")} />
                     {/* Always show text on mobile, conditionally on desktop */}
                     <span
                       className={clsx(
-                        "ml-3 font-medium text-sm overflow-hidden whitespace-nowrap",
+                        "ml-3 text-sm overflow-hidden whitespace-nowrap",
+                        isActive ? "font-semibold text-white" : "",
                         !isOpen && "md:hidden"
                       )}
                     >

@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --primary-teal: #23ada4;
+  --primary-teal-hover: #1ca398;
+  --primary-teal-active: #178c82;
+  --primary-teal-light: #e6f7f6;
+  --primary-teal-glow: rgba(35, 173, 164, 0.25);
+}
+
 /* GlobalLoader Animations matching User app */
 @keyframes bondyPulse {
   0%, 100% {
@@ -21,4 +29,121 @@
   100% {
     left: 100%;
   }
+}
+
+/* Modal Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-scaleUp {
+  animation: scaleUp 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Website matching Toastify Custom Theme */
+.Toastify__toast-container {
+  z-index: 99999 !important;
+  padding: 12px !important;
+}
+
+.Toastify__toast {
+  border-radius: 14px !important;
+  font-family: inherit !important;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.12), 0 8px 10px -6px rgba(15, 23, 42, 0.08) !important;
+  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+  padding: 14px 16px !important;
+  margin-bottom: 10px !important;
+}
+
+.Toastify__toast--success {
+  border-left: 4px solid #23ada4 !important;
+}
+
+.Toastify__progress-bar--success {
+  background: linear-gradient(90deg, #23ada4, #178c82) !important;
+}
+
+.Toastify__toast--info {
+  border-left: 4px solid #23ada4 !important;
+}
+
+.Toastify__progress-bar--info {
+  background: #23ada4 !important;
+}
+
+.Toastify__toast--error {
+  border-left: 4px solid #ef4444 !important;
+}
+
+.Toastify__progress-bar--error {
+  background: #ef4444 !important;
+}
+
+.Toastify__toast--warning {
+  border-left: 4px solid #f59e0b !important;
+}
+
+.Toastify__progress-bar--warning {
+  background: #f59e0b !important;
+}
+
+/* Custom button utilities matching website brand */
+.btn-bondy-primary {
+  background-color: var(--primary-teal);
+  color: #ffffff;
+  transition: all 0.2s ease;
+}
+.btn-bondy-primary:hover {
+  background-color: var(--primary-teal-hover);
+  box-shadow: 0 4px 12px var(--primary-teal-glow);
+}
+.btn-bondy-primary:active {
+  background-color: var(--primary-teal-active);
+}
+
+/* Global input focus ring matching brand teal */
+input:focus, select:focus, textarea:focus {
+  outline: none;
+}
+input:focus-visible, select:focus-visible, textarea:focus-visible {
+  border-color: #23ada4 !important;
+  box-shadow: 0 0 0 3px rgba(35, 173, 164, 0.18) !important;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }

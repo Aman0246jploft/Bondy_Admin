@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { AiOutlinePlus, AiOutlineEdit, AiOutlineDelete, AiOutlineClose } from "react-icons/ai";
 import { useTheme } from "../../contexts/theme/hook/useTheme";
+import { useConfirm } from "../../contexts/confirm/ConfirmContext";
 import Modal from "react-modal";
 
 // Styles for react-modal
@@ -31,6 +32,7 @@ Modal.setAppElement('#root'); // Important for accessibility
 
 const FAQList = () => {
     const { theme } = useTheme();
+    const confirm = useConfirm();
     const [faqs, setFaqs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -236,7 +238,14 @@ const FAQList = () => {
     };
 
     const handleTopicDelete = async (topic) => {
-        if (!window.confirm(`Are you sure you want to delete “${topic.name}”?`)) return;
+        const confirmed = await confirm({
+            title: "Delete FAQ Topic",
+            message: `Are you sure you want to delete topic "${topic.name}"? This action cannot be undone.`,
+            confirmText: "Delete Topic",
+            variant: "danger",
+        });
+        if (!confirmed) return;
+
         try {
             const token = localStorage.getItem("token");
             const response = await axios.delete(`${API_URL}/api/v1/faq/admin/topics/${topic._id}`, {
@@ -252,7 +261,13 @@ const FAQList = () => {
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm("Are you sure you want to delete this FAQ?")) return;
+        const confirmed = await confirm({
+            title: "Delete FAQ",
+            message: "Are you sure you want to delete this FAQ? This action cannot be undone.",
+            confirmText: "Delete FAQ",
+            variant: "danger",
+        });
+        if (!confirmed) return;
 
         try {
             const token = localStorage.getItem("token");

@@ -7,9 +7,11 @@ import { useNavigate } from "react-router-dom";
 import axiosClient from "../../api/authAxiosClient";
 import OrganizerStatsModal from "./OrganizerStatsModal";
 import { toast } from "react-toastify";
+import { useConfirm } from "../../contexts/confirm/ConfirmContext";
 
 const UserList = ({ roleId, title }) => {
     const navigate = useNavigate();
+    const confirm = useConfirm();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [total, setTotal] = useState(0);
@@ -75,7 +77,13 @@ const UserList = ({ roleId, title }) => {
         }
 
         const actionText = user.isDisable ? "activate" : "deactivate";
-        if (!window.confirm(`Are you sure you want to ${actionText} ${user.firstName || 'this user'}?`)) {
+        const confirmed = await confirm({
+            title: `${user.isDisable ? "Activate" : "Deactivate"} Account`,
+            message: `Are you sure you want to ${actionText} ${user.firstName || 'this user'}'s account?`,
+            confirmText: user.isDisable ? "Activate" : "Deactivate",
+            variant: user.isDisable ? "primary" : "warning",
+        });
+        if (!confirmed) {
             return;
         }
 
@@ -97,6 +105,17 @@ const UserList = ({ roleId, title }) => {
     };
 
     const togglePromote = async (user, index) => {
+        const nextStatus = !user.isPromoted;
+        const confirmed = await confirm({
+            title: nextStatus ? "Promote Organizer" : "Remove Promotion",
+            message: `Are you sure you want to ${nextStatus ? "promote" : "remove promotion for"} ${user.firstName || 'this organizer'} on the homepage?`,
+            confirmText: nextStatus ? "Promote" : "Remove",
+            variant: "primary",
+        });
+        if (!confirmed) {
+            return;
+        }
+
         try {
             const newPromoteStatus = !user.isPromoted;
             const response = await axiosClient.patch(`/user/toggle-promote/${user._id}`, {
@@ -115,16 +134,25 @@ const UserList = ({ roleId, title }) => {
     };
 
     const handleDelete = async (user) => {
-        if (window.confirm(`Are you sure you want to delete ${user.firstName || 'this user'}?`)) {
-            try {
-                const response = await axiosClient.delete(`/user/delete/${user._id}`);
-                if (response.data?.status) {
-                    fetchUsers();
-                }
-            } catch (error) {
-                console.error("Error deleting user:", error);
-                alert(error.message || "Failed to delete user");
+        const confirmed = await confirm({
+            title: "Delete User",
+            message: `Are you sure you want to delete ${user.firstName || 'this user'}? This action cannot be undone.`,
+            confirmText: "Delete",
+            variant: "danger",
+        });
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            const response = await axiosClient.delete(`/user/delete/${user._id}`);
+            if (response.data?.status) {
+                toast.success("User deleted successfully");
+                fetchUsers();
             }
+        } catch (error) {
+            console.error("Error deleting user:", error);
+            toast.error(error.message || "Failed to delete user");
         }
     };
 
@@ -246,7 +274,7 @@ const UserList = ({ roleId, title }) => {
                                 },
                             })
                         }
-                        className="px-3 py-1 bg-teal-600 text-white text-xs font-medium rounded hover:bg-teal-700 transition whitespace-nowrap shadow-2xs"
+                        className="px-3.5 py-1.5 bg-[#23ada4] hover:bg-[#1ca398] text-white text-xs font-semibold rounded-lg transition-all whitespace-nowrap shadow-xs hover:shadow-md cursor-pointer"
                     >
                         View Details
                     </button>

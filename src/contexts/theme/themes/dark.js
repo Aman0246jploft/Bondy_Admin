@@ -12,7 +12,7 @@ export const darkTheme = {
     // Sidebar
     sidebarText: "#9ca3af",      // light gray for text in the sidebar
     sidebarTextHover: "#f3f4f6", // very light gray text on hover for better contrast
-    sidebarActive: "#3b82f6",    // blue for active sidebar items (same as light)
+    sidebarActive: "#23ada4",    // brand teal for active sidebar items
     sidebarHover: "#374151",     // darker gray hover effect for sidebar items
 
     // Header
@@ -30,10 +30,10 @@ export const darkTheme = {
     borderLight: "#4b5563",      // lighter dark border color for less prominent borders
 
     // Status colors
-    success: "#10b981",          // green for success messages (same as light)
-    warning: "#f59e0b",          // amber/orange for warning messages (same as light)
-    error: "#ef4444",            // red for error messages (same as light)
-    info: "#3b82f6",             // blue for informational messages (same as light)
+    success: "#10b981",          // green for success messages
+    warning: "#f59e0b",          // amber/orange for warning messages
+    error: "#ef4444",            // red for error messages
+    info: "#23ada4",             // brand teal for informational messages
 
     // Button 
     buttonGhost: "transparent",
@@ -41,12 +41,12 @@ export const darkTheme = {
     buttonTextOnDanger: "#ffffff",
     buttonTextOnSecondary: "#f3f4f6",
     buttonTextOnGhost: "#f3f4f6", // light text for ghost buttons
-    buttonPrimary: "#3b82f6",        // teal-500 (same as light)
-    buttonPrimaryHover: "#2563eb",  // teal-600 (same as light)
+    buttonPrimary: "#23ada4",        // brand teal
+    buttonPrimaryHover: "#1ca398",  // brand teal hover
     buttonSecondary: "#374151",      // Dark gray
     buttonSecondaryHover: "#4b5563", // Lighter dark gray
-    buttonDanger: "#ef4444",         // Red-500 (same as light)
-    buttonDangerHover: "#dc2626",    // Red-600 (same as light)
+    buttonDanger: "#ef4444",         // Red-500
+    buttonDangerHover: "#dc2626",    // Red-600
     buttonGhostHover: "#374151",     // Dark gray hover
     buttonBorder: "#4b5563",         // Dark border
 

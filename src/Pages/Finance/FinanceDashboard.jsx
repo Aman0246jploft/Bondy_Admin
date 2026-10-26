@@ -922,7 +922,7 @@ const FinanceDashboard = () => {
           type="button"
           onClick={() => handleTabChange("transactions")}
           className={`pb-3 px-4 text-sm font-semibold transition border-b-2 cursor-pointer flex items-center gap-2 ${activeTab === "transactions"
-            ? "border-teal-600 text-teal-700"
+            ? "border-[#23ada4] text-[#23ada4]"
             : "border-transparent text-gray-500 hover:text-gray-700"
             }`}
         >
@@ -936,7 +936,7 @@ const FinanceDashboard = () => {
           type="button"
           onClick={() => handleTabChange("payouts")}
           className={`pb-3 px-4 text-sm font-semibold transition border-b-2 cursor-pointer flex items-center gap-2 ${activeTab === "payouts"
-            ? "border-teal-600 text-teal-700"
+            ? "border-[#23ada4] text-[#23ada4]"
             : "border-transparent text-gray-500 hover:text-gray-700"
             }`}
         >

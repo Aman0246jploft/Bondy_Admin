@@ -3,8 +3,11 @@ import DataTable from "../Table/DataTable";
 import { FiEdit2, FiPlus } from "react-icons/fi";
 import { BsTrash2 } from "react-icons/bs";
 import authAxiosClient from "../../api/authAxiosClient";
+import { toast } from "react-toastify";
+import { useConfirm } from "../../contexts/confirm/ConfirmContext";
 
 const PromoCodeList = ({ title }) => {
+    const confirm = useConfirm();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [total, setTotal] = useState(0);
@@ -71,25 +74,33 @@ const PromoCodeList = ({ title }) => {
                     validUntil: new Date().toISOString().split('T')[0],
                     active: true
                 });
+                toast.success(editingPromo ? "Promo code updated successfully" : "Promo code created successfully");
                 fetchPromoCodes();
             }
         } catch (error) {
             console.error("Save error:", error);
-            alert(error.message || "Failed to save promo code");
+            toast.error(error.message || "Failed to save promo code");
         }
     };
 
     const handleDelete = async (promo) => {
-        if (window.confirm(`Are you sure you want to delete promo code "${promo.code}"?`)) {
-            try {
-                const response = await authAxiosClient.post("/promocode/delete", { id: promo._id });
-                if (response.data?.status) {
-                    fetchPromoCodes();
-                }
-            } catch (error) {
-                console.error("Delete error:", error);
-                alert(error.message || "Failed to delete promo code");
+        const confirmed = await confirm({
+            title: "Delete Promo Code",
+            message: `Are you sure you want to delete promo code "${promo.code}"? This action cannot be undone.`,
+            confirmText: "Delete",
+            variant: "danger",
+        });
+        if (!confirmed) return;
+
+        try {
+            const response = await authAxiosClient.post("/promocode/delete", { id: promo._id });
+            if (response.data?.status) {
+                toast.success("Promo code deleted successfully");
+                fetchPromoCodes();
             }
+        } catch (error) {
+            console.error("Delete error:", error);
+            toast.error(error.message || "Failed to delete promo code");
         }
     };
 
@@ -172,10 +183,10 @@ const PromoCodeList = ({ title }) => {
     return (
         <div className="p-4 space-y-4">
             <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold">{title}</h2>
+                <h2 className="text-xl font-bold text-slate-800">{title}</h2>
                 <button
                     onClick={() => openModal()}
-                    className="bg-teal-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-teal-700"
+                    className="bg-[#23ada4] hover:bg-[#1ca398] text-white px-4 py-2 rounded-xl flex items-center gap-2 font-semibold shadow-xs hover:shadow-md transition cursor-pointer"
                 >
                     <FiPlus /> Add Promo Code
                 </button>
@@ -184,18 +195,18 @@ const PromoCodeList = ({ title }) => {
             <DataTable columns={columns} data={data} loading={loading} />
 
             <div className="flex justify-between items-center mt-4">
-                <span>Total: {total}</span>
+                <span className="text-sm text-slate-500 font-medium">Total: {total}</span>
                 <div className="flex gap-2">
                     <button
-                        className="px-3 py-1 border rounded disabled:opacity-50"
+                        className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm text-slate-600 hover:bg-slate-50 disabled:opacity-40 transition cursor-pointer"
                         disabled={page === 1}
                         onClick={() => setPage(p => p - 1)}
                     >
                         Prev
                     </button>
-                    <span>Page {page} of {Math.ceil(total / limit) || 1}</span>
+                    <span className="text-sm text-slate-600 font-medium px-2 py-1.5">Page {page} of {Math.ceil(total / limit) || 1}</span>
                     <button
-                        className="px-3 py-1 border rounded disabled:opacity-50"
+                        className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm text-slate-600 hover:bg-slate-50 disabled:opacity-40 transition cursor-pointer"
                         disabled={page >= Math.ceil(total / limit)}
                         onClick={() => setPage(p => p + 1)}
                     >
@@ -205,12 +216,21 @@ const PromoCodeList = ({ title }) => {
             </div>
 
             {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-lg w-[32rem]">
-                        <h3 className="text-lg font-bold mb-4">{editingPromo ? "Edit Promo Code" : "Add Promo Code"}</h3>
+                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-fadeIn">
+                    <div className="bg-white p-6 sm:p-7 rounded-2xl w-full max-w-lg shadow-2xl border border-slate-100 animate-scaleUp">
+                        <div className="flex justify-between items-center mb-5 pb-3 border-b border-slate-100">
+                            <h3 className="text-lg font-bold text-slate-900">{editingPromo ? "Edit Promo Code" : "Add Promo Code"}</h3>
+                            <button
+                                type="button"
+                                onClick={() => setIsModalOpen(false)}
+                                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+                            >
+                                ✕
+                            </button>
+                        </div>
                         <form onSubmit={handleSave} className="grid grid-cols-2 gap-4">
                             <div className="col-span-2">
-                                <label className="block text-sm font-medium">Code</label>
+                                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Code</label>
                                 <input
                                     type="text"
                                     required
@@ -289,17 +309,17 @@ const PromoCodeList = ({ title }) => {
                                     onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                                 />
                             </div>
-                            <div className="col-span-2 flex justify-end gap-2 pt-4">
+                            <div className="col-span-2 flex justify-end gap-3 pt-4 border-t border-slate-100">
                                 <button
                                     type="button"
                                     onClick={() => setIsModalOpen(false)}
-                                    className="px-4 py-2 border rounded"
+                                    className="px-4 py-2.5 border border-slate-200 text-slate-700 font-semibold rounded-xl text-sm hover:bg-slate-50 transition cursor-pointer"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700"
+                                    className="px-5 py-2.5 bg-[#23ada4] hover:bg-[#1ca398] text-white font-semibold rounded-xl text-sm shadow-xs transition cursor-pointer"
                                 >
                                     Save
                                 </button>

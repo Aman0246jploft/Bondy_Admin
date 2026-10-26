@@ -398,7 +398,7 @@ const CustomNotificationManager = () => {
               <button
                 type="submit"
                 disabled={!title.trim() || !message.trim()}
-                className="w-full inline-flex items-center justify-center gap-2 py-3 px-5 rounded-xl font-semibold text-white shadow-md transition-all active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed bg-teal-600 hover:bg-teal-700"
+                className="w-full inline-flex items-center justify-center gap-2 py-3 px-5 rounded-xl font-semibold text-white shadow-md transition-all active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed bg-[#23ada4] hover:bg-[#1ca398]"
               >
                 <FiSend className="w-4 h-4" />
                 Review & Send Notification
@@ -725,7 +725,7 @@ const CustomNotificationManager = () => {
                 type="button"
                 onClick={handleSendNotification}
                 disabled={isSending}
-                className="px-5 py-2.5 text-sm font-semibold rounded-xl text-white bg-teal-600 hover:bg-teal-700 shadow-md flex items-center gap-2 transition-all active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
+                className="px-5 py-2.5 text-sm font-semibold rounded-xl text-white bg-[#23ada4] hover:bg-[#1ca398] shadow-md flex items-center gap-2 transition-all active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {isSending ? (
                   <>

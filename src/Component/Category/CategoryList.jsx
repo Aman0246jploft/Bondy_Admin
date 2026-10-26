@@ -3,6 +3,8 @@ import DataTable from "../Table/DataTable";
 import { FiEdit2, FiPlus } from "react-icons/fi";
 import { BsTrash2 } from "react-icons/bs";
 import authAxiosClient from "../../api/authAxiosClient";
+import { toast } from "react-toastify";
+import { useConfirm } from "../../contexts/confirm/ConfirmContext";
 
 const CategoryAvatar = ({ src, name }) => {
     const [imgSrc, setImgSrc] = useState(src || "/Profileimage.png");
@@ -46,6 +48,7 @@ const CategoryAvatar = ({ src, name }) => {
 
 
 const CategoryList = ({ title }) => {
+    const confirm = useConfirm();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [total, setTotal] = useState(0);
@@ -117,7 +120,7 @@ const CategoryList = ({ title }) => {
             }
         } catch (error) {
             console.error("Upload error:", error);
-            alert("Image upload failed");
+            toast.error("Image upload failed");
         } finally {
             setUploading(false);
         }
@@ -141,10 +144,11 @@ const CategoryList = ({ title }) => {
             if (response.data?.status) {
                 const uploadedPath = response.data.data.files[0];
                 setFormData(prev => ({ ...prev, posterImage: uploadedPath }));
+                toast.success("Poster image uploaded");
             }
         } catch (error) {
             console.error("Poster upload error:", error);
-            alert("Poster image upload failed");
+            toast.error("Poster image upload failed");
         } finally {
             setUploadingPoster(false);
         }
@@ -152,7 +156,6 @@ const CategoryList = ({ title }) => {
 
     const handleSave = async (e) => {
         e.preventDefault();
-        console.log("Saving Category Payload:", formData); // Debugging
         try {
             let response;
             if (editingCategory) {
@@ -165,25 +168,33 @@ const CategoryList = ({ title }) => {
                 setIsModalOpen(false);
                 setEditingCategory(null);
                 setFormData({ name: "", name_thi: "", type: "event", image: "", posterImage: "" });
+                toast.success(editingCategory ? "Category updated successfully" : "Category created successfully");
                 fetchCategories();
             }
         } catch (error) {
             console.error("Save error:", error);
-            alert(error.message || "Failed to save category");
+            toast.error(error.message || "Failed to save category");
         }
     };
 
     const handleDelete = async (category) => {
-        if (window.confirm(`Are you sure you want to delete category "${category.name}"?`)) {
-            try {
-                const response = await authAxiosClient.delete(`/category/delete/${category._id}`);
-                if (response.data?.status) {
-                    fetchCategories();
-                }
-            } catch (error) {
-                console.error("Delete error:", error);
-                alert(error.message || "Failed to delete category");
+        const confirmed = await confirm({
+            title: "Delete Category",
+            message: `Are you sure you want to delete category "${category.name}"? This action cannot be undone.`,
+            confirmText: "Delete",
+            variant: "danger",
+        });
+        if (!confirmed) return;
+
+        try {
+            const response = await authAxiosClient.delete(`/category/delete/${category._id}`);
+            if (response.data?.status) {
+                toast.success("Category deleted successfully");
+                fetchCategories();
             }
+        } catch (error) {
+            console.error("Delete error:", error);
+            toast.error(error.message || "Failed to delete category");
         }
     };
 
@@ -219,6 +230,15 @@ const CategoryList = ({ title }) => {
     const handleToggleFeatured = async (category) => {
         if (togglingFeaturedId) return;
 
+        const nextFeatured = !category.featured;
+        const confirmed = await confirm({
+            title: nextFeatured ? "Feature Category" : "Unfeature Category",
+            message: `Are you sure you want to ${nextFeatured ? "feature" : "unfeature"} "${category.name}"?`,
+            confirmText: nextFeatured ? "Feature" : "Unfeature",
+            variant: "primary",
+        });
+        if (!confirmed) return;
+
         setTogglingFeaturedId(category._id);
         try {
             const response = await authAxiosClient.post(`/category/toggle-featured/${category._id}`);
@@ -229,10 +249,11 @@ const CategoryList = ({ title }) => {
                         ? { ...item, featured: updatedFeatured }
                         : item
                 )));
+                toast.success(`Category ${updatedFeatured ? "featured" : "unfeatured"} successfully`);
             }
         } catch (error) {
             console.error("Toggle featured error:", error);
-            alert(error?.response?.data?.message || error.message || "Failed to toggle featured status");
+            toast.error(error?.response?.data?.message || error.message || "Failed to toggle featured status");
             fetchCategories();
         } finally {
             setTogglingFeaturedId(null);
@@ -314,7 +335,7 @@ const CategoryList = ({ title }) => {
                     />
                     <button
                         onClick={() => openModal()}
-                        className="bg-teal-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-teal-700"
+                        className="bg-[#23ada4] hover:bg-[#1ca398] text-white px-4 py-2 rounded-xl flex items-center gap-2 font-semibold shadow-xs hover:shadow-md transition cursor-pointer"
                     >
                         <FiPlus /> Add Category
                     </button>
@@ -324,18 +345,18 @@ const CategoryList = ({ title }) => {
             <DataTable columns={columns} data={data} />
 
             <div className="flex justify-between items-center mt-4">
-                <span>Total: {total}</span>
+                <span className="text-sm text-slate-500 font-medium">Total: {total}</span>
                 <div className="flex gap-2">
                     <button
-                        className="px-3 py-1 border rounded disabled:opacity-50"
+                        className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm text-slate-600 hover:bg-slate-50 disabled:opacity-40 transition cursor-pointer"
                         disabled={page === 1}
                         onClick={() => setPage(p => p - 1)}
                     >
                         Prev
                     </button>
-                    <span>Page {page} of {Math.ceil(total / limit) || 1}</span>
+                    <span className="text-sm text-slate-600 font-medium px-2 py-1.5">Page {page} of {Math.ceil(total / limit) || 1}</span>
                     <button
-                        className="px-3 py-1 border rounded disabled:opacity-50"
+                        className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm text-slate-600 hover:bg-slate-50 disabled:opacity-40 transition cursor-pointer"
                         disabled={page >= Math.ceil(total / limit)}
                         onClick={() => setPage(p => p + 1)}
                     >
@@ -346,16 +367,25 @@ const CategoryList = ({ title }) => {
 
             {/* Modal for Create/Update */}
             {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-lg w-96">
-                        <h3 className="text-lg font-bold mb-4">{editingCategory ? "Edit Category" : "Add Category"}</h3>
+                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-fadeIn">
+                    <div className="bg-white p-6 sm:p-7 rounded-2xl w-full max-w-md shadow-2xl border border-slate-100 animate-scaleUp">
+                        <div className="flex justify-between items-center mb-5 pb-3 border-b border-slate-100">
+                            <h3 className="text-lg font-bold text-slate-900">{editingCategory ? "Edit Category" : "Add Category"}</h3>
+                            <button
+                                type="button"
+                                onClick={() => setIsModalOpen(false)}
+                                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+                            >
+                                ✕
+                            </button>
+                        </div>
                         <form onSubmit={handleSave} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium">Name</label>
+                                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Name</label>
                                 <input
                                     type="text"
                                     required
-                                    className="w-full border p-2 rounded"
+                                    className="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm focus:border-[#23ada4] focus:ring-2 focus:ring-teal-500/20 outline-none transition"
                                     value={formData.name}
                                     onChange={(e) => {
                                         const val = e.target.value;
@@ -364,10 +394,10 @@ const CategoryList = ({ title }) => {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium">Name in Mongolian</label>
+                                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Name in Mongolian</label>
                                 <input
                                     type="text"
-                                    className="w-full border p-2 rounded"
+                                    className="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm focus:border-[#23ada4] focus:ring-2 focus:ring-teal-500/20 outline-none transition"
                                     value={formData.name_thi}
                                     onChange={(e) => {
                                         const val = e.target.value;
@@ -376,9 +406,9 @@ const CategoryList = ({ title }) => {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium">Type</label>
+                                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Type</label>
                                 <select
-                                    className="w-full border p-2 rounded"
+                                    className="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm focus:border-[#23ada4] focus:ring-2 focus:ring-teal-500/20 outline-none transition bg-white"
                                     value={formData.type}
                                     onChange={(e) => {
                                         const val = e.target.value;
@@ -391,50 +421,35 @@ const CategoryList = ({ title }) => {
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium">Image</label>
+                                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Image</label>
                                 <input
                                     type="file"
                                     accept="image/*"
-                                    className="w-full border p-2 rounded"
+                                    className="w-full border border-slate-200 p-2 rounded-xl text-sm"
                                     onChange={handleFileUpload}
                                 />
-                                {uploading && <p className="text-xs text-teal-600">Uploading...</p>}
+                                {uploading && <p className="text-xs text-teal-600 mt-1">Uploading...</p>}
                                 {formData.image && (
-                                    <p className="text-xs text-green-600 truncate">Selected: {formData.image}</p>
+                                    <p className="text-xs text-green-600 truncate mt-1">Selected: {formData.image}</p>
                                 )}
-                                <div className="mt-2 flex items-center gap-3">
+                                <div className="mt-2.5 flex items-center gap-3">
                                     <CategoryAvatar src={formData.image} name={formData.name} />
-                                    <span className="text-xs text-gray-500">
+                                    <span className="text-xs text-slate-500">
                                         {formData.image ? "Current Icon Preview" : "Default Avatar"}
                                     </span>
                                 </div>
                             </div>
-                            {/* {formData.type === "event" && (
-                                <div>
-                                    <label className="block text-sm font-medium">Poster Image</label>
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        className="w-full border p-2 rounded"
-                                        onChange={handlePosterUpload}
-                                    />
-                                    {uploadingPoster && <p className="text-xs text-teal-600">Uploading...</p>}
-                                    {formData.posterImage && (
-                                        <p className="text-xs text-green-600 truncate">Selected: {formData.posterImage}</p>
-                                    )}
-                                </div>
-                            )} */}
-                            <div className="flex justify-end gap-2 pt-4">
+                            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
                                 <button
                                     type="button"
                                     onClick={() => setIsModalOpen(false)}
-                                    className="px-4 py-2 border rounded"
+                                    className="px-4 py-2.5 border border-slate-200 text-slate-700 font-semibold rounded-xl text-sm hover:bg-slate-50 transition cursor-pointer"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700"
+                                    className="px-5 py-2.5 bg-[#23ada4] hover:bg-[#1ca398] text-white font-semibold rounded-xl text-sm shadow-xs transition cursor-pointer"
                                 >
                                     Save
                                 </button>

@@ -173,10 +173,9 @@ const CourseList = () => {
             render: (_val, row) => (
                 <button
                     onClick={() => navigate(`/courses/${row._id}`)}
-                    className="px-3 py-1 bg-teal-600 text-white text-xs rounded hover:bg-teal-700 transition whitespace-nowrap"
+                    className="px-3.5 py-1.5 bg-[#23ada4] hover:bg-[#1ca398] text-white text-xs font-semibold rounded-lg transition-all whitespace-nowrap shadow-xs hover:shadow-md cursor-pointer"
                 >
-
-                    <span>View Details</span>
+                    View Details
                 </button>
             ),
         },

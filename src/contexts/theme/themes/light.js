@@ -4,58 +4,59 @@ export const lightTheme = {
     // Primary surfaces
     primary: "#ffffff",
     secondary: "#fafafa",
-    tertiary: "#f5f5f5",
+    tertiary: "#f8fafc",
 
     // Background
-    background: "#fcfcfc",
+    background: "#f8fafc",
 
     // Sidebar
-    sidebarText: "#6b7280",
-    sidebarTextHover: "#111827",
-    sidebarActive: "#0f766e",      // Teal accent
-    sidebarHover: "#f5f5f5",
+    sidebarText: "#64748b",
+    sidebarTextHover: "#23ada4",
+    sidebarActive: "#23ada4",      // Brand Teal matching website (#23ada4)
+    sidebarActiveText: "#ffffff",
+    sidebarHover: "rgba(35, 173, 164, 0.08)",
 
     // Header
     headerBg: "#ffffff",
-    headerText: "#111827",
-    headerBorder: "#e5e7eb",
+    headerText: "#0f172a",
+    headerBorder: "#e2e8f0",
 
     // Text
-    textPrimary: "#111827",
-    textSecondary: "#4b5563",
-    textMuted: "#9ca3af",
+    textPrimary: "#0f172a",
+    textSecondary: "#475569",
+    textMuted: "#94a3b8",
 
     // Borders
-    border: "#e5e7eb",
-    borderLight: "#f3f4f6",
+    border: "#e2e8f0",
+    borderLight: "#f1f5f9",
 
     // Status
     success: "#10b981",
     warning: "#f59e0b",
     error: "#ef4444",
-    info: "#0f766e",
+    info: "#23ada4",
 
     // Buttons
     buttonGhost: "transparent",
 
     buttonTextOnPrimary: "#ffffff",
     buttonTextOnDanger: "#ffffff",
-    buttonTextOnSecondary: "#111827",
-    buttonTextOnGhost: "#111827",
+    buttonTextOnSecondary: "#0f172a",
+    buttonTextOnGhost: "#0f172a",
 
-    // Primary CTA (Teal)
-    buttonPrimary: "#0f766e",
-    buttonPrimaryHover: "#115e59",
+    // Primary CTA (Brand Teal matching website)
+    buttonPrimary: "#23ada4",
+    buttonPrimaryHover: "#1ca398",
 
     // Secondary buttons stay neutral
-    buttonSecondary: "#f3f4f6",
-    buttonSecondaryHover: "#e5e7eb",
+    buttonSecondary: "#f1f5f9",
+    buttonSecondaryHover: "#e2e8f0",
 
     buttonDanger: "#ef4444",
     buttonDangerHover: "#dc2626",
 
-    buttonGhostHover: "#f9fafb",
-    buttonBorder: "#e5e7eb",
+    buttonGhostHover: "#f8fafc",
+    buttonBorder: "#e2e8f0",
   },
 
   shadows: {

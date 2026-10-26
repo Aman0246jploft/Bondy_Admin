@@ -6,10 +6,12 @@ import ProductList from './ProductList/ProductList';
 import Button from '../Atoms/Button/Button';
 import { buySellRentApi } from '../../api/buySellRentApi';
 import { useToast } from '../ToastProvider/useToast';
+import { useConfirm } from '../../contexts/confirm/ConfirmContext';
 
 const BuySellRentMain = () => {
   const dispatch = useDispatch();
   const { showToast } = useToast();
+  const confirm = useConfirm();
   const categoryState = useSelector((state) => state.category);
 
   const [activeTab, setActiveTab] = useState('browse'); // 'browse', 'create'
@@ -93,17 +95,23 @@ const BuySellRentMain = () => {
   };
 
   const handleDeletePost = async (postId) => {
-    if (window.confirm('Are you sure you want to delete this post?')) {
-      try {
-        const response = await buySellRentApi.deletePost(postId);
-        if (response.success) {
-          showToast('Post deleted successfully', 'success');
-          loadPosts(); // Refresh the list
-        }
-      } catch (error) {
-        console.error('Error deleting post:', error);
-        showToast('Error deleting post', 'error');
+    const confirmed = await confirm({
+      title: 'Delete Marketplace Post',
+      message: 'Are you sure you want to delete this post? This action cannot be undone.',
+      confirmText: 'Delete Post',
+      variant: 'danger',
+    });
+    if (!confirmed) return;
+
+    try {
+      const response = await buySellRentApi.deletePost(postId);
+      if (response.success) {
+        showToast('Post deleted successfully', 'success');
+        loadPosts(); // Refresh the list
       }
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      showToast('Error deleting post', 'error');
     }
   };
 

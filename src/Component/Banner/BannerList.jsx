@@ -3,8 +3,11 @@ import DataTable from "../Table/DataTable";
 import { FiEdit2, FiPlus } from "react-icons/fi";
 import { BsTrash2 } from "react-icons/bs";
 import authAxiosClient from "../../api/authAxiosClient";
+import { toast } from "react-toastify";
+import { useConfirm } from "../../contexts/confirm/ConfirmContext";
 
 const BannerList = ({ title }) => {
+    const confirm = useConfirm();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [total, setTotal] = useState(0);
@@ -66,7 +69,7 @@ const BannerList = ({ title }) => {
             }
         } catch (error) {
             console.error("Upload error:", error);
-            alert("Image upload failed");
+            toast.error("Image upload failed");
         } finally {
             setUploading(false);
         }
@@ -86,25 +89,33 @@ const BannerList = ({ title }) => {
                 setIsModalOpen(false);
                 setEditingBanner(null);
                 setFormData({ image: "", linkUrl: "", isActive: true });
+                toast.success(editingBanner ? "Banner updated successfully" : "Banner created successfully");
                 fetchBanners();
             }
         } catch (error) {
             console.error("Save error:", error);
-            alert(error.response?.data?.message || error.message || "Failed to save banner");
+            toast.error(error.response?.data?.message || error.message || "Failed to save banner");
         }
     };
 
     const handleDelete = async (banner) => {
-        if (window.confirm("Are you sure you want to delete this banner?")) {
-            try {
-                const response = await authAxiosClient.delete(`/banner/delete/${banner._id}`);
-                if (response.data?.status) {
-                    fetchBanners();
-                }
-            } catch (error) {
-                console.error("Delete error:", error);
-                alert(error.response?.data?.message || error.message || "Failed to delete banner");
+        const confirmed = await confirm({
+            title: "Delete Banner",
+            message: "Are you sure you want to delete this banner? This action cannot be undone.",
+            confirmText: "Delete",
+            variant: "danger",
+        });
+        if (!confirmed) return;
+
+        try {
+            const response = await authAxiosClient.delete(`/banner/delete/${banner._id}`);
+            if (response.data?.status) {
+                toast.success("Banner deleted successfully");
+                fetchBanners();
             }
+        } catch (error) {
+            console.error("Delete error:", error);
+            toast.error(error.response?.data?.message || error.message || "Failed to delete banner");
         }
     };
 
@@ -137,10 +148,11 @@ const BannerList = ({ title }) => {
                         ? { ...item, isActive: updatedActive }
                         : item
                 )));
+                toast.success(`Banner ${updatedActive ? "activated" : "deactivated"} successfully`);
             }
         } catch (error) {
             console.error("Toggle active error:", error);
-            alert(error?.response?.data?.message || error.message || "Failed to toggle active status");
+            toast.error(error?.response?.data?.message || error.message || "Failed to toggle active status");
             fetchBanners();
         } finally {
             setTogglingActiveId(null);
@@ -194,7 +206,7 @@ const BannerList = ({ title }) => {
                 <div>
                     <button
                         onClick={() => openModal()}
-                        className="bg-teal-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-teal-700 font-medium"
+                        className="bg-[#23ada4] hover:bg-[#1ca398] text-white px-4 py-2 rounded-xl flex items-center gap-2 font-semibold shadow-xs hover:shadow-md transition cursor-pointer"
                     >
                         <FiPlus /> Add Banner
                     </button>
@@ -202,24 +214,24 @@ const BannerList = ({ title }) => {
             </div>
 
             {loading ? (
-                <div className="text-center py-4">Loading Banners...</div>
+                <div className="text-center py-4 text-slate-500">Loading Banners...</div>
             ) : (
                 <DataTable columns={columns} data={data} />
             )}
 
             <div className="flex justify-between items-center mt-4">
-                <span>Total: {total}</span>
+                <span className="text-sm text-slate-500 font-medium">Total: {total}</span>
                 <div className="flex gap-2">
                     <button
-                        className="px-3 py-1 border rounded disabled:opacity-50"
+                        className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm text-slate-600 hover:bg-slate-50 disabled:opacity-40 transition cursor-pointer"
                         disabled={page === 1}
                         onClick={() => setPage(p => p - 1)}
                     >
                         Prev
                     </button>
-                    <span>Page {page} of {Math.ceil(total / limit) || 1}</span>
+                    <span className="text-sm text-slate-600 font-medium px-2 py-1.5">Page {page} of {Math.ceil(total / limit) || 1}</span>
                     <button
-                        className="px-3 py-1 border rounded disabled:opacity-50"
+                        className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm text-slate-600 hover:bg-slate-50 disabled:opacity-40 transition cursor-pointer"
                         disabled={page >= Math.ceil(total / limit)}
                         onClick={() => setPage(p => p + 1)}
                     >
@@ -230,16 +242,25 @@ const BannerList = ({ title }) => {
 
             {/* Modal for Create/Update */}
             {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-lg w-96">
-                        <h3 className="text-lg font-bold mb-4">{editingBanner ? "Edit Banner" : "Add Banner"}</h3>
+                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-fadeIn">
+                    <div className="bg-white p-6 sm:p-7 rounded-2xl w-full max-w-md shadow-2xl border border-slate-100 animate-scaleUp">
+                        <div className="flex justify-between items-center mb-5 pb-3 border-b border-slate-100">
+                            <h3 className="text-lg font-bold text-slate-900">{editingBanner ? "Edit Banner" : "Add Banner"}</h3>
+                            <button
+                                type="button"
+                                onClick={() => setIsModalOpen(false)}
+                                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+                            >
+                                ✕
+                            </button>
+                        </div>
                         <form onSubmit={handleSave} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium">Banner Image / GIF</label>
+                                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Banner Image / GIF</label>
                                 <input
                                     type="file"
                                     accept="image/*"
-                                    className="w-full border p-2 rounded mt-1"
+                                    className="w-full border border-slate-200 p-2 rounded-xl text-sm"
                                     onChange={handleFileUpload}
                                 />
                                 {uploading && <p className="text-xs text-teal-600 mt-1">Uploading...</p>}
@@ -247,19 +268,6 @@ const BannerList = ({ title }) => {
                                     <p className="text-xs text-green-600 truncate mt-1">Selected path: {formData.image}</p>
                                 )}
                             </div>
-                            {/* <div>
-                                <label className="block text-sm font-medium">Redirect URL</label>
-                                <input
-                                    type="url"
-                                    placeholder="https://example.com"
-                                    className="w-full border p-2 rounded mt-1"
-                                    value={formData.linkUrl}
-                                    onChange={(e) => {
-                                        const val = e.target.value;
-                                        setFormData(prev => ({ ...prev, linkUrl: val }));
-                                    }}
-                                />
-                            </div> */}
                             <div className="flex items-center gap-2">
                                 <input
                                     type="checkbox"
@@ -269,22 +277,22 @@ const BannerList = ({ title }) => {
                                         const val = e.target.checked;
                                         setFormData(prev => ({ ...prev, isActive: val }));
                                     }}
-                                    className="h-4 w-4 cursor-pointer"
+                                    className="h-4 w-4 accent-[#23ada4] cursor-pointer"
                                 />
-                                <label htmlFor="isActiveCheckbox" className="text-sm font-medium cursor-pointer">Active</label>
+                                <label htmlFor="isActiveCheckbox" className="text-sm font-medium text-slate-700 cursor-pointer">Active</label>
                             </div>
-                            <div className="flex justify-end gap-2 pt-4">
+                            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
                                 <button
                                     type="button"
                                     onClick={() => setIsModalOpen(false)}
-                                    className="px-4 py-2 border rounded"
+                                    className="px-4 py-2.5 border border-slate-200 text-slate-700 font-semibold rounded-xl text-sm hover:bg-slate-50 transition cursor-pointer"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={uploading}
-                                    className="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 disabled:opacity-50"
+                                    className="px-5 py-2.5 bg-[#23ada4] hover:bg-[#1ca398] text-white font-semibold rounded-xl text-sm shadow-xs transition cursor-pointer disabled:opacity-50"
                                 >
                                     Save
                                 </button>

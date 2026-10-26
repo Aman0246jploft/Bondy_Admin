@@ -3,6 +3,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import authAxiosClient from "../../api/authAxiosClient";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
+import { useConfirm } from "../../contexts/confirm/ConfirmContext";
 import {
     FiArrowLeft,
     FiCheckCircle,
@@ -171,6 +172,7 @@ const UserDetail = () => {
     const { userId } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
+    const confirm = useConfirm();
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -239,7 +241,13 @@ const UserDetail = () => {
         const newStatus = !userProfile.isDisable;
         const actionText = newStatus ? "deactivate" : "activate";
 
-        if (!window.confirm(`Are you sure you want to ${actionText} ${userProfile.firstName || "this user"}'s account?`)) {
+        const confirmed = await confirm({
+            title: `${newStatus ? "Deactivate" : "Activate"} Account`,
+            message: `Are you sure you want to ${actionText} ${userProfile.firstName || "this user"}'s account?`,
+            confirmText: newStatus ? "Deactivate" : "Activate",
+            variant: newStatus ? "warning" : "primary",
+        });
+        if (!confirmed) {
             return;
         }
 
@@ -261,9 +269,19 @@ const UserDetail = () => {
 
     const handleTogglePromote = async () => {
         if (!userProfile) return;
+        const newPromote = !userProfile.isPromoted;
+        const confirmed = await confirm({
+            title: newPromote ? "Promote Organizer" : "Remove Promotion",
+            message: `Are you sure you want to ${newPromote ? "promote" : "remove promotion for"} ${userProfile.firstName || "this organizer"} on the homepage?`,
+            confirmText: newPromote ? "Promote" : "Remove",
+            variant: "primary",
+        });
+        if (!confirmed) {
+            return;
+        }
+
         setIsPromoting(true);
         try {
-            const newPromote = !userProfile.isPromoted;
             const res = await authAxiosClient.patch(`/user/toggle-promote/${userProfile._id || userId}`, {
                 isPromoted: newPromote,
             });
@@ -279,7 +297,13 @@ const UserDetail = () => {
     };
 
     const handleDeleteUser = async () => {
-        if (!window.confirm(`Are you sure you want to permanently delete ${userProfile.firstName || "this user"}? This action cannot be undone.`)) {
+        const confirmed = await confirm({
+            title: "Delete User",
+            message: `Are you sure you want to permanently delete ${userProfile.firstName || "this user"}? This action cannot be undone.`,
+            confirmText: "Delete",
+            variant: "danger",
+        });
+        if (!confirmed) {
             return;
         }
 

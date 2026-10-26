@@ -3,8 +3,11 @@ import DataTable from "../Table/DataTable";
 import { FiEdit2, FiPlus } from "react-icons/fi";
 import { BsTrash2 } from "react-icons/bs";
 import authAxiosClient from "../../api/authAxiosClient";
+import { toast } from "react-toastify";
+import { useConfirm } from "../../contexts/confirm/ConfirmContext";
 
 const BankList = ({ title }) => {
+    const confirm = useConfirm();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -48,25 +51,33 @@ const BankList = ({ title }) => {
                 setIsModalOpen(false);
                 setEditingBank(null);
                 setFormData({ bankName: "", bankNameMn: "", isActive: true });
+                toast.success(editingBank ? "Bank updated successfully" : "Bank added successfully");
                 fetchBanks();
             }
         } catch (error) {
             console.error("Save error:", error);
-            alert(error.response?.data?.message || error.message || "Failed to save bank");
+            toast.error(error.response?.data?.message || error.message || "Failed to save bank");
         }
     };
 
     const handleDelete = async (bank) => {
-        if (window.confirm(`Are you sure you want to delete bank "${bank.bankName}"?`)) {
-            try {
-                const response = await authAxiosClient.delete(`/verification/banks/admin/${bank._id}`);
-                if (response.data?.status) {
-                    fetchBanks();
-                }
-            } catch (error) {
-                console.error("Delete error:", error);
-                alert(error.response?.data?.message || error.message || "Failed to delete bank");
+        const confirmed = await confirm({
+            title: "Delete Bank",
+            message: `Are you sure you want to delete bank "${bank.bankName}"? This action cannot be undone.`,
+            confirmText: "Delete",
+            variant: "danger",
+        });
+        if (!confirmed) return;
+
+        try {
+            const response = await authAxiosClient.delete(`/verification/banks/admin/${bank._id}`);
+            if (response.data?.status) {
+                toast.success("Bank deleted successfully");
+                fetchBanks();
             }
+        } catch (error) {
+            console.error("Delete error:", error);
+            toast.error(error.response?.data?.message || error.message || "Failed to delete bank");
         }
     };
 
@@ -115,11 +126,11 @@ const BankList = ({ title }) => {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+            <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-xs border border-gray-100">
                 <h2 className="text-xl font-bold text-gray-800">{title}</h2>
                 <button
                     onClick={() => openModal()}
-                    className="flex items-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg transition shadow-md"
+                    className="flex items-center space-x-2 bg-[#23ada4] hover:bg-[#1ca398] text-white px-4 py-2 rounded-xl transition shadow-xs hover:shadow-md font-semibold cursor-pointer"
                 >
                     <FiPlus />
                     <span>Add Bank</span>
@@ -138,9 +149,9 @@ const BankList = ({ title }) => {
             />
 
             {isModalOpen && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50">
-                    <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden animate-fade-in-up">
-                        <div className="bg-gray-50 px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex justify-center items-center z-50 p-4 animate-fadeIn">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-100 animate-scaleUp">
+                        <div className="bg-gray-50/80 px-6 py-4 border-b border-gray-100 flex justify-between items-center">
                             <h3 className="text-lg font-bold text-gray-800">
                                 {editingBank ? "Edit Bank" : "Add New Bank"}
                             </h3>
@@ -148,31 +159,31 @@ const BankList = ({ title }) => {
                         </div>
                         <form onSubmit={handleSave} className="p-6 space-y-4">
                             <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-1">Bank Name (English) *</label>
+                                <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">Bank Name (English) *</label>
                                 <input
                                     type="text"
                                     required
                                     value={formData.bankName}
                                     onChange={(e) => setFormData({ ...formData, bankName: e.target.value })}
-                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition"
+                                    className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:border-[#23ada4] focus:ring-2 focus:ring-teal-500/20 outline-none transition"
                                     placeholder="e.g. State Bank"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-1">Bank Name (Mongolian)</label>
+                                <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">Bank Name (Mongolian)</label>
                                 <input
                                     type="text"
                                     value={formData.bankNameMn}
                                     onChange={(e) => setFormData({ ...formData, bankNameMn: e.target.value })}
-                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition"
+                                    className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:border-[#23ada4] focus:ring-2 focus:ring-teal-500/20 outline-none transition"
                                     placeholder="e.g. Төрийн банк"
                                 />
                             </div>
 
                             {editingBank && (
                                 <div className="flex items-center space-x-3 pt-2">
-                                    <label className="text-sm font-semibold text-gray-700">Status:</label>
+                                    <label className="text-xs font-semibold text-gray-700 uppercase tracking-wider">Status:</label>
                                     <label className="relative inline-flex items-center cursor-pointer">
                                         <input
                                             type="checkbox"
@@ -180,23 +191,23 @@ const BankList = ({ title }) => {
                                             checked={formData.isActive}
                                             onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
                                         />
-                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
+                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#23ada4]"></div>
                                         <span className="ml-3 text-sm font-medium text-gray-700">{formData.isActive ? 'Active' : 'Inactive'}</span>
                                     </label>
                                 </div>
                             )}
 
-                            <div className="flex space-x-3 pt-4">
+                            <div className="flex space-x-3 pt-4 border-t border-gray-100">
                                 <button
                                     type="button"
                                     onClick={() => setIsModalOpen(false)}
-                                    className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium"
+                                    className="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition font-semibold text-sm cursor-pointer"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-1 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition font-medium"
+                                    className="flex-1 px-4 py-2.5 bg-[#23ada4] text-white rounded-xl hover:bg-[#1ca398] transition font-semibold text-sm shadow-xs cursor-pointer"
                                 >
                                     {editingBank ? "Update Bank" : "Add Bank"}
                                 </button>

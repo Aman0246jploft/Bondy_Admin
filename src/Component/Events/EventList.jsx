@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import DataTable from "../Table/DataTable";
 import authAxiosClient from "../../api/authAxiosClient";
 import { format } from "date-fns";
+import { useConfirm } from "../../contexts/confirm/ConfirmContext";
 
 const PosterThumbnail = ({ src, title }) => {
     const [failed, setFailed] = useState(false);
@@ -25,6 +26,7 @@ const PosterThumbnail = ({ src, title }) => {
 
 const EventList = () => {
     const navigate = useNavigate();
+    const confirm = useConfirm();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [total, setTotal] = useState(0);
@@ -50,6 +52,16 @@ const EventList = () => {
     }, []);
 
     const toggleEventSlider = useCallback(async (eventId, checked) => {
+        const confirmed = await confirm({
+            title: checked ? "Feature in Banner Slider" : "Remove from Banner Slider",
+            message: checked 
+                ? "Are you sure you want to feature this event in the hero banner slider on the website?"
+                : "Are you sure you want to remove this event from the website hero banner slider?",
+            confirmText: checked ? "Feature Event" : "Remove Event",
+            variant: checked ? "primary" : "warning",
+        });
+        if (!confirmed) return;
+
         setToggleLoadingMap((prev) => ({ ...prev, [eventId]: true }));
 
         let previousRows = [];
@@ -71,7 +83,7 @@ const EventList = () => {
         } finally {
             setToggleLoadingMap((prev) => ({ ...prev, [eventId]: false }));
         }
-    }, []);
+    }, [confirm]);
 
     // Fetch Categories for Filter
     useEffect(() => {
@@ -178,7 +190,7 @@ const EventList = () => {
                 return (
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "3px" }}>
                         {isLoading ? (
-                            <svg style={{ animation: "spin 1s linear infinite", width: "16px", height: "16px", color: "#0d9488" }} viewBox="0 0 24 24" fill="none">
+                            <svg style={{ animation: "spin 1s linear infinite", width: "16px", height: "16px", color: "#23ada4" }} viewBox="0 0 24 24" fill="none">
                                 <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeDasharray="32" strokeDashoffset="12" />
                             </svg>
                         ) : (
@@ -195,7 +207,7 @@ const EventList = () => {
                                     borderRadius: "9999px",
                                     border: "none",
                                     cursor: "pointer",
-                                    backgroundColor: isOn ? "#0d9488" : "#d1d5db",
+                                    backgroundColor: isOn ? "#23ada4" : "#d1d5db",
                                     transition: "background-color 0.2s",
                                     padding: 0,
                                 }}
@@ -215,7 +227,7 @@ const EventList = () => {
                             </button>
                         )}
                         {isOn && (
-                            <span style={{ fontSize: "10px", fontWeight: 700, color: "#0d9488", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                            <span style={{ fontSize: "10px", fontWeight: 700, color: "#23ada4", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                                 Live
                             </span>
                         )}
@@ -250,7 +262,7 @@ const EventList = () => {
             render: (_val, row) => (
                 <button
                     onClick={() => navigate(`/events/${row._id}`)}
-                    className="px-3 py-1 bg-teal-600 text-white text-xs rounded hover:bg-teal-700 transition whitespace-nowrap"
+                    className="px-3.5 py-1.5 bg-[#23ada4] hover:bg-[#1ca398] text-white text-xs font-semibold rounded-lg transition-all whitespace-nowrap shadow-xs hover:shadow-md cursor-pointer"
                 >
                     View Details
                 </button>

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import DataTable from "../Table/DataTable";
 import { FiEdit2, FiPlus } from "react-icons/fi";
 import authAxiosClient from "../../api/authAxiosClient";
+import { toast } from "react-toastify";
 
 const GlobalSettingList = ({ title }) => {
     const [data, setData] = useState([]);
@@ -67,11 +68,12 @@ const GlobalSettingList = ({ title }) => {
                 setIsModalOpen(false);
                 setEditingSetting(null);
                 setFormData({ key: "", value: "", description: "" });
+                toast.success("Setting saved successfully");
                 fetchSettings();
             }
         } catch (error) {
             console.error("Save error:", error);
-            alert(error.message || "Failed to save setting");
+            toast.error(error.message || "Failed to save setting");
         }
     };
 
@@ -126,50 +128,60 @@ const GlobalSettingList = ({ title }) => {
             <DataTable columns={columns} data={data} loading={loading} />
 
             {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-lg w-[32rem]">
-                        <h3 className="text-lg font-bold mb-4">{editingSetting ? "Edit Setting" : "Add Setting"}</h3>
+                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-fadeIn">
+                    <div className="bg-white p-6 sm:p-7 rounded-2xl w-full max-w-lg shadow-2xl border border-slate-100 animate-scaleUp">
+                        <div className="flex justify-between items-center mb-5 pb-3 border-b border-slate-100">
+                            <h3 className="text-lg font-bold text-slate-900">{editingSetting ? "Edit Setting" : "Add Setting"}</h3>
+                            <button
+                                type="button"
+                                onClick={() => setIsModalOpen(false)}
+                                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+                            >
+                                ✕
+                            </button>
+                        </div>
                         <form onSubmit={handleSave} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium">Key</label>
+                                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Key</label>
                                 <input
                                     type="text"
                                     required
                                     disabled={!!editingSetting}
-                                    className="w-full border p-2 rounded disabled:bg-gray-100"
+                                    className="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm focus:border-[#23ada4] focus:ring-2 focus:ring-teal-500/20 outline-none transition disabled:bg-slate-50 disabled:text-slate-500"
                                     value={formData.key}
                                     onChange={(e) => setFormData(prev => ({ ...prev, key: e.target.value }))}
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium">Value (String or JSON)</label>
+                                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Value (String or JSON)</label>
                                 <textarea
                                     required
                                     rows={5}
-                                    className="w-full border p-2 rounded font-mono text-sm"
+                                    className="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl font-mono text-sm focus:border-[#23ada4] focus:ring-2 focus:ring-teal-500/20 outline-none transition"
                                     value={formData.value}
                                     onChange={(e) => setFormData(prev => ({ ...prev, value: e.target.value }))}
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium">Description</label>
+                                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Description</label>
                                 <textarea
-                                    className="w-full border p-2 rounded"
+                                    className="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm focus:border-[#23ada4] focus:ring-2 focus:ring-teal-500/20 outline-none transition"
+                                    rows={2}
                                     value={formData.description}
                                     onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                                 />
                             </div>
-                            <div className="flex justify-end gap-2 pt-4">
+                            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
                                 <button
                                     type="button"
                                     onClick={() => setIsModalOpen(false)}
-                                    className="px-4 py-2 border rounded"
+                                    className="px-4 py-2.5 border border-slate-200 text-slate-700 font-semibold rounded-xl text-sm hover:bg-slate-50 transition cursor-pointer"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700"
+                                    className="px-5 py-2.5 bg-[#23ada4] hover:bg-[#1ca398] text-white font-semibold rounded-xl text-sm shadow-xs transition cursor-pointer"
                                 >
                                     Save
                                 </button>

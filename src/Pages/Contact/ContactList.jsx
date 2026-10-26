@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import contactApi from "../../api/contactApi";
 import { toast } from "react-toastify";
 import { useTheme } from "../../contexts/theme/hook/useTheme";
+import { useConfirm } from "../../contexts/confirm/ConfirmContext";
 
 const ContactList = () => {
     const [contacts, setContacts] = useState([]);
@@ -11,6 +12,7 @@ const ContactList = () => {
     const [selectedContact, setSelectedContact] = useState(null);
     const limit = 10;
     const { theme } = useTheme();
+    const confirm = useConfirm();
 
     useEffect(() => {
         fetchContacts();
@@ -32,7 +34,14 @@ const ContactList = () => {
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm("Are you sure you want to delete this message?")) return;
+        const confirmed = await confirm({
+            title: "Delete Contact Message",
+            message: "Are you sure you want to delete this message? This action cannot be undone.",
+            confirmText: "Delete Message",
+            variant: "danger",
+        });
+        if (!confirmed) return;
+
         try {
             const response = await contactApi.deleteContact({ id });
             if (response.status) {
@@ -246,7 +255,10 @@ const ContactList = () => {
                         <div className="mt-6 flex justify-end">
                             <button
                                 onClick={() => setSelectedContact(null)}
-                                className="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 transition"
+                                className="px-5 py-2.5 text-white rounded-xl font-medium shadow-md transition-all active:scale-[0.98]"
+                                style={{ backgroundColor: "#23ada4" }}
+                                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#1ca398")}
+                                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#23ada4")}
                             >
                                 Close
                             </button>

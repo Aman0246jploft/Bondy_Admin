@@ -3,8 +3,11 @@ import DataTable from "../Table/DataTable";
 import { FiEdit2, FiPlus } from "react-icons/fi";
 import { BsTrash2 } from "react-icons/bs";
 import authAxiosClient from "../../api/authAxiosClient";
+import { toast } from "react-toastify";
+import { useConfirm } from "../../contexts/confirm/ConfirmContext";
 
 const TaxList = ({ title }) => {
+    const confirm = useConfirm();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [total, setTotal] = useState(0);
@@ -60,25 +63,33 @@ const TaxList = ({ title }) => {
                 setIsModalOpen(false);
                 setEditingTax(null);
                 setFormData({ name: "", type: "percentage", value: 0, active: true, description: "" });
+                toast.success(editingTax ? "Tax updated successfully" : "Tax created successfully");
                 fetchTaxes();
             }
         } catch (error) {
             console.error("Save error:", error);
-            alert(error.message || "Failed to save tax");
+            toast.error(error.message || "Failed to save tax");
         }
     };
 
     const handleDelete = async (tax) => {
-        if (window.confirm(`Are you sure you want to delete tax "${tax.name}"?`)) {
-            try {
-                const response = await authAxiosClient.post("/tax/delete", { id: tax._id });
-                if (response.data?.status) {
-                    fetchTaxes();
-                }
-            } catch (error) {
-                console.error("Delete error:", error);
-                alert(error.message || "Failed to delete tax");
+        const confirmed = await confirm({
+            title: "Delete Tax",
+            message: `Are you sure you want to delete tax "${tax.name}"? This action cannot be undone.`,
+            confirmText: "Delete",
+            variant: "danger",
+        });
+        if (!confirmed) return;
+
+        try {
+            const response = await authAxiosClient.post("/tax/delete", { id: tax._id });
+            if (response.data?.status) {
+                toast.success("Tax deleted successfully");
+                fetchTaxes();
             }
+        } catch (error) {
+            console.error("Delete error:", error);
+            toast.error(error.message || "Failed to delete tax");
         }
     };
 
@@ -177,24 +188,33 @@ const TaxList = ({ title }) => {
             </div>
 
             {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-lg w-96">
-                        <h3 className="text-lg font-bold mb-4">{editingTax ? "Edit Tax" : "Add Tax"}</h3>
+                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-fadeIn">
+                    <div className="bg-white p-6 sm:p-7 rounded-2xl w-full max-w-md shadow-2xl border border-slate-100 animate-scaleUp">
+                        <div className="flex justify-between items-center mb-5 pb-3 border-b border-slate-100">
+                            <h3 className="text-lg font-bold text-slate-900">{editingTax ? "Edit Tax" : "Add Tax"}</h3>
+                            <button
+                                type="button"
+                                onClick={() => setIsModalOpen(false)}
+                                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+                            >
+                                ✕
+                            </button>
+                        </div>
                         <form onSubmit={handleSave} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium">Name</label>
+                                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Name</label>
                                 <input
                                     type="text"
                                     required
-                                    className="w-full border p-2 rounded"
+                                    className="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm focus:border-[#23ada4] focus:ring-2 focus:ring-teal-500/20 outline-none transition"
                                     value={formData.name}
                                     onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium">Type</label>
+                                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Type</label>
                                 <select
-                                    className="w-full border p-2 rounded"
+                                    className="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm focus:border-[#23ada4] focus:ring-2 focus:ring-teal-500/20 outline-none transition bg-white"
                                     value={formData.type}
                                     onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value }))}
                                 >
@@ -203,19 +223,20 @@ const TaxList = ({ title }) => {
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium">Value</label>
+                                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Value</label>
                                 <input
                                     type="number"
                                     required
-                                    className="w-full border p-2 rounded"
+                                    className="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm focus:border-[#23ada4] focus:ring-2 focus:ring-teal-500/20 outline-none transition"
                                     value={formData.value}
                                     onChange={(e) => setFormData(prev => ({ ...prev, value: parseFloat(e.target.value) }))}
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium">Description</label>
+                                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Description</label>
                                 <textarea
-                                    className="w-full border p-2 rounded"
+                                    className="w-full border border-slate-200 px-3.5 py-2.5 rounded-xl text-sm focus:border-[#23ada4] focus:ring-2 focus:ring-teal-500/20 outline-none transition"
+                                    rows={2}
                                     value={formData.description}
                                     onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                                 />
@@ -226,20 +247,21 @@ const TaxList = ({ title }) => {
                                     id="active"
                                     checked={formData.active}
                                     onChange={(e) => setFormData(prev => ({ ...prev, active: e.target.checked }))}
+                                    className="accent-[#23ada4] w-4 h-4 cursor-pointer"
                                 />
-                                <label htmlFor="active" className="text-sm font-medium">Active</label>
+                                <label htmlFor="active" className="text-sm font-medium text-slate-700 cursor-pointer">Active</label>
                             </div>
-                            <div className="flex justify-end gap-2 pt-4">
+                            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
                                 <button
                                     type="button"
                                     onClick={() => setIsModalOpen(false)}
-                                    className="px-4 py-2 border rounded"
+                                    className="px-4 py-2.5 border border-slate-200 text-slate-700 font-semibold rounded-xl text-sm hover:bg-slate-50 transition cursor-pointer"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700"
+                                    className="px-5 py-2.5 bg-[#23ada4] hover:bg-[#1ca398] text-white font-semibold rounded-xl text-sm shadow-xs transition cursor-pointer"
                                 >
                                     Save
                                 </button>

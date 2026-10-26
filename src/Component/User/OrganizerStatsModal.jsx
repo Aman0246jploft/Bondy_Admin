@@ -629,56 +629,38 @@ const OrganizerStatsModal = ({ organizer, onClose }) => {
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col border border-slate-200">
                 {/* Header */}
-                <div className="bg-gray-800 text-white p-4 flex justify-between items-center">
-                    <h2 className="text-xl font-bold">
+                <div className="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
+                    <h2 className="text-lg font-bold">
                         Organizer Statistics - {organizer?.firstName} {organizer?.lastName}
                     </h2>
-                    <button onClick={onClose} className="text-white hover:text-gray-300">
-                        <AiOutlineClose size={24} />
+                    <button onClick={onClose} className="text-slate-400 hover:text-white transition p-1 rounded-lg hover:bg-slate-800">
+                        <AiOutlineClose size={22} />
                     </button>
                 </div>
 
                 {/* Tabs */}
-                <div className="flex border-b bg-gray-100">
-                    <button
-                        onClick={() => setActiveTab("overview")}
-                        className={`px-6 py-3 font-semibold ${activeTab === "overview"
-                            ? "bg-white border-b-2 border-teal-500 text-teal-600"
-                            : "text-gray-600 hover:text-gray-800"
+                <div className="flex border-b border-slate-200 bg-slate-50 px-4">
+                    {[
+                        { id: "overview", label: "Overview" },
+                        { id: "transactions", label: "Transactions" },
+                        { id: "wallet", label: "Wallet History" },
+                        { id: "payouts", label: "Payouts" },
+                    ].map((tab) => (
+                        <button
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id)}
+                            className={`px-5 py-3 font-semibold text-sm transition-all border-b-2 cursor-pointer ${
+                                activeTab === tab.id
+                                    ? "bg-white border-[#23ada4] text-[#23ada4] shadow-xs"
+                                    : "border-transparent text-slate-600 hover:text-slate-900"
                             }`}
-                    >
-                        Overview
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("transactions")}
-                        className={`px-6 py-3 font-semibold ${activeTab === "transactions"
-                            ? "bg-white border-b-2 border-teal-500 text-teal-600"
-                            : "text-gray-600 hover:text-gray-800"
-                            }`}
-                    >
-                        Transactions
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("wallet")}
-                        className={`px-6 py-3 font-semibold ${activeTab === "wallet"
-                            ? "bg-white border-b-2 border-teal-500 text-teal-600"
-                            : "text-gray-600 hover:text-gray-800"
-                            }`}
-                    >
-                        Wallet History
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("payouts")}
-                        className={`px-6 py-3 font-semibold ${activeTab === "payouts"
-                            ? "bg-white border-b-2 border-teal-500 text-teal-600"
-                            : "text-gray-600 hover:text-gray-800"
-                            }`}
-                    >
-                        Payouts
-                    </button>
+                        >
+                            {tab.label}
+                        </button>
+                    ))}
                 </div>
 
                 {/* Content */}

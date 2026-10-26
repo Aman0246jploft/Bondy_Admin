@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import stayUpdatedApi from "../../api/stayUpdatedApi";
 import { toast } from "react-toastify";
 import { useTheme } from "../../contexts/theme/hook/useTheme";
+import { useConfirm } from "../../contexts/confirm/ConfirmContext";
 
 const StayUpdatedList = () => {
     const [signups, setSignups] = useState([]);
@@ -10,6 +11,7 @@ const StayUpdatedList = () => {
     const [loading, setLoading] = useState(false);
     const limit = 10;
     const { theme } = useTheme();
+    const confirm = useConfirm();
 
     useEffect(() => {
         fetchSignups();
@@ -32,7 +34,14 @@ const StayUpdatedList = () => {
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm("Are you sure you want to remove this signup?")) return;
+        const confirmed = await confirm({
+            title: "Remove Newsletter Signup",
+            message: "Are you sure you want to remove this signup record? This action cannot be undone.",
+            confirmText: "Remove Record",
+            variant: "danger",
+        });
+        if (!confirmed) return;
+
         try {
             const response = await stayUpdatedApi.deleteSignup(id);
             if (response.data.status) {

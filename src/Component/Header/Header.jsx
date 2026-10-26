@@ -339,7 +339,7 @@ const Header = ({ toggleSidebar }) => {
               />
               <div className="hidden md:flex flex-col items-start">
                 <span className="text-sm font-medium">
-                  {userData?.firstName || "Admin"}
+                  {userData?.firstName + " " + userData?.lastName || "Admin"}
                 </span>
                 <span className="text-xs" style={{ color: theme.colors.textMuted }}>
                   {userData?.email || "Loading..."}
