@@ -277,12 +277,12 @@ const Profile = () => {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                {/* <div className="flex items-center gap-2">
                     <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200/60">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                         Active Administrator
                     </span>
-                </div>
+                </div> */}
             </div>
 
             {/* ── 2. Top Profile Header Banner Card (Full Width) ── */}
@@ -333,9 +333,9 @@ const Profile = () => {
                                 >
                                     {`${profile.firstName || ""} ${profile.lastName || ""}`.trim() || "Administrator"}
                                 </h2>
-                                <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-teal-50 text-teal-700 border border-teal-200/60">
+                                {/* <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-teal-50 text-teal-700 border border-teal-200/60">
                                     {profile.role || "SUPER_ADMIN"}
-                                </span>
+                                </span> */}
                             </div>
                             <div
                                 className="flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-1 text-xs"
@@ -345,16 +345,16 @@ const Profile = () => {
                                     <FiMail className="w-3.5 h-3.5 text-slate-400" />
                                     <span>{profile.email || "—"}</span>
                                 </span>
-                                <span className="inline-flex items-center gap-1.5">
+                                {/* <span className="inline-flex items-center gap-1.5">
                                     <FiShield className="w-3.5 h-3.5 text-slate-400" />
                                     <span>Super Admin Privileges</span>
-                                </span>
+                                </span> */}
                             </div>
                         </div>
                     </div>
 
                     {/* Actions / Upload button */}
-                    <div className="flex flex-col items-center sm:items-end gap-1 flex-shrink-0">
+                    {/* <div className="flex flex-col items-center sm:items-end gap-1 flex-shrink-0">
                         <button
                             type="button"
                             onClick={() => fileInputRef.current?.click()}
@@ -372,7 +372,7 @@ const Profile = () => {
                         <span className="text-[11px]" style={{ color: theme.colors.textMuted }}>
                             JPG, PNG, WebP up to 5MB
                         </span>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 
@@ -466,13 +466,11 @@ const Profile = () => {
                                 >
                                     Email Address
                                 </label>
-                                <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
-                                    Read-Only
-                                </span>
+
                             </div>
                             <input
                                 type="email"
-                                disabled
+                                disabeled
                                 readOnly
                                 value={profile.email}
                                 className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border bg-slate-100/70 text-slate-500 cursor-not-allowed select-none opacity-85 shadow-xs"
