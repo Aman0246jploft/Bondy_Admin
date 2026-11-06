@@ -1,5 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FiCamera, FiLock, FiUser, FiCheck, FiAlertCircle, FiEye, FiEyeOff } from "react-icons/fi";
+import {
+    FiCamera,
+    FiLock,
+    FiUser,
+    FiCheck,
+    FiAlertCircle,
+    FiEye,
+    FiEyeOff,
+    FiMail,
+    FiShield
+} from "react-icons/fi";
 import { toast } from "react-toastify";
 import userApi from "../../api/userApi";
 import authAxiosClient from "../../api/authAxiosClient";
@@ -231,109 +241,183 @@ const Profile = () => {
         }
     };
 
-    // if (loadingProfile) {
-    //     return (
-    //         <div className="flex items-center justify-center min-h-[400px]">
-    //             <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
-    //         </div>
-    //     );
-    // }
-
     return (
-        <div className="max-w-4xl mx-auto space-y-8 pb-12">
-            {/* Header Title */}
-            <div>
-                <h1
-                    className="text-2xl font-bold tracking-tight"
-                    style={{ color: theme.colors.textPrimary }}
-                >
-                    Account Profile & Security
-                </h1>
-                <p className="text-sm mt-1" style={{ color: theme.colors.textSecondary }}>
-                    Manage your administrator details and update your credentials
-                </p>
+        <div className="w-full space-y-4 pb-12">
+            {/* Hidden image upload input */}
+            <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleImageChange}
+                accept="image/*"
+                className="hidden"
+            />
+
+            {/* ── 1. Page Header & Actions Bar (Matches other admin pages) ── */}
+            <div
+                className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b"
+                style={{ borderColor: theme.colors.border }}
+            >
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-200/60 flex items-center justify-center text-[#23ada4] shadow-xs">
+                        <FiUser className="w-5 h-5 text-[#23ada4]" />
+                    </div>
+                    <div>
+                        <h1
+                            className="text-xl font-bold tracking-tight"
+                            style={{ color: theme.colors.textPrimary }}
+                        >
+                            Account Profile & Security
+                        </h1>
+                        <p
+                            className="text-xs text-slate-500 mt-0.5"
+                            style={{ color: theme.colors.textSecondary }}
+                        >
+                            Manage your administrator profile details, avatar photo, and security credentials.
+                        </p>
+                    </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        Active Administrator
+                    </span>
+                </div>
             </div>
 
-            {/* Main Form Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* ── 2. Top Profile Header Banner Card (Full Width) ── */}
+            <div
+                className="p-5 sm:p-6 rounded-2xl border shadow-xs transition-all"
+                style={{
+                    backgroundColor: theme.colors.primary,
+                    borderColor: theme.colors.border,
+                }}
+            >
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+                    <div className="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left min-w-0">
+                        {/* Avatar */}
+                        <div className="relative group flex-shrink-0">
+                            <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-slate-200 shadow-xs bg-slate-100 flex items-center justify-center">
+                                {imagePreview ? (
+                                    <img
+                                        src={imagePreview}
+                                        alt="Admin avatar"
+                                        className="w-full h-full object-cover"
+                                        onError={() => setImagePreview("/Profileimage.png")}
+                                    />
+                                ) : (
+                                    <img
+                                        src="/sidebar-logo.svg"
+                                        alt="Admin avatar default"
+                                        className="w-10 h-10 object-contain"
+                                    />
+                                )}
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => fileInputRef.current?.click()}
+                                disabled={uploadingImage}
+                                className="absolute bottom-0 right-0 p-1.5 bg-[#23ada4] hover:bg-[#1ca398] text-white rounded-full shadow-md transition-transform hover:scale-105 disabled:opacity-50 cursor-pointer"
+                                title="Upload photo"
+                            >
+                                <FiCamera className="w-3.5 h-3.5" />
+                            </button>
+                        </div>
+
+                        {/* Admin Identity */}
+                        <div className="space-y-1.5 min-w-0">
+                            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
+                                <h2
+                                    className="text-xl font-bold tracking-tight"
+                                    style={{ color: theme.colors.textPrimary }}
+                                >
+                                    {`${profile.firstName || ""} ${profile.lastName || ""}`.trim() || "Administrator"}
+                                </h2>
+                                <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-teal-50 text-teal-700 border border-teal-200/60">
+                                    {profile.role || "SUPER_ADMIN"}
+                                </span>
+                            </div>
+                            <div
+                                className="flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-1 text-xs"
+                                style={{ color: theme.colors.textSecondary }}
+                            >
+                                <span className="inline-flex items-center gap-1.5">
+                                    <FiMail className="w-3.5 h-3.5 text-slate-400" />
+                                    <span>{profile.email || "—"}</span>
+                                </span>
+                                <span className="inline-flex items-center gap-1.5">
+                                    <FiShield className="w-3.5 h-3.5 text-slate-400" />
+                                    <span>Super Admin Privileges</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Actions / Upload button */}
+                    <div className="flex flex-col items-center sm:items-end gap-1 flex-shrink-0">
+                        <button
+                            type="button"
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={uploadingImage}
+                            className="inline-flex items-center gap-2 px-4 py-2 border rounded-xl text-xs font-semibold transition cursor-pointer shadow-xs disabled:opacity-50"
+                            style={{
+                                borderColor: theme.colors.border,
+                                color: theme.colors.textPrimary,
+                                backgroundColor: theme.colors.tertiary || "#ffffff",
+                            }}
+                        >
+                            <FiCamera className="w-3.5 h-3.5 text-[#23ada4]" />
+                            <span>{uploadingImage ? "Uploading..." : "Change Avatar"}</span>
+                        </button>
+                        <span className="text-[11px]" style={{ color: theme.colors.textMuted }}>
+                            JPG, PNG, WebP up to 5MB
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            {/* ── 3. Main Form Cards Grid (Full Width 2-Column Grid) ── */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* 1. General Profile Info Card */}
                 <div
-                    className="p-6 rounded-2xl border shadow-sm transition-all"
+                    className="rounded-2xl border shadow-xs transition-all overflow-hidden"
                     style={{
                         backgroundColor: theme.colors.primary,
                         borderColor: theme.colors.border,
                     }}
                 >
-                    <div className="flex items-center gap-3 pb-5 border-b" style={{ borderColor: theme.colors.border }}>
-                        <div className="w-10 h-10 rounded-xl bg-teal-50 flex items-center justify-center text-teal-700">
-                            <FiUser className="w-5 h-5" />
+                    {/* Card Header */}
+                    <div
+                        className="flex items-center gap-3 p-5 border-b"
+                        style={{ borderColor: theme.colors.border }}
+                    >
+                        <div className="w-9 h-9 rounded-xl bg-teal-50 border border-teal-200/60 flex items-center justify-center text-[#23ada4] shadow-xs">
+                            <FiUser className="w-4 h-4 text-[#23ada4]" />
                         </div>
                         <div>
-                            <h2 className="text-base font-semibold" style={{ color: theme.colors.textPrimary }}>
+                            <h2
+                                className="text-sm font-bold tracking-tight"
+                                style={{ color: theme.colors.textPrimary }}
+                            >
                                 Profile Details
                             </h2>
-                            <p className="text-xs" style={{ color: theme.colors.textSecondary }}>
-                                Personal information and profile picture
+                            <p
+                                className="text-xs mt-0.5"
+                                style={{ color: theme.colors.textSecondary }}
+                            >
+                                Personal information and administrator identity
                             </p>
                         </div>
                     </div>
 
-                    <form onSubmit={handleProfileSubmit} className="mt-6 space-y-5">
-                        {/* Avatar photo change */}
-                        <div className="flex flex-col items-center sm:flex-row sm:items-center gap-5">
-                            <div className="relative group">
-                                <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-slate-200 shadow-sm bg-slate-100 flex items-center justify-center">
-                                    {imagePreview ? (
-                                        <img
-                                            src={imagePreview}
-                                            alt="Admin avatar"
-                                            className="w-full h-full object-cover"
-                                            onError={() => setImagePreview("/Profileimage.png")}
-                                        />
-                                    ) : (
-                                        <img
-                                            src="/sidebar-logo.svg"
-                                            alt="Admin avatar default"
-                                            className="w-12 h-12 object-contain"
-                                        />
-                                    )}
-                                </div>
-                                <button
-                                    type="button"
-                                    onClick={() => fileInputRef.current?.click()}
-                                    disabled={uploadingImage}
-                                    className="absolute bottom-0 right-0 p-2 bg-teal-600 hover:bg-teal-700 text-white rounded-full shadow-md transition-transform hover:scale-105 disabled:opacity-50"
-                                    title="Upload photo"
-                                >
-                                    <FiCamera className="w-4 h-4" />
-                                </button>
-                                <input
-                                    type="file"
-                                    ref={fileInputRef}
-                                    onChange={handleImageChange}
-                                    accept="image/*"
-                                    className="hidden"
-                                />
-                            </div>
-
-                            <div className="text-center sm:text-left">
-                                <p className="text-sm font-medium" style={{ color: theme.colors.textPrimary }}>
-                                    Profile Picture
-                                </p>
-                                <p className="text-xs mt-0.5" style={{ color: theme.colors.textMuted }}>
-                                    JPG, PNG, WebP up to 5MB
-                                </p>
-                                {uploadingImage && (
-                                    <p className="text-xs text-teal-600 font-medium mt-1 animate-pulse">
-                                        Uploading photo...
-                                    </p>
-                                )}
-                            </div>
-                        </div>
-
+                    {/* Form Body */}
+                    <form onSubmit={handleProfileSubmit} className="p-5 sm:p-6 space-y-4">
                         {/* First Name */}
                         <div>
-                            <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: theme.colors.textSecondary }}>
+                            <label
+                                className="block text-xs font-semibold uppercase tracking-wider mb-1.5"
+                                style={{ color: theme.colors.textSecondary }}
+                            >
                                 First Name <span className="text-red-500">*</span>
                             </label>
                             <input
@@ -342,7 +426,7 @@ const Profile = () => {
                                 value={profile.firstName}
                                 onChange={(e) => setProfile({ ...profile, firstName: e.target.value })}
                                 placeholder="Enter first name"
-                                className="w-full px-3.5 py-2.5 text-sm rounded-xl border focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-600 transition"
+                                className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-[#23ada4] transition shadow-xs"
                                 style={{
                                     backgroundColor: theme.colors.tertiary || "#ffffff",
                                     borderColor: theme.colors.border,
@@ -353,7 +437,10 @@ const Profile = () => {
 
                         {/* Last Name */}
                         <div>
-                            <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: theme.colors.textSecondary }}>
+                            <label
+                                className="block text-xs font-semibold uppercase tracking-wider mb-1.5"
+                                style={{ color: theme.colors.textSecondary }}
+                            >
                                 Last Name
                             </label>
                             <input
@@ -361,7 +448,7 @@ const Profile = () => {
                                 value={profile.lastName}
                                 onChange={(e) => setProfile({ ...profile, lastName: e.target.value })}
                                 placeholder="Enter last name"
-                                className="w-full px-3.5 py-2.5 text-sm rounded-xl border focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-600 transition"
+                                className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-[#23ada4] transition shadow-xs"
                                 style={{
                                     backgroundColor: theme.colors.tertiary || "#ffffff",
                                     borderColor: theme.colors.border,
@@ -370,30 +457,36 @@ const Profile = () => {
                             />
                         </div>
 
-                        {/* Email Address (Read-only - Not allowed to change) */}
+                        {/* Email Address (Read-only) */}
                         <div>
-                            <div className="flex items-center justify-between mb-2">
-                                <label className="block text-xs font-semibold uppercase tracking-wider" style={{ color: theme.colors.textSecondary }}>
+                            <div className="flex items-center justify-between mb-1.5">
+                                <label
+                                    className="block text-xs font-semibold uppercase tracking-wider"
+                                    style={{ color: theme.colors.textSecondary }}
+                                >
                                     Email Address
                                 </label>
-                                {/* <span className="text-[11px] font-medium text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-                                    Fixed / Read-only
-                                </span> */}
+                                <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
+                                    Read-Only
+                                </span>
                             </div>
                             <input
                                 type="email"
                                 disabled
                                 readOnly
                                 value={profile.email}
-                                className="w-full px-3.5 py-2.5 text-sm rounded-xl border bg-slate-100 text-slate-500 cursor-not-allowed select-none opacity-80"
+                                className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border bg-slate-100/70 text-slate-500 cursor-not-allowed select-none opacity-85 shadow-xs"
                                 style={{
                                     borderColor: theme.colors.border,
                                 }}
                             />
-                            {/* <p className="text-[11px] text-slate-400 mt-1.5 flex items-center gap-1">
+                            <p
+                                className="text-[11px] mt-1.5 flex items-center gap-1"
+                                style={{ color: theme.colors.textMuted }}
+                            >
                                 <FiAlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
                                 Administrator email address cannot be modified.
-                            </p> */}
+                            </p>
                         </div>
 
                         {/* Save Button */}
@@ -401,7 +494,7 @@ const Profile = () => {
                             <button
                                 type="submit"
                                 disabled={savingProfile || uploadingImage}
-                                className="w-full py-2.5 px-4 bg-teal-600 hover:bg-teal-700 text-white font-medium text-sm rounded-xl shadow-sm transition-colors duration-150 flex items-center justify-center gap-2 disabled:opacity-50"
+                                className="w-full py-2.5 px-4 bg-[#23ada4] hover:bg-[#1ca398] text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs transition-colors duration-150 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                             >
                                 {savingProfile ? (
                                     <>
@@ -421,30 +514,44 @@ const Profile = () => {
 
                 {/* 2. Change Password Card */}
                 <div
-                    className="p-6 rounded-2xl border shadow-sm transition-all"
+                    className="rounded-2xl border shadow-xs transition-all overflow-hidden"
                     style={{
                         backgroundColor: theme.colors.primary,
                         borderColor: theme.colors.border,
                     }}
                 >
-                    <div className="flex items-center gap-3 pb-5 border-b" style={{ borderColor: theme.colors.border }}>
-                        <div className="w-10 h-10 rounded-xl bg-teal-50 flex items-center justify-center text-teal-700">
-                            <FiLock className="w-5 h-5" />
+                    {/* Card Header */}
+                    <div
+                        className="flex items-center gap-3 p-5 border-b"
+                        style={{ borderColor: theme.colors.border }}
+                    >
+                        <div className="w-9 h-9 rounded-xl bg-teal-50 border border-teal-200/60 flex items-center justify-center text-[#23ada4] shadow-xs">
+                            <FiLock className="w-4 h-4 text-[#23ada4]" />
                         </div>
                         <div>
-                            <h2 className="text-base font-semibold" style={{ color: theme.colors.textPrimary }}>
+                            <h2
+                                className="text-sm font-bold tracking-tight"
+                                style={{ color: theme.colors.textPrimary }}
+                            >
                                 Change Password
                             </h2>
-                            <p className="text-xs" style={{ color: theme.colors.textSecondary }}>
-                                Update your password to keep your account safe
+                            <p
+                                className="text-xs mt-0.5"
+                                style={{ color: theme.colors.textSecondary }}
+                            >
+                                Update your credentials to keep your administrator account safe
                             </p>
                         </div>
                     </div>
 
-                    <form onSubmit={handlePasswordSubmit} className="mt-6 space-y-5">
+                    {/* Form Body */}
+                    <form onSubmit={handlePasswordSubmit} className="p-5 sm:p-6 space-y-4">
                         {/* Current Password */}
                         <div>
-                            <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: theme.colors.textSecondary }}>
+                            <label
+                                className="block text-xs font-semibold uppercase tracking-wider mb-1.5"
+                                style={{ color: theme.colors.textSecondary }}
+                            >
                                 Current Password <span className="text-red-500">*</span>
                             </label>
                             <div className="relative">
@@ -454,7 +561,7 @@ const Profile = () => {
                                     value={passwordData.oldPassword}
                                     onChange={(e) => setPasswordData({ ...passwordData, oldPassword: e.target.value })}
                                     placeholder="Enter current password"
-                                    className="w-full pl-3.5 pr-10 py-2.5 text-sm rounded-xl border focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-600 transition"
+                                    className="w-full pl-3.5 pr-10 py-2.5 text-xs sm:text-sm rounded-xl border focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-[#23ada4] transition shadow-xs"
                                     style={{
                                         backgroundColor: theme.colors.tertiary || "#ffffff",
                                         borderColor: theme.colors.border,
@@ -464,7 +571,7 @@ const Profile = () => {
                                 <button
                                     type="button"
                                     onClick={() => setShowOldPassword(!showOldPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
                                 >
                                     {showOldPassword ? <FiEyeOff className="w-4 h-4" /> : <FiEye className="w-4 h-4" />}
                                 </button>
@@ -473,7 +580,10 @@ const Profile = () => {
 
                         {/* New Password */}
                         <div>
-                            <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: theme.colors.textSecondary }}>
+                            <label
+                                className="block text-xs font-semibold uppercase tracking-wider mb-1.5"
+                                style={{ color: theme.colors.textSecondary }}
+                            >
                                 New Password <span className="text-red-500">*</span>
                             </label>
                             <div className="relative">
@@ -482,8 +592,8 @@ const Profile = () => {
                                     required
                                     value={passwordData.newPassword}
                                     onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                                    placeholder="8-15 chars, uppercase, lowercase, number, symbol"
-                                    className="w-full pl-3.5 pr-10 py-2.5 text-sm rounded-xl border focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-600 transition"
+                                    placeholder="8-15 characters with mixed case & symbols"
+                                    className="w-full pl-3.5 pr-10 py-2.5 text-xs sm:text-sm rounded-xl border focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-[#23ada4] transition shadow-xs"
                                     style={{
                                         backgroundColor: theme.colors.tertiary || "#ffffff",
                                         borderColor: theme.colors.border,
@@ -493,13 +603,13 @@ const Profile = () => {
                                 <button
                                     type="button"
                                     onClick={() => setShowNewPassword(!showNewPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
                                 >
                                     {showNewPassword ? <FiEyeOff className="w-4 h-4" /> : <FiEye className="w-4 h-4" />}
                                 </button>
                             </div>
 
-                            {/* Inline Validation Errors for New Password */}
+                            {/* Inline Validation Checklist */}
                             {((passwordSubmitted || passwordData.newPassword.length > 0) && validatePasswordFormat(passwordData.newPassword)) && (
                                 <div className="mt-2 text-xs space-y-1 p-2.5 rounded-xl bg-red-50/80 border border-red-200/80 text-red-600">
                                     <div className="flex items-center gap-1.5 font-medium mb-1">
@@ -532,7 +642,10 @@ const Profile = () => {
 
                         {/* Confirm New Password */}
                         <div>
-                            <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: theme.colors.textSecondary }}>
+                            <label
+                                className="block text-xs font-semibold uppercase tracking-wider mb-1.5"
+                                style={{ color: theme.colors.textSecondary }}
+                            >
                                 Confirm New Password <span className="text-red-500">*</span>
                             </label>
                             <div className="relative">
@@ -541,8 +654,8 @@ const Profile = () => {
                                     required
                                     value={passwordData.confirmPassword}
                                     onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                                    // placeholder="Re-enter new password"
-                                    className="w-full pl-3.5 pr-10 py-2.5 text-sm rounded-xl border focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-600 transition"
+                                    placeholder="Re-enter new password"
+                                    className="w-full pl-3.5 pr-10 py-2.5 text-xs sm:text-sm rounded-xl border focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-[#23ada4] transition shadow-xs"
                                     style={{
                                         backgroundColor: theme.colors.tertiary || "#ffffff",
                                         borderColor: theme.colors.border,
@@ -552,7 +665,7 @@ const Profile = () => {
                                 <button
                                     type="button"
                                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
                                 >
                                     {showConfirmPassword ? <FiEyeOff className="w-4 h-4" /> : <FiEye className="w-4 h-4" />}
                                 </button>
@@ -570,7 +683,7 @@ const Profile = () => {
                             <button
                                 type="submit"
                                 disabled={updatingPassword}
-                                className="w-full py-2.5 px-4 bg-teal-600 hover:bg-teal-700 text-white font-medium text-sm rounded-xl shadow-sm transition-colors duration-150 flex items-center justify-center gap-2 disabled:opacity-50"
+                                className="w-full py-2.5 px-4 bg-[#23ada4] hover:bg-[#1ca398] text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs transition-colors duration-150 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                             >
                                 {updatingPassword ? (
                                     <>
