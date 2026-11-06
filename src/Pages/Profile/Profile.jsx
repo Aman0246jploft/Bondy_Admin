@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import userApi from "../../api/userApi";
 import authAxiosClient from "../../api/authAxiosClient";
 import { useTheme } from "../../contexts/theme/hook/useTheme";
+import LockIcon from "../../Component/Icons/LockIcon";
 
 const Profile = () => {
     const { theme } = useTheme();
@@ -468,23 +469,25 @@ const Profile = () => {
                                 </label>
 
                             </div>
-                            <input
-                                type="email"
-                                disabeled
-                                readOnly
-                                value={profile.email}
-                                className="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border bg-slate-100/70 text-slate-500 cursor-not-allowed select-none opacity-85 shadow-xs"
-                                style={{
-                                    borderColor: theme.colors.border,
-                                }}
-                            />
-                            <p
-                                className="text-[11px] mt-1.5 flex items-center gap-1"
-                                style={{ color: theme.colors.textMuted }}
-                            >
-                                <FiAlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
-                                Administrator email address cannot be modified.
-                            </p>
+                            <div className="relative">
+                                <input
+                                    type="email"
+                                    disabled
+                                    readOnly
+                                    value={profile.email}
+                                    className="w-full pl-3.5 pr-10 py-2.5 text-xs sm:text-sm rounded-xl border bg-slate-100/70 text-slate-500 cursor-not-allowed select-none opacity-85 shadow-xs"
+                                    style={{
+                                        borderColor: theme.colors.border,
+                                    }}
+                                />
+                                <div
+                                    className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center"
+                                    title="Locked / Read-only"
+                                >
+                                    <LockIcon className="w-4 h-4" />
+                                </div>
+                            </div>
+
                         </div>
 
                         {/* Save Button */}
