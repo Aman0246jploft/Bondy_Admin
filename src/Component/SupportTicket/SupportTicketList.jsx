@@ -574,8 +574,8 @@ const SupportTicketList = ({ title }) => {
                                 </div>
 
                                 {selectedTicket.user && (
-                                    <div className="border-t pt-4">
-                                        <label className="block text-sm font-medium text-gray-600 mb-2">User Information</label>
+                                    <div className="border-t pt-3">
+                                        <label className="block text-sm font-medium text-gray-600 mb-1.5">User Information</label>
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>
                                                 <p className="text-sm">
@@ -599,19 +599,19 @@ const SupportTicketList = ({ title }) => {
                                     </div>
                                 )}
 
-                                <div className="border-t pt-4">
-                                    <label className="block text-sm font-medium text-gray-600 mb-2">Subject</label>
-                                    <p className="text-sm" style={{ wordBreak: "break-word" }}>{selectedTicket.subject}</p>
+                                <div className="border-t pt-3">
+                                    <label className="block text-sm font-medium text-gray-600 mb-1">Subject</label>
+                                    <p className="text-sm font-medium text-gray-900" style={{ wordBreak: "break-word" }}>{selectedTicket.subject}</p>
                                 </div>
 
-                                <div className="border-t pt-4">
-                                    <label className="block text-sm font-medium text-gray-600 mb-2">Description</label>
-                                    <p className="text-sm whitespace-pre-wrap" style={{ wordBreak: "break-word" }}>{selectedTicket.description}</p>
+                                <div className="border-t pt-3">
+                                    <label className="block text-sm font-medium text-gray-600 mb-1">Description</label>
+                                    <p className="text-sm text-gray-700 whitespace-pre-wrap" style={{ wordBreak: "break-word" }}>{selectedTicket.description}</p>
                                 </div>
 
                                 {selectedTicket.images && selectedTicket.images.length > 0 && (
-                                    <div className="border-t pt-4">
-                                        <label className="block text-sm font-medium text-gray-600 mb-2">Images</label>
+                                    <div className="border-t pt-3">
+                                        <label className="block text-sm font-medium text-gray-600 mb-1.5">Images</label>
                                         <div className="grid grid-cols-3 gap-2">
                                             {selectedTicket.images.map((img, idx) => (
                                                 <img
@@ -626,20 +626,37 @@ const SupportTicketList = ({ title }) => {
                                 )}
 
                                 {selectedTicket.adminComments && selectedTicket.adminComments.length > 0 && (
-                                    <div className="border-t pt-4">
-                                        <label className="block text-sm font-medium text-gray-600 mb-2">Admin Comments</label>
+                                    <div className="border-t pt-3">
+                                        <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Admin Comments</label>
                                         <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
                                             {selectedTicket.adminComments.map((comment, idx) => (
-                                                <div key={idx} className="p-3 rounded border" style={{ backgroundColor: theme.colors.background === "#fff" ? "#f9fafb" : "rgba(255,255,255,0.05)", borderColor: theme.colors.border, wordBreak: "break-word" }}>
-                                                    <div className="flex justify-between items-start mb-1">
-                                                        <p className="text-sm font-medium" style={{ color: theme.colors.primary || "#23ada4" }}>
-                                                            {comment.adminId
-                                                                ? `${comment.adminId.firstName || ""} ${comment.adminId.lastName || ""}`.trim() || "Admin"
-                                                                : "Admin"}
-                                                        </p>
-                                                        <p className="text-xs text-gray-400">{formatDate(comment.createdAt)}</p>
+                                                <div
+                                                    key={idx}
+                                                    className="p-3 rounded-lg border"
+                                                    style={{
+                                                        backgroundColor: theme.colors.background === "#0f172a" ? "rgba(255,255,255,0.05)" : "#f8fafc",
+                                                        borderColor: theme.colors.border,
+                                                        wordBreak: "break-word"
+                                                    }}
+                                                >
+                                                    <div className="flex justify-between items-center mb-1.5">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="inline-flex items-center text-xs font-semibold px-2 py-0.5 rounded bg-teal-100 text-teal-800">
+                                                                Admin
+                                                            </span>
+                                                            <span className="text-xs font-medium text-gray-700">
+                                                                {comment.adminId
+                                                                    ? `${comment.adminId.firstName || ""} ${comment.adminId.lastName || ""}`.trim() || "Bondy Support"
+                                                                    : "Bondy Support"}
+                                                            </span>
+                                                        </div>
+                                                        <span className="text-xs text-gray-400 font-medium">
+                                                            {formatDate(comment.createdAt)}
+                                                        </span>
                                                     </div>
-                                                    <p className="text-sm" style={{ color: theme.colors.textPrimary }}>{comment.comment}</p>
+                                                    <p className="text-sm text-gray-800 whitespace-pre-wrap leading-relaxed pl-0.5">
+                                                        {comment.comment}
+                                                    </p>
                                                 </div>
                                             ))}
                                         </div>
