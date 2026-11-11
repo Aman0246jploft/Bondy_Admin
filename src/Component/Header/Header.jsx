@@ -157,48 +157,40 @@ const Header = ({ toggleSidebar }) => {
 
   return (
     <header
-      className="shadow-2xs border-b px-4 md:px-6 py-1.5 relative"
+      className="h-16 border-b px-4 md:px-6 relative flex items-center justify-between flex-shrink-0"
       style={{
         backgroundColor: theme.colors.headerBg,
         borderColor: theme.colors.headerBorder,
         color: theme.colors.headerText,
       }}
     >
-      <div className="flex items-center justify-between">
-        {/* Left section */}
-        <div className="flex items-center space-x-2 md:space-x-3">
-          {/* Mobile Menu Button */}
-          {isMobile && (
-            <button
-              onClick={toggleSidebar}
-              className="p-1.5 rounded-lg transition-colors duration-200 md:hidden"
-              style={{
-                backgroundColor: theme.colors.buttonSecondary,
-                color: theme.colors.buttonTextOnSecondary,
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor =
-                  theme.colors.buttonSecondaryHover;
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor =
-                  theme.colors.buttonSecondary;
-              }}
-            >
-              <AiOutlineMenu className="w-5 h-5" />
-            </button>
-          )}
+      <div className="flex items-center space-x-2 md:space-x-3">
+        {/* Mobile Menu Button */}
+        {isMobile && (
+          <button
+            onClick={toggleSidebar}
+            className="p-2 rounded-xl transition-colors duration-200 md:hidden border cursor-pointer"
+            style={{
+              backgroundColor: theme.colors.buttonSecondary,
+              borderColor: theme.colors.border,
+              color: theme.colors.buttonTextOnSecondary,
+            }}
+            title="Toggle Menu"
+          >
+            <AiOutlineMenu className="w-5 h-5" />
+          </button>
+        )}
 
-          {/* Title */}
-          <div>
-            <h1
-              className="text-base md:text-lg font-bold"
-              style={{ color: theme.colors.textPrimary }}
-            >
-              Welcome back!
-            </h1>
-          </div>
+        {/* Title */}
+        <div>
+          <h1
+            className="text-base md:text-lg font-bold tracking-tight"
+            style={{ color: theme.colors.textPrimary }}
+          >
+            Welcome back!
+          </h1>
         </div>
+      </div>
 
         {/* Right section */}
         <div className="flex items-center space-x-2 md:space-x-4">
@@ -308,46 +300,64 @@ const Header = ({ toggleSidebar }) => {
           <div className="relative" ref={profileDropdownRef}>
             <button
               onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-              className="flex items-center space-x-2 p-2 rounded-lg transition-colors duration-200"
+              className="flex items-center space-x-2.5 p-1.5 sm:p-2 rounded-xl transition-all duration-200 cursor-pointer border"
               style={{
                 backgroundColor: showProfileDropdown
                   ? theme.colors.buttonSecondaryHover
                   : theme.colors.buttonSecondary,
+                borderColor: showProfileDropdown ? theme.colors.border : "transparent",
                 color: theme.colors.buttonTextOnSecondary,
               }}
-              onMouseEnter={(e) => {
-                if (!showProfileDropdown) {
-                  e.currentTarget.style.backgroundColor =
-                    theme.colors.buttonSecondaryHover;
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!showProfileDropdown) {
-                  e.currentTarget.style.backgroundColor =
-                    theme.colors.buttonSecondary;
-                }
-              }}
             >
-              <Image
-                src={userData?.profileImage || '/sidebar-logo.svg'}
-                fallback={'/sidebar-logo.svg'}
-                alt="Profile"
-                width={32}
-                height={32}
-                rounded={true}
-                className="w-8 h-8 object-cover"
-              />
-              <div className="hidden md:flex flex-col items-start">
-                <span className="text-sm font-medium">
-                  {userData?.firstName + " " + userData?.lastName || "Admin"}
+              {/* Circular Avatar Badge */}
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full overflow-hidden bg-slate-100 border border-slate-200 shadow-2xs flex items-center justify-center flex-shrink-0">
+                {userData?.profileImage ? (
+                  <img
+                    src={
+                      userData.profileImage.startsWith("http://") ||
+                      userData.profileImage.startsWith("https://")
+                        ? userData.profileImage
+                        : `${(import.meta.env.VITE_API_URL || "").replace(/\/+$/, "")}/${userData.profileImage.replace(/^\/+/, "")}`
+                    }
+                    alt="Admin Profile"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = "/sidebar-logo.svg";
+                      e.currentTarget.className = "w-5 h-5 object-contain";
+                    }}
+                  />
+                ) : (
+                  <img
+                    src="/sidebar-logo.svg"
+                    alt="Admin Logo"
+                    className="w-5 h-5 object-contain"
+                  />
+                )}
+              </div>
+
+              <div className="hidden md:flex flex-col items-start text-left leading-tight">
+                <span
+                  className="text-xs sm:text-sm font-semibold tracking-tight truncate max-w-[140px]"
+                  style={{ color: theme.colors.textPrimary }}
+                >
+                  {userData
+                    ? `${userData.firstName || ""} ${userData.lastName || ""}`.trim() || "Bondy Admin"
+                    : "Bondy Admin"}
                 </span>
-                <span className="text-xs" style={{ color: theme.colors.textMuted }}>
-                  {userData?.email || "Loading..."}
+                <span
+                  className="text-[11px] truncate max-w-[140px]"
+                  style={{ color: theme.colors.textMuted }}
+                >
+                  {userData?.email || "adminbondy@gmail.com"}
                 </span>
               </div>
+
               <AiOutlineDown
-                className={`w-4 h-4 transition-transform duration-200 ${showProfileDropdown ? "rotate-180" : ""
-                  }`}
+                className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                  showProfileDropdown ? "rotate-180" : ""
+                }`}
+                style={{ color: theme.colors.textMuted }}
               />
             </button>
 
@@ -424,7 +434,6 @@ const Header = ({ toggleSidebar }) => {
             )}
           </div>
         </div>
-      </div>
     </header>
   );
 };

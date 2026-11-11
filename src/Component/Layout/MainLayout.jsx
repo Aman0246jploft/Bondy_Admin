@@ -10,23 +10,26 @@ const MainLayout = ({ children }) => {
 
   // Check if screen is mobile
   useEffect(() => {
+    let wasMobile = window.innerWidth < 768;
+    setIsMobile(wasMobile);
+    if (wasMobile) {
+      setIsSidebarOpen(false);
+    }
+
     const checkMobile = () => {
       const mobile = window.innerWidth < 768;
-      setIsMobile(mobile);
-
-      // Auto-close sidebar on mobile by default
-      if (mobile && isSidebarOpen) {
-        setIsSidebarOpen(false);
-      }
-      // Auto-open sidebar on desktop if it was closed due to mobile
-      else if (!mobile && !isSidebarOpen) {
-        setIsSidebarOpen(true);
+      if (mobile !== wasMobile) {
+        setIsMobile(mobile);
+        if (mobile) {
+          setIsSidebarOpen(false);
+        } else {
+          setIsSidebarOpen(true);
+        }
+        wasMobile = mobile;
       }
     };
 
-    checkMobile();
     window.addEventListener('resize', checkMobile);
-
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 

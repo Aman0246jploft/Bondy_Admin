@@ -143,11 +143,11 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           color: theme.colors.textPrimary,
         }}
         className={clsx(
-          "fixed left-0 top-0 h-full border-r z-40 transition-all duration-300 ease-in-out flex flex-col overflow-hidden",
-          // Desktop behavior (unchanged)
+          "fixed left-0 top-0 h-full border-r z-40 transition-all duration-300 ease-in-out flex flex-col",
+          // Desktop behavior
           "md:translate-x-0",
-          isOpen ? "md:w-60 " : "md:w-16",
-          // Mobile behavior (new)
+          isOpen ? "md:w-60" : "md:w-16",
+          // Mobile behavior
           "w-64 md:w-auto",
           isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         )}
@@ -156,25 +156,22 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         <button
           onClick={toggleSidebar}
           style={{
-            backgroundColor: theme.colors.background,
-            borderColor: theme.colors.borderLight,
+            backgroundColor: theme.colors.primary || "#ffffff",
+            borderColor: theme.colors.border,
           }}
           className={clsx(
-            "absolute -right-3 top-8 border-2 rounded-full p-1.5 transition-colors duration-200",
-            !isOpen && "md:rotate-180",
-            // Hide toggle button on mobile when sidebar is closed
-            "hidden md:block",
-            isOpen && "md:block"
+            "absolute -right-3.5 top-5 z-50 border shadow-xs rounded-full p-1 transition-all duration-200 hover:scale-110 cursor-pointer hidden md:flex items-center justify-center"
           )}
+          title={isOpen ? "Collapse Sidebar" : "Expand Sidebar"}
         >
           {isOpen ? (
             <AiOutlineLeft
-              className="w-4 h-4"
+              className="w-3.5 h-3.5"
               style={{ color: theme.colors.textPrimary }}
             />
           ) : (
             <AiOutlineRight
-              className="w-4 h-4"
+              className="w-3.5 h-3.5"
               style={{ color: theme.colors.textPrimary }}
             />
           )}
@@ -183,26 +180,26 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         {/* Logo Section */}
         <div
           className={clsx(
-            "flex items-center p-4 border-b",
-            !isOpen && "md:justify-center md:px-2"
+            "flex items-center h-16 px-4 border-b flex-shrink-0 transition-all duration-300",
+            !isOpen && "md:justify-center md:px-0"
           )}
           style={{
             borderColor: theme.colors.border,
           }}
         >
-          <div className="w-10 h-10  rounded-lg flex items-center justify-center flex-shrink-0">
-            <img src="/sidebar-logo.svg" />
+          <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0">
+            <img src="/sidebar-logo.svg" alt="Bondy Logo" className="w-8 h-8 object-contain" />
           </div>
           {/* Always show text on mobile, conditionally on desktop */}
-          <div className={clsx("ml-3 overflow-hidden", !isOpen && "md:hidden")}>
+          <div className={clsx("ml-3 overflow-hidden whitespace-nowrap transition-all duration-200", !isOpen && "md:hidden")}>
             <h1
-              className="text-xl font-bold"
+              className="text-lg font-bold leading-tight"
               style={{ color: theme.colors.textPrimary }}
             >
               Bondy
             </h1>
             <p
-              className="text-xs"
+              className="text-xs leading-none"
               style={{ color: theme.colors.textSecondary }}
             >
               Admin Panel
