@@ -4,6 +4,7 @@ import DataTable from "../../Component/Table/DataTable";
 import axiosClient from "../../api/authAxiosClient";
 import { toast } from "react-toastify";
 import { socketURL } from "../../api/baseUrl";
+import { AiOutlineIdcard, AiOutlineBank, AiOutlineUser } from "react-icons/ai";
 
 const VerificationRequests = () => {
     const [data, setData] = useState([]);
@@ -177,47 +178,100 @@ const VerificationRequests = () => {
         return `${socketURL}/${url}`;
     };
 
+    const STATUS_THEME = {
+        approved: {
+            bg: "bg-emerald-50",
+            text: "text-emerald-700",
+            border: "border-emerald-200/90",
+            dot: "bg-emerald-500",
+            label: "Approved",
+        },
+        pending: {
+            bg: "bg-amber-50",
+            text: "text-amber-800",
+            border: "border-amber-200/90",
+            dot: "bg-amber-500",
+            label: "Pending",
+        },
+        rejected: {
+            bg: "bg-rose-50",
+            text: "text-rose-700",
+            border: "border-rose-200/90",
+            dot: "bg-rose-500",
+            label: "Rejected",
+        },
+        unverified: {
+            bg: "bg-slate-50",
+            text: "text-slate-600",
+            border: "border-slate-200/90",
+            dot: "bg-slate-400",
+            label: "Unverified",
+        },
+    };
+
+    const renderVerificationPill = (category, Icon, rawStatus) => {
+        const status = (rawStatus || "unverified").toLowerCase();
+        const theme = STATUS_THEME[status] || STATUS_THEME.unverified;
+
+        return (
+            <div
+                key={category}
+                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border shadow-2xs ${theme.bg} ${theme.border} transition-colors`}
+            >
+                <span className="inline-flex items-center gap-1 text-slate-700 font-semibold text-[11px]">
+                    <Icon className="w-3.5 h-3.5 text-slate-500 flex-shrink-0" />
+                    {category}
+                </span>
+                <span className="text-slate-300 font-normal text-[10px]">|</span>
+                <span className={`w-1.5 h-1.5 rounded-full ${theme.dot} flex-shrink-0`} />
+                <span className={`text-[11px] font-semibold ${theme.text}`}>
+                    {theme.label}
+                </span>
+            </div>
+        );
+    };
+
     const columns = [
         {
             key: "name",
             label: "Organizer Name",
-            render: (val, row) => `${row.firstName || ''} ${row.lastName || ''}`
+            width: "18%",
+            render: (val, row) => (
+                <div className="font-semibold text-slate-800">
+                    {`${row.firstName || ''} ${row.lastName || ''}`.trim() || '—'}
+                </div>
+            )
         },
-        { key: "email", label: "Email" },
+        { key: "email", label: "Email", width: "20%" },
         {
             key: "contactNumber",
             label: "Contact",
+            width: "14%",
             render: (val, row) => formatContactNumber(row)
         },
         {
             key: "status",
             label: "Statuses (ID / Bank / Profile)",
+            width: "36%",
             render: (val, row) => {
-                const natStatus = row.verifications?.idVerification?.nationalId?.status || "unverified";
-                const licStatus = row.verifications?.idVerification?.drivingLicence?.status || "unverified";
-                const idStatus = natStatus === "approved" || licStatus === "approved" ? "approved" : (natStatus === "pending" || licStatus === "pending" ? "pending" : "unverified");
+                const natStatus = row.verifications?.idVerification?.nationalId?.status?.toLowerCase() || "unverified";
+                const licStatus = row.verifications?.idVerification?.drivingLicence?.status?.toLowerCase() || "unverified";
+                const idStatus = (natStatus === "approved" || licStatus === "approved")
+                    ? "approved"
+                    : ((natStatus === "pending" || licStatus === "pending")
+                        ? "pending"
+                        : ((natStatus === "rejected" || licStatus === "rejected")
+                            ? "rejected"
+                            : "unverified"));
 
-                const bankStatus = row.verifications?.bankVerification?.status || "unverified";
-                const profileStatus = row.businessVerificationStatus || "unverified";
-
-                const getStatusBadgeClass = (status) => {
-                    if (status === 'approved') return 'bg-green-100 text-green-800';
-                    if (status === 'pending') return 'bg-yellow-100 text-yellow-800';
-                    if (status === 'rejected') return 'bg-red-100 text-red-800';
-                    return 'bg-gray-100 text-gray-600';
-                };
+                const bankStatus = row.verifications?.bankVerification?.status?.toLowerCase() || "unverified";
+                const profileStatus = row.businessVerificationStatus?.toLowerCase() || "unverified";
 
                 return (
-                    <div className="flex gap-2 text-xs">
-                        <span className={`px-2 py-1 rounded font-semibold ${getStatusBadgeClass(idStatus)}`}>
-                            ID: {idStatus}
-                        </span>
-                        <span className={`px-2 py-1 rounded font-semibold ${getStatusBadgeClass(bankStatus)}`}>
-                            Bank: {bankStatus}
-                        </span>
-                        <span className={`px-2 py-1 rounded font-semibold ${getStatusBadgeClass(profileStatus)}`}>
-                            Profile: {profileStatus}
-                        </span>
+                    <div className="flex items-center gap-1.5 flex-nowrap">
+                        {renderVerificationPill("ID", AiOutlineIdcard, idStatus)}
+                        {renderVerificationPill("Bank", AiOutlineBank, bankStatus)}
+                        {renderVerificationPill("Profile", AiOutlineUser, profileStatus)}
                     </div>
                 );
             }
@@ -225,10 +279,11 @@ const VerificationRequests = () => {
         {
             key: "actions",
             label: "Action",
+            width: "12%",
             render: (val, row) => (
                 <button
                     onClick={() => setSelectedUser(row)}
-                    className="px-3 py-1 bg-teal-500 text-white rounded hover:bg-teal-600 text-xs font-semibold"
+                    className="px-3.5 py-1.5 bg-[#23ada4] hover:bg-[#1ca398] text-white text-xs font-semibold rounded-lg transition-all whitespace-nowrap shadow-xs hover:shadow-md cursor-pointer"
                 >
                     Review & Verify
                 </button>
@@ -238,15 +293,23 @@ const VerificationRequests = () => {
 
     const getStatusBadge = (status) => {
         const classes = {
-            approved: "bg-green-100 text-green-800 border border-green-200",
-            pending: "bg-yellow-100 text-yellow-800 border border-yellow-200",
-            rejected: "bg-red-100 text-red-800 border border-red-200",
-            unverified: "bg-gray-100 text-gray-700 border border-gray-200"
+            approved: "bg-emerald-50 text-emerald-700 border border-emerald-200/90",
+            pending: "bg-amber-50 text-amber-700 border border-amber-200/90",
+            rejected: "bg-rose-50 text-rose-700 border border-rose-200/90",
+            unverified: "bg-slate-50 text-slate-600 border border-slate-200/90"
         };
-        const current = status || "unverified";
+        const dots = {
+            approved: "bg-emerald-500",
+            pending: "bg-amber-500",
+            rejected: "bg-rose-500",
+            unverified: "bg-slate-400"
+        };
+        const current = (status || "unverified").toLowerCase();
+        const label = current.charAt(0).toUpperCase() + current.slice(1);
         return (
-            <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${classes[current]}`}>
-                {current}
+            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${classes[current] || classes.unverified}`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${dots[current] || dots.unverified}`} />
+                {label}
             </span>
         );
     };
