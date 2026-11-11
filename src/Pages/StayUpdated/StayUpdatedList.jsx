@@ -62,11 +62,7 @@ const StayUpdatedList = () => {
                 <h3 className="text-2xl font-bold" style={{ color: theme.colors.textPrimary }}>Website Update Signups</h3>
             </div>
 
-            {loading ? (
-                <div className="flex justify-center p-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500"></div>
-                </div>
-            ) : (
+            {loading ? null : (
                 <>
                     <div className="table-responsive overflow-x-auto rounded-lg shadow" style={{ backgroundColor: theme.colors.cardBg }}>
                         <table className="min-w-full divide-y divide-gray-200">

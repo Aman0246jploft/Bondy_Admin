@@ -139,25 +139,7 @@ export default function SubCategory() {
         </div>
 
         <div className="relative" style={{ minHeight: `${minTableHeight}px` }}>
-          {loading ? (
-            <div
-              className="absolute inset-0 flex items-center justify-center"
-              style={{ backgroundColor: theme.colors.backgroundSecondary }}
-            >
-              <div className="text-center">
-                <div
-                  className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto"
-                  style={{ borderColor: theme.colors.primary }}
-                ></div>
-                <p
-                  className="mt-2"
-                  style={{ color: theme.colors.textSecondary }}
-                >
-                  Loading categories...
-                </p>
-              </div>
-            </div>
-          ) : error ? (
+          {loading ? null : error ? (
             <div
               className="absolute inset-0 flex items-center justify-center"
               style={{ backgroundColor: theme.colors.backgroundSecondary }}

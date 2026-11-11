@@ -283,7 +283,7 @@ const FAQList = () => {
         }
     };
 
-    if (loading) return <div className="p-6">Loading...</div>;
+    if (loading) return null;
 
     return (
         <div className="p-6">
