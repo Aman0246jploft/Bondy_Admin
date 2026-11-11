@@ -19,7 +19,15 @@ import {
   AiOutlineBug,
   AiOutlineLayout,
   AiOutlineUser,
+  AiOutlineSafetyCertificate,
+  AiOutlineAppstore,
+  AiOutlinePercentage,
+  AiOutlineBank,
+  AiOutlineLock,
+  AiOutlineFileDone,
+  AiOutlineFlag,
 } from "react-icons/ai";
+import { FiUsers, FiBriefcase, FiTag, FiPackage } from "react-icons/fi";
 import { useTheme } from "../../contexts/theme/hook/useTheme";
 import clsx from "clsx";
 
@@ -98,28 +106,27 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   }, []);
 
   const menuItems = [
-    { name: "Dashboard", href: "/dashboard", icon: AiOutlineHome },
-    // { name: "Dashboard", href: "/dashboard", icon: AiOutlineDashboard },
-    { name: "Customers", href: "/customers", icon: AiOutlineTeam },
-    { name: "Organizers", href: "/organizers", icon: AiOutlineTeam },
-    { name: "Verification Requests", href: "/verification-requests", icon: AiOutlineFileText },
+    { name: "Dashboard", href: "/dashboard", icon: AiOutlineDashboard },
+    { name: "Customers", href: "/customers", icon: FiUsers },
+    { name: "Organizers", href: "/organizers", icon: FiBriefcase },
+    { name: "Verification Requests", href: "/verification-requests", icon: AiOutlineSafetyCertificate },
     { name: "Finance", href: "/finance", icon: AiOutlineDollar },
-    { name: "Categories", href: "/categories", icon: AiOutlineFileText },
+    { name: "Categories", href: "/categories", icon: AiOutlineAppstore },
     // { name: "Banners", href: "/banners", icon: AiOutlineFileText },
     { name: "Events", href: "/events", icon: AiOutlineCalendar },
     { name: "Courses", href: "/courses", icon: AiOutlineBook },
-    { name: "Taxes", href: "/taxes", icon: AiOutlineSetting },
-    { name: "Banks", href: "/banks", icon: AiOutlineSetting },
-    { name: "Promo Codes", href: "/promo-codes", icon: AiOutlineFileText },
-    { name: "Promotion Packages", href: "/promotion-packages", icon: AiOutlineFileText },
+    { name: "Taxes", href: "/taxes", icon: AiOutlinePercentage },
+    { name: "Banks", href: "/banks", icon: AiOutlineBank },
+    { name: "Promo Codes", href: "/promo-codes", icon: FiTag },
+    { name: "Promotion Packages", href: "/promotion-packages", icon: FiPackage },
     { name: "Global Settings", href: "/settings", icon: AiOutlineSetting },
-    { name: "Privacy Policy", href: "/privacy-policy", icon: AiOutlineFileText },
-    { name: "Terms & Conditions", href: "/terms-conditions", icon: AiOutlineFileText },
+    { name: "Privacy Policy", href: "/privacy-policy", icon: AiOutlineLock },
+    { name: "Terms & Conditions", href: "/terms-conditions", icon: AiOutlineFileDone },
     { name: "FAQs", href: "/faqs", icon: AiOutlineQuestionCircle },
     { name: "Support Tickets", href: "/support-tickets", icon: AiOutlineCustomerService },
     { name: "Contact Messages", href: "/contacts", icon: AiOutlineMail },
     // { name: "Update Signups", href: "/stay-updated", icon: AiOutlineMail },
-    { name: "Reports", href: "/reports", icon: AiOutlineFileText },
+    { name: "Reports", href: "/reports", icon: AiOutlineFlag },
     { name: "Bug Reports", href: "/bugs", icon: AiOutlineBug },
     //footer-management
     { name: "Footer Management", href: "/footer-management", icon: AiOutlineLayout },
