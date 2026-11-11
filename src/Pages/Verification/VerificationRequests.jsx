@@ -209,23 +209,23 @@ const VerificationRequests = () => {
         },
     };
 
-    const renderVerificationPill = (category, Icon, rawStatus) => {
+    const renderVerificationPill = (category, rawStatus) => {
         const status = (rawStatus || "unverified").toLowerCase();
         const theme = STATUS_THEME[status] || STATUS_THEME.unverified;
 
         return (
             <div
                 key={category}
-                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border shadow-2xs ${theme.bg} ${theme.border} transition-colors`}
+                className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium border shadow-2xs whitespace-nowrap ${theme.bg} ${theme.border} transition-colors`}
             >
-                <span className="inline-flex items-center gap-1 text-slate-700 font-semibold text-[11px]">
-                    <Icon className="w-3.5 h-3.5 text-slate-500 flex-shrink-0" />
+                <span className="font-bold text-slate-700 text-[11px] flex-shrink-0">
                     {category}
                 </span>
-                <span className="text-slate-300 font-normal text-[10px]">|</span>
-                <span className={`w-1.5 h-1.5 rounded-full ${theme.dot} flex-shrink-0`} />
-                <span className={`text-[11px] font-semibold ${theme.text}`}>
-                    {theme.label}
+                <span className="inline-flex items-center gap-1.5 flex-shrink-0 ml-1.5">
+                    <span className={`w-1.5 h-1.5 rounded-full ${theme.dot} flex-shrink-0`} />
+                    <span className={`text-[11px] font-semibold ${theme.text}`}>
+                        {theme.label}
+                    </span>
                 </span>
             </div>
         );
@@ -242,7 +242,7 @@ const VerificationRequests = () => {
                 </div>
             )
         },
-        { key: "email", label: "Email", width: "20%" },
+        { key: "email", label: "Email", width: "18%" },
         {
             key: "contactNumber",
             label: "Contact",
@@ -252,7 +252,7 @@ const VerificationRequests = () => {
         {
             key: "status",
             label: "Statuses (ID / Bank / Profile)",
-            width: "36%",
+            width: "38%",
             render: (val, row) => {
                 const natStatus = row.verifications?.idVerification?.nationalId?.status?.toLowerCase() || "unverified";
                 const licStatus = row.verifications?.idVerification?.drivingLicence?.status?.toLowerCase() || "unverified";
@@ -268,10 +268,10 @@ const VerificationRequests = () => {
                 const profileStatus = row.businessVerificationStatus?.toLowerCase() || "unverified";
 
                 return (
-                    <div className="flex items-center gap-1.5 flex-nowrap">
-                        {renderVerificationPill("ID", AiOutlineIdcard, idStatus)}
-                        {renderVerificationPill("Bank", AiOutlineBank, bankStatus)}
-                        {renderVerificationPill("Profile", AiOutlineUser, profileStatus)}
+                    <div className="grid grid-cols-3 gap-2 w-full max-w-[420px] min-w-[360px]">
+                        {renderVerificationPill("ID", idStatus)}
+                        {renderVerificationPill("Bank", bankStatus)}
+                        {renderVerificationPill("Profile", profileStatus)}
                     </div>
                 );
             }
