@@ -214,11 +214,7 @@ const BannerList = ({ title }) => {
                 </div>
             </div>
 
-            {loading ? (
-                <div className="text-center py-4 text-slate-500">Loading Banners...</div>
-            ) : (
-                <DataTable columns={columns} data={data} />
-            )}
+            <DataTable columns={columns} data={data} loading={loading} />
 
             <div className="flex justify-between items-center mt-4">
                 <span className="text-sm text-slate-500 font-medium">Total: {total}</span>

@@ -529,14 +529,7 @@ const CustomNotificationManager = () => {
               </tr>
             </thead>
             <tbody className="divide-y" style={{ borderColor: theme.colors.border }}>
-              {historyLoading ? (
-                <tr>
-                  <td colSpan={7} className="py-8 text-center text-gray-400">
-                    <AiOutlineReload className="w-6 h-6 animate-spin mx-auto text-teal-600 mb-2" />
-                    Loading broadcast history...
-                  </td>
-                </tr>
-              ) : history.length === 0 ? (
+              {historyLoading ? null : history.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-12 text-center text-gray-400">
                     <AiOutlineBell className="w-10 h-10 mx-auto text-gray-300 mb-2" />
