@@ -22,7 +22,9 @@ const SupportTicketList = ({ title }) => {
                 params: { type: "support_ticket", limit: 100 }
             });
             if (response.data?.status) {
-                setCategories(response.data.data.categories || []);
+                const list = response.data.data.categories || [];
+                list.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+                setCategories(list);
             }
         } catch (error) {
             console.error("Error fetching categories:", error);
