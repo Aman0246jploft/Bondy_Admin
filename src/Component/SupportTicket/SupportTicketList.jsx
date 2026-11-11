@@ -18,10 +18,11 @@ const SupportTicketList = ({ title }) => {
 
     const fetchCategories = useCallback(async () => {
         try {
-            // Ticket types are the FAQ topics (plus "Other"), matching what users submit.
-            const response = await authAxiosClient.get("/faq/admin/topics");
+            const response = await authAxiosClient.get("/category/list", {
+                params: { type: "support_ticket", limit: 100 }
+            });
             if (response.data?.status) {
-                setCategories(response.data.data.topics || []);
+                setCategories(response.data.data.categories || []);
             }
         } catch (error) {
             console.error("Error fetching categories:", error);
@@ -261,9 +262,17 @@ const SupportTicketList = ({ title }) => {
         {
             key: "category",
             label: "Category",
-            render: (val) => {
-                if (typeof val === "object" && val?.name) {
-                    return val.name;
+            render: (val, row) => {
+                const catObj = row?.categoryId || (typeof val === "object" ? val : null);
+                if (catObj?.name) {
+                    return (
+                        <div className="flex flex-col">
+                            <span className="font-medium text-gray-900">{catObj.name}</span>
+                            {catObj.name_thi && (
+                                <span className="text-xs text-gray-500">{catObj.name_thi}</span>
+                            )}
+                        </div>
+                    );
                 }
                 return val || "N/A";
             }
@@ -354,15 +363,14 @@ const SupportTicketList = ({ title }) => {
                         }}
                     >
                         {/* All option */}
-                        <option value="">All</option>
+                        <option value="">All Categories</option>
 
                         {/* Category options */}
                         {categories.map((category) => (
                             <option key={category._id} value={category.name}>
-                                {category.name}
+                                {category.name}{category.name_thi ? ` (${category.name_thi})` : ""}
                             </option>
                         ))}
-                        <option value="Other">Other</option>
                     </select>
                 </div>
 
@@ -426,9 +434,8 @@ const SupportTicketList = ({ title }) => {
                     <input
                         type="date"
                         max={filters.endDate || undefined}
-                        className={`w-full border p-2 rounded transition-colors ${
-                            dateError ? "border-red-500" : ""
-                        }`}
+                        className={`w-full border p-2 rounded transition-colors ${dateError ? "border-red-500" : ""
+                            }`}
                         value={filters.startDate}
                         onChange={(e) => handleFilterChange("startDate", e.target.value)}
                         style={{
@@ -443,9 +450,8 @@ const SupportTicketList = ({ title }) => {
                     <input
                         type="date"
                         min={filters.startDate || undefined}
-                        className={`w-full border p-2 rounded transition-colors ${
-                            dateError ? "border-red-500" : ""
-                        }`}
+                        className={`w-full border p-2 rounded transition-colors ${dateError ? "border-red-500" : ""
+                            }`}
                         value={filters.endDate}
                         onChange={(e) => handleFilterChange("endDate", e.target.value)}
                         style={{
@@ -538,11 +544,22 @@ const SupportTicketList = ({ title }) => {
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-600">Category</label>
-                                        <p className="mt-1">
-                                            {typeof selectedTicket.category === "object" && selectedTicket.category?.name
-                                                ? selectedTicket.category.name
-                                                : selectedTicket.category || "N/A"}
-                                        </p>
+                                        <div className="mt-1">
+                                            {(() => {
+                                                const catObj = selectedTicket.categoryId || (typeof selectedTicket.category === "object" ? selectedTicket.category : null);
+                                                if (catObj?.name) {
+                                                    return (
+                                                        <div>
+                                                            <span className="font-medium text-gray-900">{catObj.name}</span>
+                                                            {catObj.name_thi && (
+                                                                <span className="text-xs text-gray-500 ml-2">({catObj.name_thi})</span>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                }
+                                                return <span>{selectedTicket.category || "N/A"}</span>;
+                                            })()}
+                                        </div>
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-600">Request / Booking No.</label>
