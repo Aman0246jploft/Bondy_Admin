@@ -59,16 +59,46 @@ const CATEGORY_CONFIG = {
 
 // ─── Stat Card ────────────────────────────────────────────────────────────────
 const StatCard = ({ label, value, sub, onClick }) => {
+  const valStr = String(value ?? "");
+  const len = valStr.length;
+
+  // Dynamically adapt font size so long numbers fit without overflowing card boundaries
+  const valueFontSize =
+    len > 14
+      ? "text-base xl:text-lg"
+      : len > 11
+      ? "text-lg xl:text-xl"
+      : len > 8
+      ? "text-xl xl:text-2xl"
+      : "text-2xl";
+
   return (
     <div
       onClick={onClick}
       role={onClick ? "button" : undefined}
-      className={`bg-white rounded-xl p-5 border border-gray-200 shadow-2xs transition-all ${onClick ? "cursor-pointer hover:shadow-md hover:border-gray-300" : ""
-        }`}
+      className={`bg-white rounded-xl p-4 sm:p-5 border border-gray-200 shadow-2xs transition-all min-w-0 overflow-hidden flex flex-col justify-between ${
+        onClick ? "cursor-pointer hover:shadow-md hover:border-gray-300" : ""
+      }`}
     >
-      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">{label}</p>
-      <p className="text-2xl font-bold text-gray-900 tracking-tight">{value}</p>
-      {sub && <p className="text-xs text-gray-400 mt-1">{sub}</p>}
+      <div className="min-w-0">
+        <p
+          className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1 truncate"
+          title={label}
+        >
+          {label}
+        </p>
+        <p
+          className={`${valueFontSize} font-bold text-gray-900 tracking-tight truncate my-0.5 leading-tight`}
+          title={valStr}
+        >
+          {value}
+        </p>
+      </div>
+      {sub && (
+        <p className="text-xs text-gray-400 mt-1 truncate" title={sub}>
+          {sub}
+        </p>
+      )}
     </div>
   );
 };
@@ -273,7 +303,7 @@ const TransactionDetailModal = ({ transaction, onClose, onApprove, onReject }) =
                 {isRefund ? "Refund Amount" : isOutflow ? "Withdrawal Amount" : "Transaction Amount"}
               </span>
               <div
-                className={`text-2xl font-bold ${isRefund || isOutflow ? "text-rose-600" : "text-gray-900"
+                className={`text-2xl font-bold break-all ${isRefund || isOutflow ? "text-rose-600" : "text-gray-900"
                   }`}
               >
                 {isRefund || isOutflow ? `-${fmt(transaction.totalAmount)}` : `+${fmt(transaction.totalAmount)}`}
@@ -868,13 +898,13 @@ const FinanceDashboard = () => {
 
       {/* ── Stat Cards ── */}
       {statsLoading ? (
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="bg-white rounded-xl shadow p-5 animate-pulse h-24" />
+            <div key={i} className="bg-white rounded-xl shadow-2xs border border-gray-200 p-4 sm:p-5 animate-pulse h-28" />
           ))}
         </div>
       ) : stats ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
           <StatCard
             label="Total Revenue"
             value={fmt(stats.totalRevenue)}
